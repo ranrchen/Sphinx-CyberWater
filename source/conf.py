@@ -13,9 +13,9 @@ autodoc_mock_imports = ['vistrails','vistrails_helpers','msm_core','numpy','buil
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
-import sys
-sys.path.insert(0, os.path.abspath('C:\WorkSpace\AgentTools\code'))
+# import os
+# import sys
+# sys.path.insert(0, os.path.abspath('C:\WorkSpace\AgentTools\code'))
 
 
 # -- Project information -----------------------------------------------------
@@ -113,7 +113,6 @@ htmlhelp_basename = 'GenericModelAgentToolkitsdoc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
-latex_engine = 'xelatex'
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
@@ -140,7 +139,6 @@ latex_documents = [
      u'Ranran Chen', 'manual'),
 ]
 
-latex_logo = '_static/logo.png'
 # -- Options for manual page output ------------------------------------------
 
 # One entry per manual page. List of tuples
