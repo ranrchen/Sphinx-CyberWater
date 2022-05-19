@@ -7,10 +7,11 @@ Welcome to GenericModelAgentToolkits's documentation!
 =====================================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: Contents:
 
-
+   modules
+   AgentTools
 
 Indices and tables
 ==================
