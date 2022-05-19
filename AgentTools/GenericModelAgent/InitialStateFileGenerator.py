@@ -51,15 +51,15 @@ class InitialStateFileGenerator(Module):
             else:
                 initial_state_dir = os.path.join(files_dir, initial_state_dir)
                 shutil.rmtree(initial_state_dir, ignore_errors=True)
-                os.makedirs(initial_state_dir, mode=0777)
+                os.makedirs(initial_state_dir, mode=0o777)
         except Exception as e:
-            print "Could not delete the folders"
+            print("Could not delete the folders")
             raise e
 
-        print "state files, generating"
+        print("state files, generating")
 
         ready_sign = True
-        for i in xrange(0,10):
+        for i in range(0,10):
             name = "File_In_"+str(i)
             temp = self.force_get_input(name)
             if temp == None or temp == "":
@@ -71,11 +71,11 @@ class InitialStateFileGenerator(Module):
                 try:
                     shutil.copyfile(temp,initial_state_file)
                 except Exception as e:
-                    print "Could not copy initial state files to folder"
+                    print("Could not copy initial state files to folder")
                     ready_sign = False
                     raise e
             else:
-                print "Path or File not Exist"
+                print("Path or File not Exist")
                 ready_sign = False
 
         self.set_output("Ready", str(ready_sign))

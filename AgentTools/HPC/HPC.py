@@ -7,8 +7,8 @@ import os
 import shutil
 import uuid
 from ntpath import join
-from launchagent.ssh_agent import LaunchAgent
-from launchagent.gateway_agent import GatewayAgent
+from .launchagent.ssh_agent import LaunchAgent
+from .launchagent.gateway_agent import GatewayAgent
 from PyQt4 import QtGui
 import json
 from util.OutputUtil import OutputUtil
@@ -57,8 +57,8 @@ class HPC(NotCacheable, Module):
     siteFile = os.path.dirname(os.path.abspath(__file__)) + "/launchagent/resources/site_dict.json"
     with open(siteFile,"r") as f:
         siteList = json.load(f)
-        sshList = siteList["ssh_agent"]["sites"].keys()
-        gatewayList = siteList["gateway_agent"]["sites"].keys()
+        sshList = list(siteList["ssh_agent"]["sites"].keys())
+        gatewayList = list(siteList["gateway_agent"]["sites"].keys())
         slurmList = ["bigred3", "gcp", "jetstream", "bridges2", "bridges2-shared", "stampede2"]
         sshList.remove("Customized")
         for i in range(len(sshList)):
@@ -268,7 +268,7 @@ class HPC(NotCacheable, Module):
 
         else:
             if not os.path.exists(files_dir + "/" + result_folder):
-                os.makedirs(files_dir + "/" + result_folder, mode=0777)
+                os.makedirs(files_dir + "/" + result_folder, mode=0o777)
 
             # Prepare execution script, run.sh
             checkWords = ("$1","$2","$3")
@@ -281,7 +281,7 @@ class HPC(NotCacheable, Module):
                             line = line.replace(check,rep)
                         f_new.write(line)
             # upload folders:
-            print ("Files being uploaded", files_dir)
+            print(("Files being uploaded", files_dir))
             agent.upload_folder(files_dir)
 
             if sshSite:

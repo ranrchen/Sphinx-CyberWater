@@ -54,7 +54,7 @@ class AreaWiseParamGenerator(Module):
         if files_dir is None or files_dir == "": raise Exception("WD_Path is empty or undefined.")
         if params_dir == "" or params_dir == None: params_dir = None #'Parameters'
         number_of_input_parameters = 0
-        for i in xrange(0,16):
+        for i in range(0,16):
             temp_file_in = self.force_get_input("File_In_%02d"%i)
             if isinstance(temp_file_in, PathObject): temp_file_in = temp_file_in.name
             if temp_file_in !="" and temp_file_in is not None:
@@ -64,13 +64,13 @@ class AreaWiseParamGenerator(Module):
         #prepare dir
         if params_dir is not None:
             if not os.path.exists(files_dir+"/"+params_dir):
-                os.makedirs(files_dir+"/"+params_dir, mode=0777)
+                os.makedirs(files_dir+"/"+params_dir, mode=0o777)
             files_dir = os.path.join(files_dir,params_dir)
 
         # Start Computing ----------------------------------------------------------------------------------------------
-        print "Parameters, generating"
+        print("Parameters, generating")
         status = True
-        for i in xrange(0,16):
+        for i in range(0,16):
             name = "File_In_%02d"%i
             temp = self.force_get_input(name)
             if temp == None or temp == "":
@@ -81,11 +81,11 @@ class AreaWiseParamGenerator(Module):
                 try:
                     shutil.copyfile(temp,os.path.join(files_dir,file_name))
                 except Exception as e:
-                    print "Could not copy Param files to folder"
+                    print("Could not copy Param files to folder")
                     status = False
                     raise e
             else:
-                print "Path or File do not Exist: ", temp
+                print(("Path or File do not Exist: ", temp))
                 status = False
         self.set_output("Ready", str(status))
 

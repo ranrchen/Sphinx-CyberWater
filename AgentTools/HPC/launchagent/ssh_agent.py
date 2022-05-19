@@ -22,7 +22,7 @@ def get_supported_sites():
     f = open(siteFile)
     site_dict = json.load(f)["ssh_agent"]["sites"]
     f.close()
-    return [ x.encode('UTF8') for x in site_dict.keys() ]
+    return [ x.encode('UTF8') for x in list(site_dict.keys()) ]
 
 class LaunchAgent(object):
     """A class/agent to connect to cluster

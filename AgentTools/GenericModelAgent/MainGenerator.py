@@ -73,7 +73,7 @@ class MainGenerator(Module):
         DataSet_Class = {}
         # Checking Inputs and provide defaults
         # Start Computing ----------------------------------------------------------------------------------------------
-        for i in xrange(1, 16):
+        for i in range(1, 16):
             val = "Dataset_%02d" % (i)
             inputFromPort = self.force_get_input(val)
             if inputFromPort != "":
@@ -95,16 +95,16 @@ class MainGenerator(Module):
         if os.path.exists(files_dir) and isOverridden: self.remove_existing_folder(files_dir)
         if not os.path.exists(files_dir):  # Tries to make the folder if it does not exist
             try:
-                os.makedirs(files_dir, mode=0777)
+                os.makedirs(files_dir, mode=0o777)
             except Exception as e:
-                os.makedirs(files_dir, mode=0777)
+                os.makedirs(files_dir, mode=0o777)
 
         if gpf_dir != '' and gpf_dir != None:
             gpf_name = os.path.basename(gpf_dir)
             try:
                 shutil.copyfile(gpf_dir, files_dir + "/" + gpf_name)
             except Exception as e:
-                print "Could not copy GPF file to folder"
+                print("Could not copy GPF file to folder")
                 raise e
         self.set_output("DataSet_Class", DataSet_Class)
 
@@ -120,7 +120,7 @@ class MainGenerator(Module):
         try:
             shutil.rmtree(files_dir, ignore_errors=True)
         except Exception as e:
-            print "Could not delete the work folders"
+            print("Could not delete the work folders")
             raise e
 
     @classmethod

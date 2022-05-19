@@ -1,4 +1,4 @@
-from __builtin__ import sorted
+from builtins import sorted
 from vistrails.core.modules.vistrails_module import Module, ModuleError
 from vistrails_helpers.utils.vistrail_types import STRING_TYPE, VARIANT_TYPE, BOOLEAN_TYPE
 from vistrails.core.modules.basic_modules import String, Float, File
@@ -90,17 +90,17 @@ class ForcingDataFileGenerator(Module):
         try:
             shutil.rmtree(join(files_dir,forcing_dir), ignore_errors=True)
         except Exception as e:
-            print "Could not delete the folders"
+            print("Could not delete the folders")
             raise e
         # Start Computing ----------------------------------------------------------------------------------------------
-        print "files, generating"
+        print("files, generating")
         ready_sign = False
         if DataSet != "" and DataSet is not None:
-            os.makedirs(join(files_dir,forcing_dir), mode=0777)
+            os.makedirs(join(files_dir,forcing_dir), mode=0o777)
             self.prepare_forcing(forcing_dir_prefix=join(files_dir,forcing_dir,file_name)+"_", inputs=DataSet, date_format=date_label_format)
             ready_sign = True
         else:
-            print "DataSet_Class port is empty"
+            print("DataSet_Class port is empty")
             raise Exception("DataSet_Class port is empty")
 
         self.set_output("Ready", str(ready_sign))
@@ -209,12 +209,12 @@ class ForcingDataFileGenerator(Module):
         left=self.dd.left
         top=self.dd.top
         
-        print side, base,
+        print(side, base, end=' ')
 
         #Data for use later in save_outputs
-        print "saving-forcing-timeseries pixel:",
+        print("saving-forcing-timeseries pixel:", end=' ')
         for row in range(side):
-            print "%02d" % (float(base * row) * 100 / float(base * side)) + "%",
+            print("%02d" % (float(base * row) * 100 / float(base * side)) + "%", end=' ')
             for col in range(base):
                 # print "(", row, ",", col, ")"
                 lat=self.exact_rounding(top-(ver_resolution*row)-(ver_resolution/2), self.NUM_DIGITS_FILENAME)

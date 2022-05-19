@@ -90,7 +90,7 @@ class OutputUtil:
             file_not_found = os.path.join(directory, filename_pattern % (lat, lon))
             raise Exception("The output file '%s' does not exists" % file_not_found)
         filename = filename_pattern % (lat, lon)
-        print
+        print()
         "File '%s', taken as replace of '%s'" % (filename, filename_pattern % (estimated_lat, estimated_lon))
         return filename
 

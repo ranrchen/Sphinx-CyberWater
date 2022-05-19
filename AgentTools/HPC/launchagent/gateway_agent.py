@@ -55,7 +55,7 @@ def get_supported_sites():
     f = open(siteFile)
     site_dict = json.load(f)["gateway_agent"]["sites"]
     f.close()
-    return [ x.encode('UTF8') for x in site_dict.keys() ]
+    return [ x.encode('UTF8') for x in list(site_dict.keys()) ]
 
 def _dos2unix(infile, outfile):
     # replacement strings
@@ -93,7 +93,7 @@ class GatewayAgent():
 
         """
 
-        print("Initializing ssh-agent, version=" +  version.__version__)
+        print(("Initializing ssh-agent, version=" +  version.__version__))
 
         self.exp_config = {}
         lib_dir = path.dirname(path.abspath(__file__))
@@ -101,7 +101,7 @@ class GatewayAgent():
         if not os.path.exists(temp_dir):
             os.makedirs(temp_dir)
 
-        print('libdir' + lib_dir +',file:', __file__)
+        print(('libdir' + lib_dir +',file:', __file__))
         siteFile = path.join(lib_dir,"resources", "site_dict.json")
         with open(siteFile) as f:
             gateway_conf = json.load(f)["gateway_agent"]
@@ -117,14 +117,14 @@ class GatewayAgent():
         configFile = path.join(lib_dir, "resources", "settings-feng.ini")
 
         self.user_name = gateway_username
-        print("Using username (" + self.user_name + ') for ssh session')
+        print(("Using username (" + self.user_name + ') for ssh session'))
 
         password = gateway_passwd
         self.gateway_resource = self.site_dict[site_name] 
 
         authenticator = Authenticator(configFile)
 
-        print("Using configure file at:", configFile)
+        print(("Using configure file at:", configFile))
         token = authenticator.get_token_and_user_info_password_flow(username=self.user_name, password=password,
                                                                     gateway_id=self.gateway_id)
 
@@ -163,8 +163,8 @@ class GatewayAgent():
 
         self.experiment_time_str=datetime.now().strftime("%Y%m%d-%H%M")
 
-        print(_print_header, " experiment ", exp_name, "input folder will be copied to ", self.exp_input_path)
-        print(_print_header, " execution_id: %s" % (executionId) )
+        print((_print_header, " experiment ", exp_name, "input folder will be copied to ", self.exp_input_path))
+        print((_print_header, " execution_id: %s" % (executionId) ))
         #print(_print_header,  "results from hpc  will be copied to ", self.exp_input_path)
 
     
@@ -182,7 +182,7 @@ class GatewayAgent():
         self.exp_config['ntasks_per_node'] = ntasks_per_node 
         self.exp_config['walltime_in_mins'] = walltime_in_mins 
         self.exp_config['email'] = email 
-        print("Agent configured:", self.exp_config)
+        print(("Agent configured:", self.exp_config))
 
     def run_monitor_job(self):
         """ Submit the experiment and wait until it finishes
@@ -234,7 +234,7 @@ class GatewayAgent():
         computation_resource_name= self.gateway_resource["url"]
         queue_name = self.gateway_resource["queue_name"] 
 
-        print("Using group_reource profile:" + group_resource_profile_name + ", with resource name:" + computation_resource_name)
+        print(("Using group_reource profile:" + group_resource_profile_name + ", with resource name:" + computation_resource_name))
         experiment = data_model_client.configure_computation_resource_scheduling(experiment_model=experiment,
                                                                                 computation_resource_name=computation_resource_name,
                                                                                 group_resource_profile_name=group_resource_profile_name,
@@ -254,7 +254,7 @@ class GatewayAgent():
                                                             input_file_name=input_file_name,
                                                             uploaded_storage_path=remotepath)
 
-            print("registering uri:", data_uri)
+            print(("registering uri:", data_uri))
             input_files.append(data_uri)
 
         experiment = data_model_client.configure_input_and_outputs(experiment, input_files=input_files,
@@ -269,13 +269,13 @@ class GatewayAgent():
         status = api_server_client.get_experiment_status(token, ex_id);
 
         if status is not None:
-            print("Initial state: " + good_status_dict[status.state])
+            print(("Initial state: " + good_status_dict[status.state]))
 
         while status.state in good_status_dict and status.state <= 6:
             status = api_server_client.get_experiment_status(token,
                                                             ex_id);
             time.sleep(15)
-            print("Current State: %s" % (good_status_dict[status.state]))
+            print(("Current State: %s" % (good_status_dict[status.state])))
         
         if status.state in bad_status_dict:
             raise RuntimeError('Experiment get bad status %d: %s' %(status.state, bad_status_dict[status.state]))
@@ -289,7 +289,7 @@ class GatewayAgent():
 
         # this will save results to localdirpath/YYYYMMDD-HHMM
         sftp_connector.download_files(localdirpath.replace('\\','/'), "Default_Project", experiment_remote_path_str)
-        print(_print_header, "Downloading tarball of remote working directory and logs, saved to:", path.join(self.localdirpath, self.experiment_time_str))
+        print((_print_header, "Downloading tarball of remote working directory and logs, saved to:", path.join(self.localdirpath, self.experiment_time_str)))
     
     def upload_folder(self, inputpath):
         """ Upload local folder to remote working directory
@@ -319,4 +319,4 @@ class GatewayAgent():
         tarball = zipfile.ZipFile(archivefile, 'r')
         tarball.extractall(outputpath)
         tarball.close()
-        print(_print_header, "extract results from tarball to ", outputpath)
+        print((_print_header, "extract results from tarball to ", outputpath))

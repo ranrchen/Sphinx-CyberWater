@@ -170,7 +170,7 @@ class RunModuleAgent(Module, NotCacheable):
         cached_result = self.taskCache.get_task_cached_result_dataset_names_by_port(input_identification)  # TODO Figure out a better way to cache info
 
         if cached_result is not None:
-            print("cached_result", cached_result)
+            print(("cached_result", cached_result))
             # return cached_result[]
             for i in range(1, len(cached_result) + 1):
                 temp = 'Output%02d' % (i)
@@ -183,12 +183,12 @@ class RunModuleAgent(Module, NotCacheable):
                 results_full_path = files_dir
             if os.path.exists(results_full_path):
                 shutil.rmtree(results_full_path)
-            os.makedirs(results_full_path, mode=0777)
+            os.makedirs(results_full_path, mode=0o777)
 
             # Execute the executable
             exe_result = -1
             iter = 0
-            print ("EXECUTING:", exe + ' ' + arg, files_dir)
+            print(("EXECUTING:", exe + ' ' + arg, files_dir))
             while exe_result < 0:
                 iter += 1
                 exe_result = subprocess.call(exe + ' ' + arg, shell=True, stdout=None, stderr=None, cwd=files_dir)
@@ -204,11 +204,11 @@ class RunModuleAgent(Module, NotCacheable):
                 dst =  os.path.join(final_state_dir, final_state_name)
                 shutil.copy(state_file_path, dst)
 
-            print("Preparing outputs:",)
+            print(("Preparing outputs:",))
             output_folder = os.path.join(files_dir, results_directory)
             module_name = self.__class__.__name__
             outputs,ret = output.save_outputs(output_folder, self.Output_name, self.Position_list, file_name, input_identification, point_output, separator, number_of_header_lines, module_name, ret,dd)
-            print ("outputs", outputs)
+            print(("outputs", outputs))
             for i in range(1,len(outputs)+1):
                 temp = 'Output%02d'%(i)
                 self.set_output(temp, ret[i-1])

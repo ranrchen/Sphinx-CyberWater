@@ -22,7 +22,7 @@ class StatusManager(object):
                 try:
                     self._job_stat = json.load(f)
                 except ValueError:
-                    print("ERROR: StateFile %s corrupted or empty, delete it!" % db_file_path)
+                    print(("ERROR: StateFile %s corrupted or empty, delete it!" % db_file_path))
                     raise
                     
         else:
