@@ -15,7 +15,7 @@ autodoc_mock_imports = ['vistrails','vistrails_helpers','msm_core','numpy','buil
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('/home/docs/checkouts/readthedocs.org/user_builds/sphinx-cyberwater/checkouts/v1.0.5/'))
+sys.path.insert(0, os.path.abspath('./..'))
 
 # -- Project information -----------------------------------------------------
 
