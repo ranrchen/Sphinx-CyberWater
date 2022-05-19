@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgentTools.GenericModelAgent.ForcingDataFileGenerator &mdash; GenericModelAgentToolkits  documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../AgentTools.html" class="icon icon-home"> GenericModelAgentToolkits
+          </a>
+              <div class="version">
+                Alpha version
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../AgentTools.GenericModelAgent.html">AgentTools.GenericModelAgent package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../AgentTools.HPC.html">AgentTools.HPC package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../AgentTools.util.html">AgentTools.util package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../AgentTools.html">GenericModelAgentToolkits</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../AgentTools.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>AgentTools.GenericModelAgent.ForcingDataFileGenerator</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for AgentTools.GenericModelAgent.ForcingDataFileGenerator</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__builtin__</span> <span class="kn">import</span> <span class="nb">sorted</span>
+<span class="kn">from</span> <span class="nn">vistrails.core.modules.vistrails_module</span> <span class="kn">import</span> <span class="n">Module</span><span class="p">,</span> <span class="n">ModuleError</span>
+<span class="kn">from</span> <span class="nn">vistrails_helpers.utils.vistrail_types</span> <span class="kn">import</span> <span class="n">STRING_TYPE</span><span class="p">,</span> <span class="n">VARIANT_TYPE</span><span class="p">,</span> <span class="n">BOOLEAN_TYPE</span>
+<span class="kn">from</span> <span class="nn">vistrails.core.modules.basic_modules</span> <span class="kn">import</span> <span class="n">String</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">File</span>
+<span class="kn">from</span> <span class="nn">msm_core.msm_dao.helper.dao_dataset</span> <span class="kn">import</span> <span class="n">DaoDataSet</span>
+<span class="kn">from</span> <span class="nn">vistrails.core.modules.module_registry</span> <span class="kn">import</span> <span class="n">get_module_registry</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">join</span>
+<span class="kn">from</span> <span class="nn">vistrails.core.modules.config</span> <span class="kn">import</span> <span class="n">IPort</span><span class="p">,</span> <span class="n">CIPort</span>
+<span class="kn">from</span> <span class="nn">util.DocumentUtil</span> <span class="kn">import</span> <span class="n">DocumentUtil</span>
+
+<div class="viewcode-block" id="ForcingDataFileGenerator"><a class="viewcode-back" href="../../../AgentTools.GenericModelAgent.html#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator">[docs]</a><span class="k">class</span> <span class="nc">ForcingDataFileGenerator</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ForcingDataFileGenerator Organizes the forcing data brought by the MainGenerator. </span>
+<span class="sd">    The user should be aware of the expected format of the forcing data for their model.</span>
+<span class="sd">    By default, this module creates forcing data in a folder names &#39;Forcing&#39;. Such forcing data is </span>
+<span class="sd">    always created as timeseries where different columns hold different variables, ie: </span>
+
+<span class="sd">            ``(Precipitation_t0 | Temerature_t0 | Wind_t0, etc)``</span>
+
+<span class="sd">            ``(Precipitation_t1 | Temerature_t1 | Wind_t1, etc)``</span>
+
+<span class="sd">            ``(Precipitation_t2 | Temerature_t2 | Wind_t2, etc)``</span>
+
+<span class="sd">            ``(Precipitation_t3 | Temerature_t3 | Wind_t3, etc)``</span>
+
+<span class="sd">    and the data is divided in different files, were each one represents a single cell of the forcing inputs. </span>
+<span class="sd">    So, a 2 by 2 (2x2) model will generate 4 files, each one with the full timeseries of the forcing data.</span>
+
+<span class="sd">    :Input Ports:</span>
+<span class="sd">        - **WD_Path:** This is the working folder provided by the MainGenerator module.</span>
+<span class="sd">        - **DataSet_Class:** This is the dataset information provided by the MainGenerator module.</span>
+<span class="sd">        - **Forcing_Folder_Name:** **[Optional]** Name of the subfolder where the forcing info will be stored. The default value is *Forcing*.</span>
+<span class="sd">        - **Forcing_File_Prefix:** **[Optional]** Prefix for the name of the forcing files. The default value is *data*.</span>
+<span class="sd">        - **Date_Label_Format:** **[Optional]** Format taken for the dates of the first column.(i.e 05/16/1997-05:30:00 can be expressed as %m/%d/%YYYY-%H:%M:%S ), \</span>
+<span class="sd">        The default value is `None`, which means the files will not have dates. For more information about python date formats go to https://strftime.org/</span>
+<span class="sd">        - **Subrange:** **[Optional]** Subset of the dataset by giving the boundary limitation including x_min, x_max, y_min, y_max.</span>
+<span class="sd">        - **Mask_File:** **[Optional]** Mask file for generating specific forcing data files, there are two types of mask files, which are inclusive and exclusive.\</span>
+<span class="sd">        In the mask file, it records the latitude and longitude of the cell each line, and for inclusive mask file, the ForcingDataFileGenerator module will only\</span>
+<span class="sd">        yield the forcing data files of the certain cell given in mask file. and in reverse, the exclusive mask file provided to create the forcing data files of the cells which is excluded in the mask file.\</span>
+<span class="sd">        The format of the mask file, should be ``latitude,longitude`` each line, and user can make comment freely in any other line.</span>
+
+<span class="sd">    :Output Ports:</span>
+<span class="sd">        - **Ready:** Starting flag for RunModuleAgent. The value is either *True* or *False*.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_input_ports</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="p">(</span><span class="s1">&#39;Forcing_Folder_Name&#39;</span><span class="p">,</span> <span class="n">STRING_TYPE</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;optional&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+                    <span class="n">IPort</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Forcing_File_Prefix&quot;</span><span class="p">,</span> <span class="n">signature</span><span class="o">=</span><span class="s2">&quot;basic:String&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+                    <span class="n">IPort</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Date_Label_Format&quot;</span><span class="p">,</span> <span class="n">signature</span><span class="o">=</span><span class="s2">&quot;basic:String&quot;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="c1">#Examples: MM/DD/YYYY-HH</span>
+                    <span class="n">CIPort</span><span class="p">(</span><span class="s2">&quot;Subrange&quot;</span><span class="p">,[</span><span class="n">Float</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Float</span><span class="p">],</span><span class="n">optional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;**x_min&lt;/b&gt;&quot;</span><span class="p">,</span><span class="s2">&quot;**x_max&lt;/b&gt;&quot;</span><span class="p">,</span><span class="s2">&quot;**y_min&lt;/b&gt;&quot;</span><span class="p">,</span><span class="s2">&quot;**y_max&lt;/b&gt;&quot;</span><span class="p">]),</span>
+                    <span class="n">CIPort</span><span class="p">(</span><span class="s2">&quot;Mask_File&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">String</span><span class="p">,</span> <span class="n">File</span><span class="p">],</span> <span class="n">entry_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;enum&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span><span class="n">optional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;**Type&lt;/b&gt;&quot;</span><span class="p">,</span><span class="s2">&quot;**Path&lt;/b&gt;&quot;</span><span class="p">],</span><span class="n">values</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="s2">&quot;Exclusive&quot;</span><span class="p">,</span><span class="s2">&quot;Inclusive&quot;</span><span class="p">],</span><span class="kc">None</span><span class="p">],</span><span class="n">defaults</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">]),</span>
+                    <span class="p">(</span><span class="s1">&#39;WD_Path&#39;</span><span class="p">,</span> <span class="n">VARIANT_TYPE</span><span class="p">),</span>
+                    <span class="p">(</span><span class="s1">&#39;DataSet_Class&#39;</span><span class="p">,</span> <span class="n">VARIANT_TYPE</span><span class="p">)]</span>
+    <span class="n">_output_ports</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;Ready&#39;</span><span class="p">,</span> <span class="n">BOOLEAN_TYPE</span><span class="p">)]</span>
+   
+    <span class="n">NUM_DIGITS_FILENAME</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">WRITE_EMPTY_VALUE</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">subrange</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">mask_type</span><span class="p">,</span> <span class="n">mask_path</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+
+<div class="viewcode-block" id="ForcingDataFileGenerator.compute"><a class="viewcode-back" href="../../../AgentTools.GenericModelAgent.html#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.compute">[docs]</a>    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The main function of ForcingDataFileGenerator module is to organize the forcing data brought by the MainGenerator module</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Getting Inputs -----------------------------------------------------------------------------------------------</span>
+        <span class="n">files_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_get_input</span><span class="p">(</span><span class="s2">&quot;WD_Path&quot;</span><span class="p">)</span>
+        <span class="n">DataSet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_get_input</span><span class="p">(</span><span class="s2">&quot;DataSet_Class&quot;</span><span class="p">)</span>
+        <span class="n">file_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_get_input</span><span class="p">(</span><span class="s2">&quot;Forcing_File_Prefix&quot;</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
+        <span class="n">forcing_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">force_get_input</span><span class="p">(</span><span class="s2">&quot;Forcing_Folder_Name&quot;</span><span class="p">)</span>
+        <span class="n">date_label_format</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_get_input</span><span class="p">(</span><span class="s2">&quot;Date_Label_Format&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subrange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_get_input</span><span class="p">(</span><span class="s2">&quot;Subrange&quot;</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_get_input</span><span class="p">(</span><span class="s2">&quot;Mask_File&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mask</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mask_type</span> <span class="o">=</span> <span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mask_path</span> <span class="o">=</span> <span class="n">mask</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="c1"># Checking Inputs and provide defaults</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dd</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">files_dir</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">files_dir</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;WD_Path is empty or undefined.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">DataSet</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">DataSet</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;DataSet_Class is empty or undefined.&quot;</span><span class="p">)</span>
+        <span class="c1">#print(&quot; ===== DataSet_Class&quot;, DataSet, type(DataSet))</span>
+        <span class="k">if</span> <span class="n">file_name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="n">file_name</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span> <span class="n">file_name</span> <span class="o">=</span> <span class="s1">&#39;data&#39;</span>
+        <span class="k">if</span> <span class="n">forcing_dir</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="n">forcing_dir</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span> <span class="n">forcing_dir</span> <span class="o">=</span> <span class="s1">&#39;Forcing&#39;</span>
+        <span class="k">if</span> <span class="n">date_label_format</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="n">date_label_format</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span> <span class="n">date_label_format</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_dimensions</span><span class="p">(</span><span class="n">DataSet</span><span class="p">)</span>
+        <span class="c1"># remove exist dir</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">files_dir</span><span class="p">,</span><span class="n">forcing_dir</span><span class="p">),</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;Could not delete the folders&quot;</span>
+            <span class="k">raise</span> <span class="n">e</span>
+        <span class="c1"># Start Computing ----------------------------------------------------------------------------------------------</span>
+        <span class="nb">print</span> <span class="s2">&quot;files, generating&quot;</span>
+        <span class="n">ready_sign</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">DataSet</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> <span class="n">DataSet</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">files_dir</span><span class="p">,</span><span class="n">forcing_dir</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="mi">0777</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">prepare_forcing</span><span class="p">(</span><span class="n">forcing_dir_prefix</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="n">files_dir</span><span class="p">,</span><span class="n">forcing_dir</span><span class="p">,</span><span class="n">file_name</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="n">DataSet</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="n">date_label_format</span><span class="p">)</span>
+            <span class="n">ready_sign</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;DataSet_Class port is empty&quot;</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;DataSet_Class port is empty&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_output</span><span class="p">(</span><span class="s2">&quot;Ready&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">ready_sign</span><span class="p">))</span></div>
+<div class="viewcode-block" id="ForcingDataFileGenerator.exact_rounding"><a class="viewcode-back" href="../../../AgentTools.GenericModelAgent.html#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.exact_rounding">[docs]</a>    <span class="k">def</span> <span class="nf">exact_rounding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">decimals</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This Function is to return a floating point number that is a rounded version of the specified number, with the specified number of decimals</span>
+
+<span class="sd">        @param number: The number to be rounded</span>
+<span class="sd">        @type number: float</span>
+<span class="sd">        @param decimals: The number of decimals to use when rounding the number.</span>
+<span class="sd">        @type decimals: int</span>
+<span class="sd">        @return: The rounded number</span>
+<span class="sd">        @rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">power</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">decimals</span><span class="p">)</span>
+        <span class="n">exactRounding</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">number</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exactRounding</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">number</span><span class="o">*</span><span class="n">power</span><span class="p">)</span> <span class="o">/</span> <span class="n">power</span>
+        <span class="k">return</span> <span class="n">exactRounding</span></div>
+<div class="viewcode-block" id="ForcingDataFileGenerator.change_forcing_name"><a class="viewcode-back" href="../../../AgentTools.GenericModelAgent.html#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.change_forcing_name">[docs]</a>    <span class="k">def</span> <span class="nf">change_forcing_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function is to change the name of files in the given folder</span>
+
+<span class="sd">        @param folder: The path of the folder</span>
+<span class="sd">        @type folder: str</span>
+<span class="sd">        @param file_name: The prefix of the file needed adding or the new file name needed changing</span>
+<span class="sd">        @type file_name: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filelist</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">filelist</span><span class="p">:</span>
+            <span class="n">Olddir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">files</span><span class="p">)</span>
+            <span class="n">file</span> <span class="o">=</span> <span class="n">files</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+            <span class="n">Newdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">file_name</span><span class="o">+</span><span class="s2">&quot;_&quot;</span><span class="o">+</span><span class="n">file</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;_&quot;</span><span class="o">+</span><span class="n">file</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">Olddir</span><span class="p">,</span> <span class="n">Newdir</span><span class="p">)</span></div>
+
+
+    <span class="c1"># user_inputs = DataSet_class (list with the names of the datasets)</span>
+<div class="viewcode-block" id="ForcingDataFileGenerator.save_forcing"><a class="viewcode-back" href="../../../AgentTools.GenericModelAgent.html#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.save_forcing">[docs]</a>    <span class="k">def</span> <span class="nf">save_forcing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">user_inputs</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">date_format</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function is to build a unique file with all the forcing information of a cell</span>
+
+<span class="sd">        @param filename: The name of the file</span>
+<span class="sd">        @type filename: str</span>
+<span class="sd">        @param user_inputs: The names of the integrated forcing dataset</span>
+<span class="sd">        @type user_inputs: str</span>
+<span class="sd">        @param row: The row index of the 2D-forcing dataset</span>
+<span class="sd">        @type row: int</span>
+<span class="sd">        @param col: The column index of the 2D-forcing dataset</span>
+<span class="sd">        @type col: int</span>
+<span class="sd">        @param date_format: The format taken for the dates of the first column</span>
+<span class="sd">        @type date_format: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dd</span><span class="o">.</span><span class="n">timeini_datetime</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">dd</span><span class="o">.</span><span class="n">timeend_datetime</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No time range detected&quot;</span><span class="p">)</span>
+        <span class="n">dataset_class_dict</span><span class="o">=</span><span class="n">user_inputs</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset_class_dict</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">the_series</span><span class="o">=</span><span class="p">[]</span>
+            <span class="n">n_of_empty_rows</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">dataset_id</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">dataset_class_dict</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">dataset_class_dict</span><span class="p">[</span><span class="n">dataset_id</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">tmp_series</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_time_series</span><span class="p">(</span><span class="n">dataset_name</span><span class="o">=</span><span class="n">dataset_class_dict</span><span class="p">[</span><span class="n">dataset_id</span><span class="p">],</span>
+                                                    <span class="n">time_ini</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dd</span><span class="o">.</span><span class="n">timeini_datetime</span><span class="p">,</span> \
+                                                    <span class="n">time_end</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dd</span><span class="o">.</span><span class="n">timeend_datetime</span><span class="p">,</span> \
+                                                    <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="n">col</span><span class="p">,</span> <span class="n">empty_value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">WRITE_EMPTY_VALUE</span><span class="p">)</span>
+
+                    <span class="c1"># Remove nan values and replace them with zeros.</span>
+                    <span class="n">tmp_series_numpy</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">tmp_series</span><span class="p">)</span>
+                    <span class="n">tmp_series_numpy</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">tmp_series_numpy</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">tmp_series</span> <span class="o">=</span> <span class="n">tmp_series_numpy</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                    <span class="n">the_series</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp_series</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">n_of_empty_rows</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">n_of_empty_rows</span><span class="p">):</span>
+                <span class="n">empty_series</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tmp_series</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="n">the_series</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">empty_series</span><span class="p">)</span>
+
+            <span class="n">ff</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s2">&quot;w&quot;</span><span class="p">)</span>
+            <span class="n">timeStep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dd</span><span class="o">.</span><span class="n">compute_uniform_step</span><span class="p">()</span>
+            <span class="c1"># print the_series</span>
+            <span class="k">for</span> <span class="n">value_pos</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">the_series</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+                <span class="n">current_date</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dd</span><span class="o">.</span><span class="n">timeini_datetime</span><span class="o">+</span><span class="n">timeStep</span><span class="o">*</span><span class="n">value_pos</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="k">if</span> <span class="n">date_format</span> <span class="ow">is</span> <span class="ow">not</span>  <span class="kc">None</span><span class="p">:</span> <span class="n">line</span> <span class="o">=</span> <span class="n">current_date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">date_format</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="c1">#current_date.strftime(&quot;%m/%d/%Y-%H.%M.%S\t&quot;)</span>
+                <span class="k">for</span> <span class="n">the_serie</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">the_series</span><span class="p">)):</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">the_series</span><span class="p">[</span><span class="n">the_serie</span><span class="p">][</span><span class="n">value_pos</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="n">ff</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">ff</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ForcingDataFileGenerator.prepare_forcing"><a class="viewcode-back" href="../../../AgentTools.GenericModelAgent.html#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.prepare_forcing">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_forcing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">forcing_dir_prefix</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">date_format</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This Function is to prepare forcing dataset</span>
+
+<span class="sd">        @param forcing_dir_prefix: The prefix of the forcing data directory</span>
+<span class="sd">        @type forcing_dir_prefix: str</span>
+<span class="sd">        @param inputs: The names of the integrated forcing dataset</span>
+<span class="sd">        @type inputs: str</span>
+<span class="sd">        @param date_format: The format taken for the dates of the first column</span>
+<span class="sd">        @type date_format: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">side</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dd</span><span class="o">.</span><span class="n">side</span>
+        <span class="n">base</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dd</span><span class="o">.</span><span class="n">base</span>
+        <span class="n">hor_resolution</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dd</span><span class="o">.</span><span class="n">get_resolution_hor</span><span class="p">()</span>
+        <span class="n">ver_resolution</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dd</span><span class="o">.</span><span class="n">get_resolution_ver</span><span class="p">()</span>
+        <span class="n">left</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dd</span><span class="o">.</span><span class="n">left</span>
+        <span class="n">top</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dd</span><span class="o">.</span><span class="n">top</span>
+        
+        <span class="nb">print</span> <span class="n">side</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span>
+
+        <span class="c1">#Data for use later in save_outputs</span>
+        <span class="nb">print</span> <span class="s2">&quot;saving-forcing-timeseries pixel:&quot;</span><span class="p">,</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">side</span><span class="p">):</span>
+            <span class="nb">print</span> <span class="s2">&quot;</span><span class="si">%02d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">base</span> <span class="o">*</span> <span class="n">row</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">base</span> <span class="o">*</span> <span class="n">side</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;%&quot;</span><span class="p">,</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">base</span><span class="p">):</span>
+                <span class="c1"># print &quot;(&quot;, row, &quot;,&quot;, col, &quot;)&quot;</span>
+                <span class="n">lat</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">exact_rounding</span><span class="p">(</span><span class="n">top</span><span class="o">-</span><span class="p">(</span><span class="n">ver_resolution</span><span class="o">*</span><span class="n">row</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="n">ver_resolution</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">NUM_DIGITS_FILENAME</span><span class="p">)</span>
+                <span class="n">lon</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">exact_rounding</span><span class="p">(</span><span class="n">left</span><span class="o">+</span><span class="p">(</span><span class="n">hor_resolution</span><span class="o">*</span><span class="n">col</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="n">hor_resolution</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">NUM_DIGITS_FILENAME</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_subrange</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">):</span>
+                    <span class="n">tmp_filename</span><span class="o">=</span><span class="s2">&quot;%.&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NUM_DIGITS_FILENAME</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;f_%.&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NUM_DIGITS_FILENAME</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;f&quot;</span>
+                    <span class="n">forcing_filename</span> <span class="o">=</span> <span class="n">forcing_dir_prefix</span> <span class="o">+</span> <span class="n">tmp_filename</span><span class="o">%</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">save_forcing</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">forcing_filename</span><span class="p">,</span> <span class="n">user_inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="n">col</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="n">date_format</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ForcingDataFileGenerator.check_subrange"><a class="viewcode-back" href="../../../AgentTools.GenericModelAgent.html#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.check_subrange">[docs]</a>    <span class="k">def</span> <span class="nf">check_subrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This Function is to check whether the targeted cell is included in the sub-range</span>
+
+<span class="sd">        @param lat: The latitude of the targeted cell</span>
+<span class="sd">        @type lat: float</span>
+<span class="sd">        @param lon: The longitude of the targeted cell</span>
+<span class="sd">        @type lon: float</span>
+<span class="sd">        @return: return the result of a boolean value on whether the targeted cell is included in the sub-range</span>
+<span class="sd">        @rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">subrange</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subrange</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">lat</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subrange</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">subrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">lon</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subrange</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_mask</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="ForcingDataFileGenerator.check_mask"><a class="viewcode-back" href="../../../AgentTools.GenericModelAgent.html#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.check_mask">[docs]</a>    <span class="k">def</span> <span class="nf">check_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This Function is to check whether the targeted cell is included in the mask</span>
+
+<span class="sd">        @param lat: The latitude of the targeted cell</span>
+<span class="sd">        @type lat: float</span>
+<span class="sd">        @param lon: The longitude of the targeted cell</span>
+<span class="sd">        @type lon: float</span>
+<span class="sd">        @return: return the result of a boolean value on whether the targeted cell is included in the mask</span>
+<span class="sd">        @rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_type</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="n">mask_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="n">mask_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">mask_file</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">mask_lat</span><span class="p">,</span> <span class="n">mask_lon</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+                <span class="n">mask_lat</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">mask_lat</span><span class="p">)</span>
+                <span class="n">mask_lon</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">mask_lon</span><span class="p">)</span>
+                <span class="n">mask_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">mask_lat</span><span class="p">,</span> <span class="n">mask_lon</span><span class="p">])</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">continue</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_type</span> <span class="o">==</span> <span class="s2">&quot;Exclusive&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="ow">not</span> <span class="p">[</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">]</span> <span class="ow">in</span> <span class="n">mask_list</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">]</span> <span class="ow">in</span> <span class="n">mask_list</span></div>
+
+<div class="viewcode-block" id="ForcingDataFileGenerator.check_dimensions_var"><a class="viewcode-back" href="../../../AgentTools.GenericModelAgent.html#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.check_dimensions_var">[docs]</a>    <span class="k">def</span> <span class="nf">check_dimensions_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">,</span> <span class="n">input_name</span><span class="p">,</span> <span class="n">check_space</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">check_time</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This Function is to initialize and update detected dimensions</span>
+
+<span class="sd">        @param dataset_name: The name of the integrated dataset</span>
+<span class="sd">        @type dataset_name: str</span>
+<span class="sd">        @param input_name: The id of the integrated dataset</span>
+<span class="sd">        @param check_space: The parameter on whether the space variable exists, default value is True</span>
+<span class="sd">        @type check_space: bool</span>
+<span class="sd">        @param check_time: The parameter on whether the time variable exists, default value is True</span>
+<span class="sd">        @type check_time: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">dataset_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="n">dataset_name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;dataset_name must be not empty string&quot;</span><span class="p">)</span>
+        
+        <span class="n">dds</span> <span class="o">=</span> <span class="n">DaoDataSet</span><span class="p">()</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">)</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">compute_uniform_step</span><span class="p">()</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">compute_timeend</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">dd</span> <span class="o">=</span> <span class="n">dataset</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">check_space</span><span class="p">:</span>
+                <span class="n">dataset</span><span class="o">.</span><span class="n">equals_space</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dd</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">check_time</span><span class="p">:</span>
+                <span class="n">dataset</span><span class="o">.</span><span class="n">equals_time</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dd</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ForcingDataFileGenerator.check_dimensions"><a class="viewcode-back" href="../../../AgentTools.GenericModelAgent.html#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.check_dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">check_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_class</span><span class="p">,</span> <span class="n">check_space</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">check_time</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This Function is to check the detected dimension of the dataset</span>
+
+<span class="sd">        @param dataset_class: The name of the integrated dataset</span>
+<span class="sd">        @type dataset_class: str</span>
+<span class="sd">        @param check_space: The parameter on whether the space variable exists, default value is True</span>
+<span class="sd">        @type check_space: bool</span>
+<span class="sd">        @param check_time: The parameter on whether the time variable exists, default value is True</span>
+<span class="sd">        @type check_time: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialize_dimensions</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">dataset_id</span> <span class="ow">in</span> <span class="n">dataset_class</span><span class="p">:</span>
+            <span class="n">dataset_name</span><span class="o">=</span><span class="n">dataset_class</span><span class="p">[</span><span class="n">dataset_id</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">dataset_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="n">dataset_name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING: Some Datasets are empty&quot;</span><span class="p">)</span>
+                <span class="c1">#raise Exception(&quot;dataset_name in user_inputs was None. user_inputs:%s&quot;%(str(dataset_class)))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">check_dimensions_var</span><span class="p">(</span><span class="n">dataset_name</span><span class="o">=</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">input_name</span><span class="o">=</span><span class="n">dataset_id</span><span class="p">,</span>
+                                      <span class="n">check_space</span><span class="o">=</span><span class="n">check_space</span><span class="p">,</span> <span class="n">check_time</span><span class="o">=</span><span class="n">check_time</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ForcingDataFileGenerator.initialize_dimensions"><a class="viewcode-back" href="../../../AgentTools.GenericModelAgent.html#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.initialize_dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This Function is to initialize the detected dimensions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dd</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="ForcingDataFileGenerator.get_time_series"><a class="viewcode-back" href="../../../AgentTools.GenericModelAgent.html#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.get_time_series">[docs]</a>    <span class="k">def</span> <span class="nf">get_time_series</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">,</span> <span class="n">time_ini</span><span class="p">,</span> <span class="n">time_end</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">empty_value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This Function is to obtain the time-series of the targeted dataset</span>
+
+<span class="sd">        @param dataset_name: The name of the integrated dataset</span>
+<span class="sd">        @type dataset_name: str</span>
+<span class="sd">        @param time_ini: The initial time of the dataset</span>
+<span class="sd">        @type time_ini: datetime</span>
+<span class="sd">        @param time_end: The ending time of the dataset</span>
+<span class="sd">        @type time_end: datetime</span>
+<span class="sd">        @param row: The row number of the dataset</span>
+<span class="sd">        @type row: int</span>
+<span class="sd">        @param col: The column number of the dataset</span>
+<span class="sd">        @type col: int</span>
+<span class="sd">        @param empty_value: The value to replace when the element in dataset is NAN, the default value is None</span>
+<span class="sd">        @type empty_value: str</span>
+<span class="sd">        @return: The list of the time-series of the dataset</span>
+<span class="sd">        @rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dds</span><span class="o">=</span><span class="n">DaoDataSet</span><span class="p">()</span>
+        <span class="n">dataset</span><span class="o">=</span><span class="n">dds</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dataset</span><span class="o">.</span><span class="n">get_time_series</span><span class="p">(</span><span class="n">time_ini</span><span class="p">,</span> <span class="n">time_end</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">empty_value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ForcingDataFileGenerator.get_documentation"><a class="viewcode-back" href="../../../AgentTools.GenericModelAgent.html#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.get_documentation">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_documentation</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">docstring</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function is to get the documentation of ForcingDataFileGenerator module</span>
+
+<span class="sd">        @param docstring: A string used to document a ForcingDataFileGenerator module</span>
+<span class="sd">        @param module: ForcingDataFileGenerator module</span>
+<span class="sd">        @return: A invoked function from package DocumentUtil to get documentation of ForcingDataFileGenerator module</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">module_name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;__module__&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">DocumentUtil</span><span class="o">.</span><span class="n">get_documentation</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="initialize"><a class="viewcode-back" href="../../../AgentTools.GenericModelAgent.html#AgentTools.GenericModelAgent.ForcingDataFileGenerator.initialize">[docs]</a><span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function is to initialize the ForcingDataFileGenerator module</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">reg</span> <span class="o">=</span> <span class="n">get_module_registry</span><span class="p">()</span>
+    <span class="n">reg</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="n">ForcingDataFileGenerator</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, CyberWater.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

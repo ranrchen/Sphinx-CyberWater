@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgentTools.util.OutputUtil &mdash; GenericModelAgentToolkits  documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../AgentTools.html" class="icon icon-home"> GenericModelAgentToolkits
+          </a>
+              <div class="version">
+                Alpha version
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../AgentTools.GenericModelAgent.html">AgentTools.GenericModelAgent package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../AgentTools.HPC.html">AgentTools.HPC package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../AgentTools.util.html">AgentTools.util package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../AgentTools.html">GenericModelAgentToolkits</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../AgentTools.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>AgentTools.util.OutputUtil</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for AgentTools.util.OutputUtil</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">utils.types_utils.FloatUtils</span> <span class="kn">import</span> <span class="n">FloatUtils</span>
+<span class="kn">from</span> <span class="nn">msm_core.msm_srv.task_cache.TaskCache</span> <span class="kn">import</span> <span class="n">TaskCache</span>
+<span class="kn">from</span> <span class="nn">msm_core.msm_dao.helper.dao_dataset</span> <span class="kn">import</span> <span class="n">DaoDataSet</span>
+<span class="kn">from</span> <span class="nn">msm_core.model.DataSet</span> <span class="kn">import</span> <span class="n">DataSet</span>
+<span class="kn">from</span> <span class="nn">msm_core.model.TimeStep</span> <span class="kn">import</span> <span class="n">TimeStep</span>
+<span class="kn">from</span> <span class="nn">msm_core.msm_dao.helper.dataset_cache</span> <span class="kn">import</span> <span class="n">DataSetCache</span>
+<span class="kn">from</span> <span class="nn">msm_core.msm_dao.helper.dao_timestep</span> <span class="kn">import</span> <span class="n">DaoTimeStep</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<div class="viewcode-block" id="OutputUtil"><a class="viewcode-back" href="../../../AgentTools.util.html#AgentTools.util.OutputUtil.OutputUtil">[docs]</a><span class="k">class</span> <span class="nc">OutputUtil</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    OutputUtil class is a utility class to provide relative methods on calculation and saving the forcing dataset for RunModuleAgent and HPC module.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="OutputUtil.exact_rounding"><a class="viewcode-back" href="../../../AgentTools.util.html#AgentTools.util.OutputUtil.OutputUtil.exact_rounding">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">exact_rounding</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">decimals</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This Function is to return a floating point number that is a rounded version of the specified number, with the specified number of decimals</span>
+
+<span class="sd">        @param number: The number to be rounded</span>
+<span class="sd">        @type number: float</span>
+<span class="sd">        @param decimals: The number of decimals to use when rounding the number.</span>
+<span class="sd">        @type decimals: int</span>
+<span class="sd">        @return: The rounded number</span>
+<span class="sd">        @rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">power</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">decimals</span><span class="p">)</span>
+        <span class="n">exactRounding</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">number</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exactRounding</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">number</span> <span class="o">*</span> <span class="n">power</span><span class="p">)</span> <span class="o">/</span> <span class="n">power</span>
+        <span class="k">return</span> <span class="n">exactRounding</span></div>
+
+<div class="viewcode-block" id="OutputUtil.point_distance"><a class="viewcode-back" href="../../../AgentTools.util.html#AgentTools.util.OutputUtil.OutputUtil.point_distance">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">point_distance</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This Function is to calculate the distance between two points (x1,y1) and (x2,y2)</span>
+
+<span class="sd">        @param x1: The x coordinate of the point (x1,y1)</span>
+<span class="sd">        @type x1: float</span>
+<span class="sd">        @param x2: The x coordinate of the point (x2,y2)</span>
+<span class="sd">        @type x2: float</span>
+<span class="sd">        @param y1: The y coordinate of the point (x1,y1)</span>
+<span class="sd">        @type y1: float</span>
+<span class="sd">        @param y2: The y coordinate of the point (x2,y2)</span>
+<span class="sd">        @type y2: float</span>
+<span class="sd">        @return: The distance between two points (x1,y1) and (x2,y2)</span>
+<span class="sd">        @rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">pow</span><span class="p">(</span><span class="n">y1</span> <span class="o">-</span> <span class="n">y2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="OutputUtil.search_file_with_closest_lat_lon"><a class="viewcode-back" href="../../../AgentTools.util.html#AgentTools.util.OutputUtil.OutputUtil.search_file_with_closest_lat_lon">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">search_file_with_closest_lat_lon</span><span class="p">(</span><span class="n">estimated_lat</span><span class="p">,</span> <span class="n">estimated_lon</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">filename_pattern</span><span class="p">,</span>
+                                         <span class="n">min_resolution</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function takes an estimation of a latitude and longitude coordinates of a specific cell (in a distributed</span>
+<span class="sd">        output scenario), together with a directory where a list of cells are saved, and returns the name of the file</span>
+<span class="sd">        with the closest coordinates to the given ones. If the resulting coordinate gives a difference superior to the</span>
+<span class="sd">        current resolution, it throws an error.</span>
+
+<span class="sd">        @param estimated_lat: The estimation of a latitude</span>
+<span class="sd">        @type estimated_lat: float</span>
+<span class="sd">        @param estimated_lon: The estimation of a longitude</span>
+<span class="sd">        @type estimated_lon: float</span>
+<span class="sd">        @param directory: The path of directory having a list of cells</span>
+<span class="sd">        @type directory: str</span>
+<span class="sd">        @param filename_pattern: The prefix of the file</span>
+<span class="sd">        @type filename_pattern: str</span>
+<span class="sd">        @param min_resolution: The miminum of reslution</span>
+<span class="sd">        @type min_resolution: int</span>
+<span class="sd">        @return: The name of the file with the closest coordinates to the given ones</span>
+<span class="sd">        @rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">min_dist</span> <span class="o">=</span> <span class="n">min_resolution</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="n">estimated_lat</span>
+        <span class="n">lon</span> <span class="o">=</span> <span class="n">estimated_lon</span>
+        <span class="c1"># Check all the files, one by one, and compare how far away they are from our current position. The closer, the better</span>
+        <span class="n">list_of_files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">list_of_files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">file_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">coords</span> <span class="o">=</span> <span class="n">file_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+                <span class="n">current_distance</span> <span class="o">=</span> <span class="n">OutputUtil</span><span class="o">.</span><span class="n">point_distance</span><span class="p">(</span><span class="n">estimated_lon</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">estimated_lat</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                <span class="k">if</span> <span class="n">current_distance</span> <span class="o">&lt;</span> <span class="n">min_dist</span><span class="p">:</span>
+                    <span class="n">min_dist</span> <span class="o">=</span> <span class="n">current_distance</span>
+                    <span class="n">lat</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="n">lon</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">min_dist</span> <span class="o">==</span> <span class="n">min_resolution</span><span class="p">:</span>
+            <span class="n">file_not_found</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">filename_pattern</span> <span class="o">%</span> <span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;The output file &#39;</span><span class="si">%s</span><span class="s2">&#39; does not exists&quot;</span> <span class="o">%</span> <span class="n">file_not_found</span><span class="p">)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">filename_pattern</span> <span class="o">%</span> <span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
+        <span class="nb">print</span>
+        <span class="s2">&quot;File &#39;</span><span class="si">%s</span><span class="s2">&#39;, taken as replace of &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">filename_pattern</span> <span class="o">%</span> <span class="p">(</span><span class="n">estimated_lat</span><span class="p">,</span> <span class="n">estimated_lon</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">filename</span></div>
+
+<div class="viewcode-block" id="OutputUtil.save_output"><a class="viewcode-back" href="../../../AgentTools.util.html#AgentTools.util.OutputUtil.OutputUtil.save_output">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">save_output</span><span class="p">(</span><span class="n">output_folder</span><span class="p">,</span> <span class="n">file_key</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">file_prefix</span><span class="p">,</span> <span class="n">point_output</span><span class="p">,</span> <span class="n">separator</span><span class="p">,</span>
+                    <span class="n">number_of_header_lines</span><span class="p">,</span> <span class="n">dd</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This Function is to create a dataset and save the result in the dataset as the output.</span>
+
+<span class="sd">        @param output_folder: The path of the folder for output</span>
+<span class="sd">        @type output_folder: str</span>
+<span class="sd">        @param file_key: The name of the output dataset</span>
+<span class="sd">        @type file_key: str</span>
+<span class="sd">        @param var_name: The name of the variable of the dataset</span>
+<span class="sd">        @type var_name: str</span>
+<span class="sd">        @param dataset_name: The name of the input integrated dataset</span>
+<span class="sd">        @type dataset_name: str</span>
+<span class="sd">        @param pos: The position (column index) in the result files for the output dataset</span>
+<span class="sd">        @type pos: int</span>
+<span class="sd">        @param file_prefix: The prefix of the result file</span>
+<span class="sd">        @type file_prefix: str</span>
+<span class="sd">        @param point_output: The boolean value represented whether the output dataset is a single-time-series in a signle file,\</span>
+<span class="sd">        in contrast of a distributed result in multiple files, once per cell. The default value is False.</span>
+<span class="sd">        @type point_output: bool</span>
+<span class="sd">        @param separator: The delimiter in the result file to separate each data filed in result file</span>
+<span class="sd">        @type separator: str</span>
+<span class="sd">        @param number_of_header_lines: The number of the header in the result file to skip</span>
+<span class="sd">        @type number_of_header_lines: int</span>
+<span class="sd">        @param dd: The detected dimensions</span>
+<span class="sd">        @type dd: dict</span>
+<span class="sd">        @return: The created output dataset</span>
+<span class="sd">        @rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">NUM_DIGITS_FILENAME</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># NUM_DIGITS_FILENAME</span>
+        <span class="n">EMPTY_VALUE</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">OutputUtil</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">var_name</span><span class="p">,</span> \
+                                      <span class="n">dd</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">dd</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="n">dd</span><span class="o">.</span><span class="n">top</span><span class="p">,</span> <span class="n">dd</span><span class="o">.</span><span class="n">bottom</span><span class="p">,</span> \
+                                      <span class="n">dd</span><span class="o">.</span><span class="n">side</span><span class="p">,</span> <span class="n">dd</span><span class="o">.</span><span class="n">base</span><span class="p">,</span> \
+                                      <span class="n">dd</span><span class="o">.</span><span class="n">timeini_datetime</span><span class="p">,</span> <span class="n">dd</span><span class="o">.</span><span class="n">timeend_datetime</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> \
+                                      <span class="kc">True</span><span class="p">,</span> <span class="n">dd</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="c1"># print(&quot;dd_datetime (start:%s, end:%s)&quot; % (dd.timeini_datetime, dd.timeend_datetime))</span>
+        <span class="k">if</span> <span class="n">point_output</span><span class="p">:</span>
+            <span class="n">filePath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_folder</span><span class="p">,</span> <span class="n">file_prefix</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filePath</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;The file &lt;</span><span class="si">%s</span><span class="s2">&gt; does not exists&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">filePath</span><span class="p">))</span>
+            <span class="c1"># tableData = numpy.loadtxt(filePath, dtype=&#39;str&#39;, skiprows=number_of_header_lines, delimiter=separator)</span>
+            <span class="n">tableData</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">handler</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filePath</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">handler</span><span class="p">:</span>
+                <span class="n">linelist</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="n">tableData</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">linelist</span><span class="p">)</span>
+            <span class="c1"># if len(tableData.shape) == 1: tableData = numpy.transpose(tableData)</span>
+            <span class="c1"># print(&quot;tableData shape ========&quot;,type(tableData.shape),tableData.shape, len(tableData.shape)), len(tableData)</span>
+            <span class="n">current_time</span> <span class="o">=</span> <span class="n">dd</span><span class="o">.</span><span class="n">timeini_datetime</span>
+            <span class="k">while</span> <span class="n">current_time</span> <span class="o">&lt;=</span> <span class="n">dd</span><span class="o">.</span><span class="n">timeend_datetime</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">current_time</span> <span class="o">-</span> <span class="n">dd</span><span class="o">.</span><span class="n">timeini_datetime</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">/</span> <span class="n">dd</span><span class="o">.</span><span class="n">step</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tableData</span><span class="p">):</span>  <span class="c1"># Our iterator moved beyond the size of the list.</span>
+                    <span class="k">if</span> <span class="n">time_step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;The resulting timeseries should have more than 1 value&quot;</span><span class="p">)</span>
+                    <span class="n">oldData</span> <span class="o">=</span> <span class="n">time_step</span><span class="o">.</span><span class="n">data</span>
+                    <span class="n">time_step</span> <span class="o">=</span> <span class="n">TimeStep</span><span class="p">()</span>
+                    <span class="n">time_step</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">oldData</span>
+                    <span class="n">time_step</span><span class="o">.</span><span class="n">timestep_datetime</span> <span class="o">=</span> <span class="n">current_time</span>
+                    <span class="n">time_step</span><span class="o">.</span><span class="n">last_update</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+                    <span class="n">time_step</span><span class="o">.</span><span class="n">completed</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">dataset</span><span class="o">.</span><span class="n">set_timestep</span><span class="p">(</span><span class="n">time_step</span><span class="p">)</span>
+                    <span class="c1"># TODO: This has to be added because the output is usually shorter than the input by 1.</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">time_step</span> <span class="o">=</span> <span class="n">TimeStep</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tableData</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">pos</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">item</span> <span class="o">=</span> <span class="n">tableData</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                        <span class="k">while</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="n">item</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">item</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="p">[[</span><span class="nb">float</span><span class="p">(</span><span class="n">item</span><span class="p">)]]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tableData</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">pos</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># This means, the file has a different separator than &#39;tab&#39;</span>
+                            <span class="n">tableData</span> <span class="o">==</span> <span class="n">tableData</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">separator</span><span class="p">)</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="p">[[</span><span class="nb">float</span><span class="p">(</span><span class="n">tableData</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">pos</span><span class="p">])]]</span>
+                    <span class="n">time_step</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+                    <span class="n">time_step</span><span class="o">.</span><span class="n">timestep_datetime</span> <span class="o">=</span> <span class="n">current_time</span>
+                    <span class="n">time_step</span><span class="o">.</span><span class="n">last_update</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+                    <span class="n">time_step</span><span class="o">.</span><span class="n">completed</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">dataset</span><span class="o">.</span><span class="n">set_timestep</span><span class="p">(</span><span class="n">time_step</span><span class="p">)</span>
+                <span class="n">current_time</span> <span class="o">+=</span> <span class="n">dd</span><span class="o">.</span><span class="n">step</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># NOT point output</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dd</span><span class="o">.</span><span class="n">side</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dd</span><span class="o">.</span><span class="n">base</span><span class="p">):</span>
+                    <span class="n">lat</span> <span class="o">=</span> <span class="n">OutputUtil</span><span class="o">.</span><span class="n">exact_rounding</span><span class="p">(</span>
+                        <span class="n">dd</span><span class="o">.</span><span class="n">top</span> <span class="o">-</span> <span class="p">(</span><span class="n">dd</span><span class="o">.</span><span class="n">get_resolution_ver</span><span class="p">()</span> <span class="o">*</span> <span class="n">row</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">dd</span><span class="o">.</span><span class="n">get_resolution_ver</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+                        <span class="n">NUM_DIGITS_FILENAME</span><span class="p">)</span>
+                    <span class="n">lon</span> <span class="o">=</span> <span class="n">OutputUtil</span><span class="o">.</span><span class="n">exact_rounding</span><span class="p">(</span>
+                        <span class="n">dd</span><span class="o">.</span><span class="n">left</span> <span class="o">+</span> <span class="p">(</span><span class="n">dd</span><span class="o">.</span><span class="n">get_resolution_hor</span><span class="p">()</span> <span class="o">*</span> <span class="n">col</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">dd</span><span class="o">.</span><span class="n">get_resolution_hor</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+                        <span class="n">NUM_DIGITS_FILENAME</span><span class="p">)</span>
+                    <span class="n">filename_pattern</span> <span class="o">=</span> <span class="n">file_prefix</span> <span class="o">+</span> <span class="s2">&quot;_%.&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">NUM_DIGITS_FILENAME</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;f_%.&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                        <span class="n">NUM_DIGITS_FILENAME</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;f&quot;</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="n">filename_pattern</span> <span class="o">%</span> <span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
+                    <span class="n">full_path_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_folder</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">full_path_file</span><span class="p">):</span>
+                        <span class="n">filename</span> <span class="o">=</span> <span class="n">OutputUtil</span><span class="o">.</span><span class="n">search_file_with_closest_lat_lon</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">output_folder</span><span class="p">,</span> <span class="n">filename_pattern</span><span class="p">,</span>
+                                                                         <span class="nb">min</span><span class="p">(</span><span class="n">dd</span><span class="o">.</span><span class="n">get_resolution_ver</span><span class="p">(),</span>
+                                                                             <span class="n">dd</span><span class="o">.</span><span class="n">get_resolution_hor</span><span class="p">()))</span>
+                        <span class="n">full_path_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_folder</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+                    <span class="n">OutputUtil</span><span class="o">.</span><span class="n">process_output_file</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">full_path_file</span><span class="p">,</span> <span class="n">EMPTY_VALUE</span><span class="p">,</span> <span class="n">file_key</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span>
+                                             <span class="n">dd</span><span class="o">.</span><span class="n">timeini_datetime</span><span class="p">,</span> <span class="n">dd</span><span class="o">.</span><span class="n">timeend_datetime</span><span class="p">,</span> <span class="n">dd</span><span class="o">.</span><span class="n">step</span><span class="p">,</span>
+                                             <span class="n">number_of_header_lines</span><span class="p">)</span>
+        <span class="n">OutputUtil</span><span class="o">.</span><span class="n">save_dataset</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dataset</span></div>
+
+<div class="viewcode-block" id="OutputUtil.save_outputs"><a class="viewcode-back" href="../../../AgentTools.util.html#AgentTools.util.OutputUtil.OutputUtil.save_outputs">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">save_outputs</span><span class="p">(</span><span class="n">output_folder</span><span class="p">,</span> <span class="n">desired_outputs</span><span class="p">,</span> <span class="n">position_list</span><span class="p">,</span> <span class="n">file_prefix</span><span class="p">,</span> <span class="n">input_identification</span><span class="p">,</span>
+                     <span class="n">point_output</span><span class="p">,</span> <span class="n">separator</span><span class="p">,</span> <span class="n">number_of_header_lines</span><span class="p">,</span> <span class="n">module_name</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">dd</span><span class="p">):</span>  <span class="c1"># Add position_list</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This Function is to save the output datasets</span>
+
+<span class="sd">        @param output_folder: The path of the folder for output</span>
+<span class="sd">        @type output_folder: str</span>
+<span class="sd">        @param desired_outputs: The list of the names of output datasets</span>
+<span class="sd">        @type desired_outputs: list</span>
+<span class="sd">        @param position_list: The list of the positions (column indices) in the result files for the output datasets</span>
+<span class="sd">        @type position_list: list</span>
+<span class="sd">        @param file_prefix: The prefix of the file</span>
+<span class="sd">        @type file_prefix: str</span>
+<span class="sd">        @param input_identification: The id of the input dataset</span>
+<span class="sd">        @type input_identification: str</span>
+<span class="sd">        @param point_output:The boolean value represented whether the output dataset is a single-time-series in a signle file,\</span>
+<span class="sd">        in contrast of a distributed result in multiple files, once per cell. The default value is False.</span>
+<span class="sd">        @type point_output: bool</span>
+<span class="sd">        @param separator:The delimiter in the result file to separate each data filed in result file</span>
+<span class="sd">        @type separator: str</span>
+<span class="sd">        @param number_of_header_lines: The number of the header in the result file to skip</span>
+<span class="sd">        @type number_of_header_lines: int</span>
+<span class="sd">        @param module_name: The name of the current module</span>
+<span class="sd">        @type module_name: str</span>
+<span class="sd">        @param ret: The list of the name of output result datasets</span>
+<span class="sd">        @type ret: list</span>
+<span class="sd">        @param dd: The detected dimensions</span>
+<span class="sd">        @type dd: dict</span>
+<span class="sd">        @return: The integrated result dataset and the list of the name of output result datasets</span>
+<span class="sd">        @rtype: (dict,list)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">taskCache</span> <span class="o">=</span> <span class="n">TaskCache</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">desired_outputs</span><span class="p">)):</span>
+            <span class="n">desired_output</span> <span class="o">=</span> <span class="n">desired_outputs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">position</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">position_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">dataset_name</span> <span class="o">=</span> <span class="n">TaskCache</span><span class="o">.</span><span class="n">get_task_id</span><span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">input_identification</span><span class="p">,</span> <span class="n">desired_output</span><span class="p">)</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">)</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="n">OutputUtil</span><span class="o">.</span><span class="n">save_output</span><span class="p">(</span><span class="n">output_folder</span><span class="o">=</span><span class="n">output_folder</span><span class="p">,</span> <span class="n">file_key</span><span class="o">=</span><span class="n">desired_output</span><span class="p">,</span> <span class="n">var_name</span><span class="o">=</span><span class="n">desired_output</span><span class="p">,</span> \
+                                       <span class="n">dataset_name</span><span class="o">=</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">position</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="n">file_prefix</span><span class="p">,</span>
+                                       <span class="n">point_output</span><span class="o">=</span><span class="n">point_output</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="n">separator</span><span class="p">,</span>
+                                       <span class="n">number_of_header_lines</span><span class="o">=</span><span class="n">number_of_header_lines</span><span class="p">,</span> <span class="n">dd</span><span class="o">=</span><span class="n">dd</span><span class="p">)</span>
+            <span class="n">outputs</span><span class="p">[</span><span class="n">desired_output</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">dataset</span><span class="p">]</span>
+        <span class="n">taskCache</span><span class="o">.</span><span class="n">put_task_result_to_cache</span><span class="p">(</span><span class="n">input_identification</span><span class="p">,</span> <span class="n">outputs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">outputs</span><span class="p">,</span><span class="n">ret</span></div>
+
+<div class="viewcode-block" id="OutputUtil.process_output_file"><a class="viewcode-back" href="../../../AgentTools.util.html#AgentTools.util.OutputUtil.OutputUtil.process_output_file">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">process_output_file</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">empty_value</span><span class="p">,</span> <span class="n">file_key</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">timeini</span><span class="p">,</span> <span class="n">timeend</span><span class="p">,</span>
+                            <span class="n">timestep</span><span class="p">,</span> <span class="n">number_of_header_lines</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This Function is to process input dataset  and create corresponding output result file</span>
+
+<span class="sd">        @param dataset_name: The name of the dataset</span>
+<span class="sd">        @type dataset_name: str</span>
+<span class="sd">        @param row: The row number of the input integrated dataset</span>
+<span class="sd">        @type row: int</span>
+<span class="sd">        @param col: The column number of the dataset</span>
+<span class="sd">        @type col: int</span>
+<span class="sd">        @param filename: The name of the result file</span>
+<span class="sd">        @type filename: str</span>
+<span class="sd">        @param empty_value: The value to replace when the element in dataset is empty</span>
+<span class="sd">        @type empty_value: str</span>
+<span class="sd">        @param file_key: The name of the output dataset</span>
+<span class="sd">        @type file_key: str</span>
+<span class="sd">        @param pos: The position (column index) of the output dataset in the result file</span>
+<span class="sd">        @type pos: int</span>
+<span class="sd">        @param timeini: The initial time of the dataset</span>
+<span class="sd">        @type timeini: datetime</span>
+<span class="sd">        @param timeend: The ending time of the dataset</span>
+<span class="sd">        @type timeend: datetime</span>
+<span class="sd">        @param timestep: The time step of the dataset</span>
+<span class="sd">        @type timestep: timedelta</span>
+<span class="sd">        @param number_of_header_lines: The number of header lines in the result file</span>
+<span class="sd">        @type number_of_header_lines: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">handler</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="n">timeseries_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">currentDate</span> <span class="o">=</span> <span class="n">timeini</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+            <span class="n">firstElement</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">firstElement</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;#&#39;</span> <span class="ow">and</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="n">number_of_header_lines</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="p">[</span><span class="n">timestep_datetime</span><span class="p">,</span> <span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">OutputUtil</span><span class="o">.</span><span class="n">process_results_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">empty_value</span><span class="p">,</span> <span class="n">file_key</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span>
+                                                                           <span class="n">currentDate</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Error reading file:&quot;</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Cause:</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+                <span class="n">timeseries_dict</span><span class="p">[</span><span class="n">timestep_datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="n">currentDate</span> <span class="o">=</span> <span class="n">currentDate</span> <span class="o">+</span> <span class="n">timestep</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">OutputUtil</span><span class="o">.</span><span class="n">set_time_series_to_dataset</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">timeseries_dict</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OutputUtil.process_results_line"><a class="viewcode-back" href="../../../AgentTools.util.html#AgentTools.util.OutputUtil.OutputUtil.process_results_line">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">process_results_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">empty_value</span><span class="p">,</span> <span class="n">file_key</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">timestep_datetime</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This Function is to process and extract the result data in each header field in each line of the result file</span>
+
+<span class="sd">        @param line: The line being processed in the result file</span>
+<span class="sd">        @type line: str</span>
+<span class="sd">        @param empty_value: The value to replace when the element in dataset is empty</span>
+<span class="sd">        @type empty_value: str</span>
+<span class="sd">        @param file_key: The name of the output dataset</span>
+<span class="sd">        @type file_key: str</span>
+<span class="sd">        @param pos: The position (column index) of the output dataset in the result file</span>
+<span class="sd">        @type pos: int</span>
+<span class="sd">        @param timestep_datetime: The current timestamp for the current line in the result file</span>
+<span class="sd">        @type timestep_datetime: datetime</span>
+<span class="sd">        @return: The current timestamp for the current line in the result file and the corresponding\</span>
+<span class="sd">        value in the given position of the current line in the result file</span>
+<span class="sd">        @rtype: (datetime, float)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">values_line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">values_line</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">==</span> <span class="n">empty_value</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">FloatUtils</span><span class="o">.</span><span class="n">try_parse</span><span class="p">(</span><span class="n">values_line</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">timestep_datetime</span><span class="p">,</span> <span class="n">value</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="OutputUtil.set_time_series_to_dataset"><a class="viewcode-back" href="../../../AgentTools.util.html#AgentTools.util.OutputUtil.OutputUtil.set_time_series_to_dataset">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">set_time_series_to_dataset</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">timeseries_dict</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function is to set the time series for the current dataset</span>
+<span class="sd">        </span>
+<span class="sd">        @param dataset_name: The name of the targeted dataset</span>
+<span class="sd">        @type dataset_name: str</span>
+<span class="sd">        @param timeseries_dict: The time-series dictionary to be set for the targeted dataset</span>
+<span class="sd">        @type timeseries_dict: dict</span>
+<span class="sd">        @param row: The row number of the dataset</span>
+<span class="sd">        @type row: int</span>
+<span class="sd">        @param col: The column number of the dataset</span>
+<span class="sd">        @type col: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">DaoDataSet</span><span class="p">()</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">)</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">set_time_series</span><span class="p">(</span><span class="n">timeseries_dict</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OutputUtil.create_dataset"><a class="viewcode-back" href="../../../AgentTools.util.html#AgentTools.util.OutputUtil.OutputUtil.create_dataset">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_dataset</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">variable_name</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">timeini</span><span class="p">,</span> <span class="n">timeend</span><span class="p">,</span> \
+                       <span class="n">initialize_ts</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function is to create the responding dataset in the form of *msmDataset* with the parameters given</span>
+<span class="sd">        </span>
+<span class="sd">        @param dataset_name: The name of dataset to be created</span>
+<span class="sd">        @type dataset_name: str</span>
+<span class="sd">        @param variable_name: The name of the variable of the dataset</span>
+<span class="sd">        @type variable_name: str</span>
+<span class="sd">        @param left: The left boundary value in the space range of the dataset</span>
+<span class="sd">        @type left: float</span>
+<span class="sd">        @param right: The right boundary value in the space range of the dataset</span>
+<span class="sd">        @type right: float</span>
+<span class="sd">        @param top: The top boundary value in the space range of the dataset</span>
+<span class="sd">        @type top: float</span>
+<span class="sd">        @param bottom: The bottom boundary value in the space range of the dataset</span>
+<span class="sd">        @type bottom: float</span>
+<span class="sd">        @param side: The vertical resolution of the dataset</span>
+<span class="sd">        @type side: int</span>
+<span class="sd">        @param base: The horizontal resolution of the dataset</span>
+<span class="sd">        @type base: int</span>
+<span class="sd">        @param timeini: The initial time in the time range of the dataset</span>
+<span class="sd">        @type timeini: datetime</span>
+<span class="sd">        @param timeend: The ending time in the time range of the dataset</span>
+<span class="sd">        @type timeend: datetime</span>
+<span class="sd">        @param step: The time step of the dataset</span>
+<span class="sd">        @type step: datetime</span>
+<span class="sd">        @param value: The result value in the dataset</span>
+<span class="sd">        @type value: list</span>
+<span class="sd">        @param save: Flag on whether to save the dataset The default value is *False*</span>
+<span class="sd">        @type save: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">DataSet</span><span class="p">()</span>
+
+        <span class="n">dataset</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">variable_name</span><span class="p">,</span> \
+                           <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> \
+                           <span class="n">timeini</span><span class="p">,</span> <span class="n">timeend</span><span class="p">,</span> \
+                           <span class="n">initialize_ts</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="n">DataSetCache</span><span class="p">()</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dataset</span></div>
+
+<div class="viewcode-block" id="OutputUtil.check_dimensions"><a class="viewcode-back" href="../../../AgentTools.util.html#AgentTools.util.OutputUtil.OutputUtil.check_dimensions">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">check_dimensions</span><span class="p">(</span><span class="n">user_inputs</span><span class="p">,</span> <span class="n">dd</span><span class="p">,</span> <span class="n">check_space</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check_time</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This Function is to check the detected dimension of the dataset</span>
+
+<span class="sd">        @param user_inputs: The name of the integrated dataset</span>
+<span class="sd">        @type user_inputs: str</span>
+<span class="sd">        @param dd: The detected dimensions</span>
+<span class="sd">        @type dd: dict</span>
+<span class="sd">        @param check_space: The parameter on whether the space variable exists, default value is *True*.</span>
+<span class="sd">        @type check_space: bool</span>
+<span class="sd">        @param check_time: The parameter on whether the time variable exists, default value is *True*.</span>
+<span class="sd">        @type check_time: bool</span>
+<span class="sd">        @return: The detected dimensions</span>
+<span class="sd">        @rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">input_sent</span> <span class="ow">in</span> <span class="n">user_inputs</span><span class="p">:</span>
+            <span class="n">dataset_name</span> <span class="o">=</span> <span class="n">user_inputs</span><span class="p">[</span><span class="n">input_sent</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">dataset_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="n">dataset_name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING: Some Datasets are empty&quot;</span><span class="p">)</span>
+            <span class="n">dd</span> <span class="o">=</span> <span class="n">OutputUtil</span><span class="o">.</span><span class="n">check_dimensions_var</span><span class="p">(</span><span class="n">dataset_name</span><span class="o">=</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">input_name</span><span class="o">=</span><span class="n">input_sent</span><span class="p">,</span> <span class="n">dd</span><span class="o">=</span><span class="n">dd</span><span class="p">,</span><span class="n">check_space</span><span class="o">=</span><span class="n">check_space</span><span class="p">,</span> <span class="n">check_time</span><span class="o">=</span><span class="n">check_time</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dd</span></div>
+<div class="viewcode-block" id="OutputUtil.get_time_series"><a class="viewcode-back" href="../../../AgentTools.util.html#AgentTools.util.OutputUtil.OutputUtil.get_time_series">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_time_series</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">time_ini</span><span class="p">,</span> <span class="n">time_end</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">empty_value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This Function is to obtain the time-series of the targeted dataset</span>
+
+<span class="sd">        @param dataset_name: The name of the integrated dataset</span>
+<span class="sd">        @type dataset_name: str</span>
+<span class="sd">        @param time_ini: The initial time of the dataset</span>
+<span class="sd">        @type time_ini: datetime</span>
+<span class="sd">        @param time_end: The ending time of the dataset</span>
+<span class="sd">        @type time_end: datetime</span>
+<span class="sd">        @param row: The row number of the dataset</span>
+<span class="sd">        @type row: int</span>
+<span class="sd">        @param col: The column number of the dataset</span>
+<span class="sd">        @type col: int</span>
+<span class="sd">        @param empty_value: The value to replace when the element in dataset is empty, the default value is None</span>
+<span class="sd">        @type empty_value: str</span>
+<span class="sd">        @return: The list of the time-series of the dataset</span>
+<span class="sd">        @rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dds</span> <span class="o">=</span> <span class="n">DaoDataSet</span><span class="p">()</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dataset</span><span class="o">.</span><span class="n">get_time_series</span><span class="p">(</span><span class="n">time_ini</span><span class="p">,</span> <span class="n">time_end</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">empty_value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OutputUtil.check_dimensions_var"><a class="viewcode-back" href="../../../AgentTools.util.html#AgentTools.util.OutputUtil.OutputUtil.check_dimensions_var">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">check_dimensions_var</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">input_name</span><span class="p">,</span> <span class="n">dd</span><span class="p">,</span> <span class="n">check_space</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check_time</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This Function is to initialize and update detected dimensions</span>
+
+<span class="sd">        @param dataset_name: The name of the input integrated dataset</span>
+<span class="sd">        @type dataset_name: str</span>
+<span class="sd">        @param input_name: The id of the integrated dataset</span>
+<span class="sd">        @param check_space: The parameter on whether the space variable exists, default value is True</span>
+<span class="sd">        @type check_space: bool</span>
+<span class="sd">        @param check_time: The parameter on whether the time variable exists, default value is True</span>
+<span class="sd">        @type check_time: bool</span>
+<span class="sd">        @return: The detected dimensions</span>
+<span class="sd">        @rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">dataset_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="n">dataset_name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;dataset_name must be not empty string&quot;</span><span class="p">)</span>
+        <span class="n">dds</span> <span class="o">=</span> <span class="n">DaoDataSet</span><span class="p">()</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">)</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">compute_uniform_step</span><span class="p">()</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">compute_timeend</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">dd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dd</span> <span class="o">=</span> <span class="n">dataset</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">check_space</span><span class="p">:</span>
+                <span class="n">dataset</span><span class="o">.</span><span class="n">equals_space</span><span class="p">(</span><span class="n">dd</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">check_time</span><span class="p">:</span>
+                <span class="n">dataset</span><span class="o">.</span><span class="n">equals_time</span><span class="p">(</span><span class="n">dd</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dd</span></div>
+
+<div class="viewcode-block" id="OutputUtil.save_dataset"><a class="viewcode-back" href="../../../AgentTools.util.html#AgentTools.util.OutputUtil.OutputUtil.save_dataset">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">save_dataset</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This Function is to save dataset in database and refreshe in cache</span>
+
+<span class="sd">        @param dataset_name: The name of the input integrated dataset</span>
+<span class="sd">        @type dataset_name: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dsc</span> <span class="o">=</span> <span class="n">DataSetCache</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dsc</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Dataset not available to save:&quot;</span> <span class="o">+</span> <span class="n">dataset_name</span><span class="p">)</span>
+
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">dsc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">)</span>
+        <span class="n">DaoDataSet</span><span class="p">()</span><span class="o">.</span><span class="n">save_dataset</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+        <span class="n">DaoTimeStep</span><span class="p">()</span><span class="o">.</span><span class="n">save_timesteps</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">timesteps</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, CyberWater.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

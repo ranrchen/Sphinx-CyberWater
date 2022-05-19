@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgentTools.HPC.launchagent.ssh_agent &mdash; GenericModelAgentToolkits  documentation</title><link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../AgentTools.html" class="icon icon-home"> GenericModelAgentToolkits
+          </a>
+              <div class="version">
+                Alpha version
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../AgentTools.GenericModelAgent.html">AgentTools.GenericModelAgent package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../AgentTools.HPC.html">AgentTools.HPC package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../AgentTools.util.html">AgentTools.util package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../AgentTools.html">GenericModelAgentToolkits</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../AgentTools.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>AgentTools.HPC.launchagent.ssh_agent</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for AgentTools.HPC.launchagent.ssh_agent</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python2</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="p">(</span><span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">import</span> <span class="nn">paramiko</span><span class="o">,</span> <span class="nn">getpass</span>
+<span class="kn">import</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">ntpath</span><span class="o">,</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">tarfile</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">version</span><span class="p">,</span> <span class="n">status_manager</span>
+<span class="kn">from</span> <span class="nn">distutils.dir_util</span> <span class="kn">import</span> <span class="n">copy_tree</span><span class="p">,</span> <span class="n">remove_tree</span>
+
+<span class="n">_print_header</span><span class="o">=</span><span class="s2">&quot;--SShAgent:&quot;</span>
+
+<div class="viewcode-block" id="get_supported_sites"><a class="viewcode-back" href="../../../../AgentTools.HPC.launchagent.html#AgentTools.HPC.launchagent.ssh_agent.get_supported_sites">[docs]</a><span class="k">def</span> <span class="nf">get_supported_sites</span><span class="p">():</span>
+    <span class="n">siteFile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;/resources/site_dict.json&quot;</span>
+
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">siteFile</span><span class="p">)</span>
+    <span class="n">site_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)[</span><span class="s2">&quot;ssh_agent&quot;</span><span class="p">][</span><span class="s2">&quot;sites&quot;</span><span class="p">]</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">[</span> <span class="n">x</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;UTF8&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">site_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">]</span></div>
+
+<div class="viewcode-block" id="LaunchAgent"><a class="viewcode-back" href="../../../../AgentTools.HPC.launchagent.html#AgentTools.HPC.launchagent.ssh_agent.LaunchAgent">[docs]</a><span class="k">class</span> <span class="nc">LaunchAgent</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A class/agent to connect to cluster</span>
+
+
+<span class="sd">    local input files will be saved in C:/temp/cyberwater-staging-ssh/YYYMMDD-HHMM (Or ~/temp/cyberwater-staging-ssh/YYYMMDD-HHMM),</span>
+<span class="sd">    local files will then be uploaded to HPC, and being processed, </span>
+<span class="sd">    the remote working directory will be first downloaded as a tarball at at: C:/temp/cyberwater-staging-ssh/YYYYMMDD-HHMM,</span>
+<span class="sd">    then extract to the user-defined download-folder.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        site_name: name of cluster resource. (gcp, bigred3, jetstream) </span>
+<span class="sd">        username: ask input of user name to log on to cluster</span>
+<span class="sd">        port: ssh default port is 22</span>
+<span class="sd">        prjDir: create a directory under /home/username/project_name on cluster</span>
+<span class="sd">        is_started: whether the ssh session is started or not</span>
+<span class="sd">        check_pend_feq: check the job whether has been submitted to </span>
+<span class="sd">            cluster every @check_pend_feq seconds</span>
+<span class="sd">        check_run_feq: check the job whether is running on cluster </span>
+<span class="sd">            every @check_run_feq seconds</span>
+<span class="sd">        check_cg_feq: when job completed, check the job whether is in &#39;CG&#39; </span>
+<span class="sd">            state on cluster every @check_run_feq seconds</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">site_name</span><span class="o">=</span><span class="s1">&#39;bigred3&#39;</span><span class="p">,</span> <span class="n">project_name</span><span class="o">=</span><span class="s1">&#39;cyberwater&#39;</span><span class="p">,</span> <span class="n">login_url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">username</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">passwd</span><span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sched_env</span><span class="o">=</span><span class="s1">&#39;slurm&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Inits a cluster object</span>
+<span class="sd">        </span>
+<span class="sd">        Create an ssh agent to connect to cluster</span>
+<span class="sd">        Users can connect to a remote site through ssh, his/her public key is copied to HPC(with the help of system admin), </span>
+<span class="sd">        Or, the user can choose to provide a passwd if the server doesn&#39;t have his/her public key.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            site_name (str): HPC site can be (currently supports &#39;bigred3&#39;) </span>
+<span class="sd">            project_name (str, optional): create a directory under /home/username/project_name on cluster</span>
+<span class="sd">            login_url (str): For cloud VM whose IP address can change overtime, provide a most recent ip (not needed currently for either GCP or JetStream) </span>
+<span class="sd">            username (str): ask input of user name to log on to cluster</span>
+<span class="sd">            passwd (str, optional): password to login to cluster</span>
+<span class="sd">            sched_env (str, optional): which scheduler to use, can be either &#39;slurm&#39; or &#39;bash&#39;</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">            </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            KeyError if site not supported</span>
+<span class="sd">            If public-key authentication failed, raise authentication fail error and ask you retry with password</span>
+<span class="sd">            If 3-times retries on password is still wrong, abort</span>
+<span class="sd">            </span>
+<span class="sd">        Examples:</span>
+<span class="sd">            Launch job to JetStream, given that the login node has users&#39;public key.</span>
+
+<span class="sd">            &gt;&gt;&gt; LaunchAgent(site_name = &#39;jetstream&#39;, project_name = &#39;cyberwater&#39;, username = &#39;fli5&#39;)</span>
+
+<span class="sd">            Launch job to Bridges 2 with user-provided password.</span>
+
+<span class="sd">            &gt;&gt;&gt; LaunchAgent(site_name = &#39;bridges-LM&#39;, project_name = &#39;cyberwater&#39;, username = &#39;fli5&#39;, passwd =  &#39;somepassword&#39;)</span>
+
+<span class="sd">            Launch job to a tesla.cs.iupui.edu, which doesn&#39;t have Slurm.</span>
+<span class="sd">            &gt;&gt;&gt; LaunchAgent(site_name = &#39;tesla&#39;, project_name = &#39;cyberwater&#39;, username = &#39;lifen&#39;, passwd =  &#39;somepassword&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_started</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">site_name</span> <span class="o">=</span> <span class="n">site_name</span>
+
+        <span class="n">siteFile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;/resources/site_dict.json&quot;</span>
+
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">siteFile</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">site_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)[</span><span class="s2">&quot;ssh_agent&quot;</span><span class="p">][</span><span class="s2">&quot;sites&quot;</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">login_url</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_login_url</span> <span class="o">=</span> <span class="n">login_url</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_login_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_dict</span><span class="p">[</span><span class="n">site_name</span><span class="p">][</span><span class="s1">&#39;login_url&#39;</span><span class="p">]</span> 
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Using site file&#39;</span> <span class="o">+</span> <span class="n">siteFile</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;site name (&#39;</span> <span class="o">+</span> <span class="n">site_name</span> <span class="o">+</span> <span class="s1">&#39;) is not supported, supported options are:&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">site_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                <span class="n">quit</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">sched_env</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_dict</span><span class="p">[</span><span class="n">site_name</span><span class="p">][</span><span class="s2">&quot;sched_env&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;site </span><span class="si">%s</span><span class="s2"> has incompatible sched_env </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">site_name</span><span class="p">,</span> <span class="n">sched_env</span><span class="p">))</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Initializing ssh-agent, version=&quot;</span> <span class="o">+</span>  <span class="n">version</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Prepare connecting to &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_name</span> <span class="o">+</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_login_url</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using username (&quot;</span> <span class="o">+</span> <span class="n">username</span> <span class="o">+</span> <span class="s1">&#39;) for ssh session&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_dict</span><span class="p">[</span><span class="n">site_name</span><span class="p">][</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="mi">22</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">project_name</span> <span class="o">=</span> <span class="n">project_name</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">key_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~/.ssh/id_rsa&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">passwd</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_pend_feq</span> <span class="o">=</span> <span class="mi">10</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_run_feq</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_cg_feq</span> <span class="o">=</span> <span class="mi">5</span> 
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_connect</span><span class="p">()</span>
+
+        <span class="c1"># fall back to password if publick key failed</span>
+        
+        <span class="c1"># mkdir results to store job logs</span>
+        <span class="c1"># Non-blocking call</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;printenv HOME&#39;</span>
+        <span class="c1">#print(command)</span>
+        <span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">stdout</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">recv_exit_status</span><span class="p">()</span> <span class="c1"># Blocking call</span>
+
+        <span class="n">remoteHome</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">ret</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Cannot get HOME from HPC&#39;</span><span class="p">)</span>
+
+        <span class="n">remoteHome</span> <span class="o">=</span> <span class="n">stdout</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">experiment_time_str</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">-%H%M&quot;</span><span class="p">)</span>
+
+
+        <span class="k">if</span><span class="p">(</span><span class="s1">&#39;workdir&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">site_name</span><span class="p">]):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">prjDir</span> <span class="o">=</span> <span class="n">remoteHome</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_name</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_time_str</span>  <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">prjDir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">site_name</span><span class="p">][</span><span class="s1">&#39;workdir&#39;</span><span class="p">]</span>  <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_name</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_time_str</span>  <span class="o">+</span> <span class="s1">&#39;/&#39;</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Remote workdir is&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">prjDir</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">sched_env</span> <span class="o">==</span> <span class="s1">&#39;slurm&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">defaultqueue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_dict</span><span class="p">[</span><span class="n">site_name</span><span class="p">][</span><span class="s1">&#39;defaultqueue&#39;</span><span class="p">]</span> 
+            <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;rm -rf &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">prjDir</span> <span class="o">+</span><span class="s1">&#39;;mkdir -p &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">prjDir</span> <span class="o">+</span> <span class="s1">&#39;slurm_logs/;&#39;</span> <span class="o">+</span> <span class="s1">&#39;sinfo -O &quot;partition,nodes,cpus,memory,time,available&quot;&#39;</span>
+            <span class="c1">#raise RuntimeError(&#39;Tried to execute command:&#39;+ command)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;rm -rf &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">prjDir</span> <span class="o">+</span><span class="s1">&#39;;mkdir -p &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">prjDir</span> <span class="o">+</span> <span class="s1">&#39;slurm_logs/;&#39;</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">******Remote info (start)*******:&quot;</span><span class="p">)</span>
+        <span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">stdout</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">recv_exit_status</span><span class="p">()</span> <span class="c1"># Blocking call</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">ret</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">stderr</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">stdout</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">******Remote info (end)*******:&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># make staging folder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_system_type</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_system_type</span> <span class="o">==</span> <span class="s1">&#39;Windows&#39;</span><span class="p">:</span>
+            <span class="n">temp_dir</span> <span class="o">=</span>  <span class="s2">&quot;C:</span><span class="se">\\</span><span class="s2">temp&quot;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_system_type</span> <span class="o">==</span> <span class="s1">&#39;Linux&#39;</span><span class="p">:</span>
+            <span class="n">temp_dir</span> <span class="o">=</span>  <span class="s2">&quot;~/temp&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;System </span><span class="si">%s</span><span class="s1"> not supported&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_system_type</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">)</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status_manager</span> <span class="o">=</span> <span class="n">status_manager</span><span class="o">.</span><span class="n">StatusManager</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="s2">&quot;all_job_stat.json&quot;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">localdirpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="s2">&quot;cyberwater-staging-ssh&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">localdirpath</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">localdirpath</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exp_input_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">localdirpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_name</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">if</span>  <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exp_input_path</span><span class="p">):</span>
+            <span class="n">remove_tree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exp_input_path</span><span class="p">)</span>
+
+
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exp_input_path</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;launchagent is created in a </span><span class="si">%s</span><span class="s2"> system, local staging dir is: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_system_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exp_input_path</span><span class="p">))</span>
+    
+    <span class="k">def</span> <span class="nf">_ssh_connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ssh</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">SSHClient</span><span class="p">()</span>
+        <span class="c1"># Trust all key policy on remote host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ssh</span><span class="o">.</span><span class="n">set_missing_host_key_policy</span><span class="p">(</span><span class="n">paramiko</span><span class="o">.</span><span class="n">AutoAddPolicy</span><span class="p">())</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">):</span>
+            <span class="c1"># try password if user provides one</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ssh</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_login_url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span><span class="p">)</span>
+
+            <span class="k">except</span> <span class="p">(</span><span class="n">paramiko</span><span class="o">.</span><span class="n">BadHostKeyException</span><span class="p">,</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">AuthenticationException</span><span class="p">,</span> 
+                    <span class="n">paramiko</span><span class="o">.</span><span class="n">SSHException</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Login failed for user &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="o">+</span> <span class="s2">&quot; with current password...&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">+</span> <span class="s2">&quot;Error Info:&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="n">exit</span><span class="p">()</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># otherwise check ssh keypair </span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ssh</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_login_url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">key_filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">key_filename</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="n">paramiko</span><span class="o">.</span><span class="n">BadHostKeyException</span><span class="p">,</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">AuthenticationException</span><span class="p">,</span> 
+                    <span class="n">paramiko</span><span class="o">.</span><span class="n">SSHException</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Public-key authorization failed (Server doesn&#39;t have your key)&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; For Google Cloud and Jetstream, please send your key (yourhomedir/.ssh/id_rsa.pub) to Feng Li (lifen@iu.edu), &quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; For other system, please try to provide password: launchgent(xxx, passwd=)&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;exiting...&quot;</span><span class="p">)</span>
+                <span class="n">exit</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_started</span> <span class="o">=</span> <span class="kc">True</span>
+        
+        <span class="c1">#ssh.close()</span>
+    
+    <span class="k">def</span> <span class="nf">_may_reconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">transport</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssh</span><span class="o">.</span><span class="n">get_transport</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssh</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">transport</span> <span class="ow">and</span> <span class="n">transport</span><span class="o">.</span><span class="n">is_active</span><span class="p">()):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;connection lost, now reconnecting...&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_connect</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_started</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ssh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    
+<div class="viewcode-block" id="LaunchAgent.configure_slurm_job"><a class="viewcode-back" href="../../../../AgentTools.HPC.launchagent.html#AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.configure_slurm_job">[docs]</a>    <span class="k">def</span> <span class="nf">configure_slurm_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ntasks_per_node</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
+                          <span class="n">walltime_in_mins</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">env_cmd</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">execute_cmd</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">execute_script</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">remote_results_folder</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;generate a cluster job script</span>
+<span class="sd">        </span>
+<span class="sd">        Automatic generate a Slurm job script for user in case they know nothing about writing a HPC job script.</span>
+<span class="sd">        Jobs can be described in either way (see examples)::</span>
+<span class="sd">        </span>
+<span class="sd">            1. env_cmd + execute_cmd</span>
+<span class="sd">            2. execute_script (contains both  the path to a shell script)</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            nodes: number of compute nodes used on cluster for this job.</span>
+<span class="sd">            ntasks_per_node: number of tasks running on a compute node, specifically for parallel program (e.g. MPI)</span>
+<span class="sd">            email: user&#39;s email to receive email about submission, running, error and complete</span>
+<span class="sd">            walltime_in_mins: estimated time for this job to be executed, in mins </span>
+<span class="sd">            env_cmd: command to preprare environment(e.g module load)</span>
+<span class="sd">            execute_cmd: command to execute applications</span>
+<span class="sd">            execute_script: a path to shell script.</span>
+<span class="sd">            remote_results_folder: remote folder to download results from.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            the jobid that can be used in global status_manager</span>
+<span class="sd">            </span>
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; agent.configure_exp(node = 1, ntasks_per_node=10, env_cmd=&quot;module load python/3.7&quot;, execute_cmd=&quot;python somescript.py&quot;)</span>
+
+<span class="sd">            ./run.sh can be shell script contains both env_cmd and execute_cmds</span>
+
+<span class="sd">            &gt;&gt;&gt; agent.configure_exp(node = 1, ntasks_per_node=10, env_cmd=&quot;module load python/3.7&quot;, execute_cmd=&quot;./run.sh&quot;)</span>
+
+<span class="sd">            Can specify a subfoler that contains useful results, so that other contents of the remote working dir will not be downloaded  </span>
+
+<span class="sd">            &gt;&gt;&gt; agent.configure_exp(node = 1, ntasks_per_node=10, env_cmd=&quot;module load python/3.7&quot;, execute_cmd=&quot;./run.sh&quot;, remote_results_folder=&#39;./results&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">file_name</span> <span class="o">=</span>  <span class="s1">&#39;cyberwater_&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_name</span> <span class="o">+</span> <span class="s1">&#39;_slurm_job.sh&#39;</span>
+        
+        <span class="n">jobfile_path</span> <span class="o">=</span>  <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exp_input_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+        <span class="c1"># force unix-style newline: slurm forbits Windows crlf-style line termination</span>
+        <span class="n">f</span><span class="o">=</span> <span class="nb">open</span><span class="p">(</span> <span class="n">jobfile_path</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="n">execute_script</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.csh&#39;</span><span class="p">)):</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#!/bin/csh</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#!/bin/bash</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;#SBATCH --job-name=</span><span class="se">\&quot;</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">file_name</span> <span class="o">+</span><span class="s1">&#39;</span><span class="se">\&quot;\n</span><span class="s1">&#39;</span><span class="p">)</span>                                                                                               
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;#SBATCH --output=</span><span class="se">\&quot;</span><span class="s1">slurm_logs/&#39;</span> <span class="o">+</span> <span class="n">file_name</span> <span class="o">+</span> <span class="s1">&#39;.out.%j</span><span class="se">\&quot;\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#SBATCH --partition=&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaultqueue</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;#SBATCH --nodes=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;#SBATCH --ntasks-per-node=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ntasks_per_node</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+
+        <span class="k">if</span> <span class="s1">&#39;slurm_directive_str&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">site_name</span><span class="p">]:</span> 
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">site_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">site_name</span><span class="p">][</span><span class="s1">&#39;slurm_directive_str&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#SBATCH --export=ALL</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#SBATCH --mail-type=ALL</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>        
+        <span class="k">if</span> <span class="p">(</span><span class="n">email</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;#SBATCH --mail-user=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">email</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        
+        <span class="n">hours</span><span class="p">,</span> <span class="n">mins</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">walltime_in_mins</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+        <span class="n">run_time</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:0&gt;2}</span><span class="s2">:</span><span class="si">{:0&gt;2}</span><span class="s2">:</span><span class="si">{:0&gt;2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">hours</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">mins</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;#SBATCH -t &#39;</span> <span class="o">+</span> <span class="n">run_time</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;## my job commands start as below:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;cd &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">prjDir</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;## Environment setup are as below:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">env_cmd</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;## Execution commands are as below:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">execute_cmd</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+            <span class="n">fin</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">execute_script</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+            <span class="n">execute_cmd</span> <span class="o">=</span> <span class="n">fin</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Using command script file&#39;</span><span class="p">,</span> <span class="n">execute_script</span><span class="p">)</span>
+            <span class="n">fin</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">execute_cmd</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_remote_results_folder</span><span class="o">=</span><span class="n">remote_results_folder</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Job_file is generated: &quot;</span> <span class="o">+</span> <span class="n">file_name</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using nr_nodes=</span><span class="si">%d</span><span class="s2">, nprocs_per_node=</span><span class="si">%d</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">ntasks_per_node</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Remote results folder at: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">remote_results_folder</span><span class="p">))</span>
+
+        <span class="n">jid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status_manager</span><span class="o">.</span><span class="n">add_entry</span><span class="p">(</span><span class="s1">&#39;slurm&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">jid</span></div>
+
+<div class="viewcode-block" id="LaunchAgent.configure_bash_job"><a class="viewcode-back" href="../../../../AgentTools.HPC.launchagent.html#AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.configure_bash_job">[docs]</a>    <span class="k">def</span> <span class="nf">configure_bash_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env_cmd</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">execute_cmd</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">execute_script</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">remote_results_folder</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Configure a job that runs in remote bash environment</span>
+
+<span class="sd">        Jobs can be described in either way::</span>
+<span class="sd">        </span>
+<span class="sd">            1. env_cmd + execute_cmd</span>
+<span class="sd">            2. execute_script (contains both  the path to a shell script)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            env_cmd: command to preprare environment(e.g module load)</span>
+<span class="sd">            execute_cmd: command to execute applications</span>
+<span class="sd">            execute_script (str): Script to be executed remotely.</span>
+<span class="sd">            remote_results_folder (str, optional): Results folder path. Defaults to &#39;.&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+        <span class="n">job_file_name</span> <span class="o">=</span>  <span class="s1">&#39;cyberwater_&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_name</span> <span class="o">+</span> <span class="s1">&#39;_bash_job.sh&#39;</span>
+        <span class="c1"># the actual work defined in the execute_cmd or execute_script</span>
+        <span class="n">work_file_name</span> <span class="o">=</span>  <span class="s1">&#39;do_work.sh&#39;</span>
+        
+        <span class="n">job_file_path</span> <span class="o">=</span>  <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exp_input_path</span><span class="p">,</span> <span class="n">job_file_name</span><span class="p">)</span>
+        <span class="n">work_file_path</span> <span class="o">=</span>  <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exp_input_path</span><span class="p">,</span>  <span class="n">work_file_name</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">job_file_path</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
+<span class="s1">#!/bin/bash</span>
+<span class="s1">bash do_work.sh &amp;</span>
+<span class="s1">process_id=$!</span>
+<span class="s1">echo &quot;PID: $process_id&quot;</span>
+<span class="s1">wait $process_id</span>
+<span class="s1">echo &quot;ExitStatus: $?&quot; &gt; $process_id.status</span>
+<span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+
+        <span class="c1"># force unix-style newline: slurm forbits Windows crlf-style line termination</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">work_file_path</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">execute_script</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.csh&#39;</span><span class="p">)):</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#!/bin/csh</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#!/bin/bash</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;## my job commands start as below:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;cd &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">prjDir</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;## Environment setup are as below:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">env_cmd</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;## Execution commands are as below:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">execute_cmd</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+                <span class="n">fin</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">execute_script</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+                <span class="n">execute_cmd</span> <span class="o">=</span> <span class="n">fin</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Using command script file&#39;</span><span class="p">,</span> <span class="n">execute_script</span><span class="p">)</span>
+                <span class="n">fin</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">execute_cmd</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_remote_results_folder</span><span class="o">=</span><span class="n">remote_results_folder</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Job_file is generated: &quot;</span> <span class="o">+</span> <span class="n">job_file_name</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Remote results folder at: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">remote_results_folder</span><span class="p">))</span>
+
+        <span class="n">jid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status_manager</span><span class="o">.</span><span class="n">add_entry</span><span class="p">(</span><span class="s1">&#39;bash&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">jid</span></div>
+    
+<div class="viewcode-block" id="LaunchAgent.launch_job"><a class="viewcode-back" href="../../../../AgentTools.HPC.launchagent.html#AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.launch_job">[docs]</a>    <span class="k">def</span> <span class="nf">launch_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jobID</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Launch this job based on the configuration</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_may_reconnect</span><span class="p">()</span>
+
+        <span class="n">sftp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssh</span><span class="o">.</span><span class="n">open_sftp</span><span class="p">()</span>
+        <span class="c1"># callback: accepts the bytes transferred so far and the total bytes to be transferred</span>
+        <span class="c1"># confirm=True: do a stat() on the file afterwards to confirm the file size</span>
+                
+        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exp_input_path</span><span class="p">):</span>
+            <span class="n">srcPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exp_input_path</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+            <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prjDir</span> <span class="o">+</span> <span class="n">filename</span>
+            <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Uploading file: </span><span class="si">%s</span><span class="s2"> to path: </span><span class="si">%s</span><span class="s2">/@</span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">srcPath</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_login_url</span><span class="p">,</span>  <span class="n">dest</span><span class="p">))</span>
+            <span class="c1">#sftp.put(srcPath, dest, callback=self.printTotals, confirm=True)</span>
+            <span class="n">sftp</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">srcPath</span><span class="p">,</span> <span class="n">dest</span><span class="p">,</span> <span class="n">confirm</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">sftp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="n">job_entry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status_manager</span><span class="o">.</span><span class="n">get_entry</span><span class="p">(</span><span class="n">jobID</span><span class="p">)</span>
+
+        <span class="c1"># SubmitJob</span>
+        <span class="k">if</span> <span class="n">job_entry</span><span class="p">[</span><span class="s2">&quot;AgentType&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;slurm&#39;</span><span class="p">:</span>
+            <span class="n">jobFileName</span> <span class="o">=</span>  <span class="s1">&#39;cyberwater_&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_name</span> <span class="o">+</span> <span class="s1">&#39;_slurm_job.sh&#39;</span>
+            <span class="n">commands</span> <span class="o">=</span> <span class="s1">&#39;tar -xf packed.tar;&#39;</span><span class="o">+</span> <span class="s1">&#39;sbatch &#39;</span><span class="o">+</span> <span class="n">jobFileName</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;running remote command: &quot;</span> <span class="o">+</span> <span class="n">commands</span><span class="p">)</span>
+            <span class="n">joboutput</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_block_command</span><span class="p">(</span><span class="n">commands</span><span class="p">)</span> <span class="c1"># Non-blocking call</span>
+
+            <span class="n">remote_jobID</span> <span class="o">=</span> <span class="n">joboutput</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+
+
+        <span class="k">elif</span> <span class="n">job_entry</span><span class="p">[</span><span class="s2">&quot;AgentType&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;bash&#39;</span><span class="p">:</span>
+            <span class="c1"># https://stackoverflow.com/questions/17560498/running-process-of-remote-ssh-server-in-the-background-using-python-paramiko</span>
+            <span class="c1"># https://stackoverflow.com/a/14158100/6261848</span>
+            <span class="n">jobFileName</span> <span class="o">=</span>  <span class="s1">&#39;cyberwater_&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_name</span> <span class="o">+</span> <span class="s1">&#39;_bash_job.sh&#39;</span>
+
+            <span class="n">commands</span> <span class="o">=</span> <span class="s1">&#39;tar -xf packed.tar;&#39;</span><span class="o">+</span> <span class="s1">&#39;sh &#39;</span><span class="o">+</span> <span class="n">jobFileName</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;running remote command: &quot;</span> <span class="o">+</span> <span class="n">commands</span><span class="p">)</span>
+            <span class="n">joboutput</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_block_command</span><span class="p">(</span><span class="n">commands</span><span class="p">)</span> <span class="c1"># Non-blocking call</span>
+
+            <span class="n">remote_jobID</span> <span class="o">=</span> <span class="n">joboutput</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;job entry has corrupted AgentType&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Successfully Submit your job on cluster with jobID </span><span class="si">%d</span><span class="s2"> (remote_jobID=</span><span class="si">%d</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">jobID</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">remote_jobID</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status_manager</span><span class="o">.</span><span class="n">update_entry</span><span class="p">(</span><span class="n">jobID</span><span class="p">,</span> <span class="s1">&#39;JobStatus&#39;</span><span class="p">,</span> <span class="s1">&#39;PENDING&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status_manager</span><span class="o">.</span><span class="n">update_entry</span><span class="p">(</span><span class="n">jobID</span><span class="p">,</span> <span class="s1">&#39;RemoteJobID&#39;</span><span class="p">,</span> <span class="n">remote_jobID</span><span class="p">)</span>
+
+        <span class="k">return</span></div>
+    
+    <span class="k">def</span> <span class="nf">_printTotals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transferred</span><span class="p">,</span> <span class="n">toBeTransferred</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;print real-time transfer(upload/download) status&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Transferred: </span><span class="si">{0}</span><span class="se">\t</span><span class="s2">Out of: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">transferred</span><span class="p">,</span> <span class="n">toBeTransferred</span><span class="p">))</span>
+    
+   
+    <span class="k">def</span> <span class="nf">_ssh_block_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commands</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Execute commands on cluster Login Node</span>
+<span class="sd">        </span>
+<span class="sd">        A blocking call to execute commands on remote login node.</span>
+<span class="sd">        This function will autumatically cd to your prjDir. Specifically, </span>
+<span class="sd">        if a job script has been uploaded to a remote login node, you can </span>
+<span class="sd">        directly call this function with setting input commands &quot;sbatch job_script&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            commands (str): The commands. </span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            print your commands to screen </span>
+<span class="sd">            </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            None</span>
+<span class="sd">        </span>
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; obj._ssh_block_command(&#39;cd cyberwater; squeue -u username&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">commands</span> <span class="o">=</span> <span class="s1">&#39;cd &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">prjDir</span> <span class="o">+</span> <span class="s1">&#39;;&#39;</span> <span class="o">+</span> <span class="n">commands</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_may_reconnect</span><span class="p">()</span>
+        <span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="n">commands</span><span class="p">,</span> <span class="n">get_pty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">stdout</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">recv_exit_status</span><span class="p">()</span> <span class="c1"># Blocking call</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">ret</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;return with&#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ret</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;stderr:&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">stderr</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;command: &#39;</span><span class="o">+</span> <span class="n">commands</span> <span class="o">+</span> <span class="s1">&#39;return with&#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ret</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">stderr</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">stdout</span>
+    
+<div class="viewcode-block" id="LaunchAgent.run_monitor_job"><a class="viewcode-back" href="../../../../AgentTools.HPC.launchagent.html#AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.run_monitor_job">[docs]</a>    <span class="k">def</span> <span class="nf">run_monitor_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jobID</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Upload a job script, submit this job, and monitor this job status</span>
+<span class="sd">        </span>
+<span class="sd">        Specify the job</span>
+<span class="sd">        Get the job_ID and use the ID to monitor job status.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            jobID (int): </span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">            </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            OSError: No suchfile</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">t_start_upload</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">launch_job</span><span class="p">(</span><span class="n">jobID</span><span class="p">)</span>
+
+        <span class="n">t_end_upload</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Start Monitor Job: </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">jobID</span><span class="p">)</span>
+        <span class="n">jobFinalStatus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitor_job</span><span class="p">(</span><span class="n">jobID</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">jobFinalStatus</span> <span class="o">!=</span> <span class="s1">&#39;COMPLETED&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Remote job failed!&#39;</span><span class="p">)</span></div>
+
+        <span class="c1">#print(&quot;\n******Timing********\n\tupload\tprocessing\tdownload&quot;)</span>
+        <span class="c1">#print(&quot;\t%.3f\t%.3f\t%.3f&quot; %(t_end_upload-t_start_upload, t_start_download - t_end_upload, t_end_download - t_start_download))</span>
+
+<div class="viewcode-block" id="LaunchAgent.get_job_status"><a class="viewcode-back" href="../../../../AgentTools.HPC.launchagent.html#AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.get_job_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_job_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jobID</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get job status</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            jobID (int): the jobID maintained by launchAgent. </span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: the status string, can be one of {CREATED, PENDING, RUNNING, COMPLETED, FAILED}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_job_info</span><span class="p">(</span><span class="n">jobID</span><span class="p">)[</span><span class="s1">&#39;JobStatus&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="LaunchAgent.get_job_info"><a class="viewcode-back" href="../../../../AgentTools.HPC.launchagent.html#AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.get_job_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_job_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jobID</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Obtain registered job information</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            jobID (int): the jobID maintained by launchAgent.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A dictionary of fields to describe this job.  </span>
+<span class="sd">            if not the above states, return 1, means job completely finshed or no jobID found</span>
+<span class="sd">            </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            runtimeError if trying to use a non-exsiting jobID.</span>
+<span class="sd">            </span>
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; job_entry = obj.get_job_info(jobID)</span>
+<span class="sd">            &gt;&gt;&gt; print(&quot;localjobid: %d, job description: %s&quot; %(jobID, job_entry))</span>
+<span class="sd">            Will output:</span>
+<span class="sd">            &gt;&gt;&gt; localjobid: 5, job description: {&#39;SiteName&#39;: &#39;stampede2&#39;, &#39;AgentType&#39;: &#39;gateway&#39;, &#39;JobStatus&#39;: &#39;CREATED&#39;, &#39;RemoteJobID&#39;: -1, &#39;CreatedTime&#39;: &#39;20210510-2231&#39;, &#39;JobID&#39;: 5}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">job_entry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status_manager</span><span class="o">.</span><span class="n">get_entry</span><span class="p">(</span><span class="n">jobID</span><span class="p">)</span>
+        
+        <span class="c1"># Explanation of slurm job state is here: https://slurm.schedmd.com/squeue.html#lbAG</span>
+        <span class="k">if</span> <span class="n">job_entry</span><span class="p">[</span><span class="s2">&quot;AgentType&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;slurm&#39;</span><span class="p">:</span>
+            <span class="n">stdout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_block_command</span><span class="p">(</span><span class="s1">&#39;scontrol show job </span><span class="si">%s</span><span class="s1"> |grep JobState&#39;</span> <span class="o">%</span> <span class="nb">int</span><span class="p">(</span><span class="n">job_entry</span><span class="p">[</span><span class="s2">&quot;RemoteJobID&quot;</span><span class="p">]))</span>
+            <span class="c1">#lines = stdout.read().strip().split(&#39;\n&#39;)</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">stdout</span><span class="p">:</span>
+                <span class="n">stat_dict</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+            <span class="c1">#return stat_dict</span>
+
+            <span class="n">status</span> <span class="o">=</span> <span class="n">stat_dict</span><span class="p">[</span><span class="s1">&#39;JobState&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;COMPLETING&#39;</span><span class="p">):</span>
+                <span class="n">job_entry</span><span class="p">[</span><span class="s1">&#39;JobStatus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;RUNNING&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">job_entry</span><span class="p">[</span><span class="s1">&#39;JobStatus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">status</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_status_manager</span><span class="o">.</span><span class="n">_persist</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">job_entry</span>
+            <span class="c1">#print(&#39;get_job_stat &#39; + jobID + &#39; completed&#39;)</span>
+        <span class="k">elif</span> <span class="n">job_entry</span><span class="p">[</span><span class="s2">&quot;AgentType&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;bash&#39;</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_may_reconnect</span><span class="p">()</span>
+
+            <span class="n">commands</span> <span class="o">=</span> <span class="s1">&#39;cd &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">prjDir</span> <span class="o">+</span> <span class="s1">&#39;;&#39;</span> <span class="o">+</span> <span class="s2">&quot;cat </span><span class="si">%d</span><span class="s2">.status 2&gt;/dev/null &quot;</span> <span class="o">%</span> <span class="nb">int</span><span class="p">(</span><span class="n">job_entry</span><span class="p">[</span><span class="s2">&quot;RemoteJobID&quot;</span><span class="p">])</span>
+            <span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssh</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="n">commands</span><span class="p">,</span> <span class="n">get_pty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">stdout</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">recv_exit_status</span><span class="p">()</span> <span class="c1"># Blocking call</span>
+
+            <span class="k">if</span><span class="p">(</span><span class="n">ret</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="n">job_entry</span><span class="p">[</span><span class="s2">&quot;JobStatus&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;RUNNING&quot;</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-- commands:&#39;</span><span class="p">,</span> <span class="n">commands</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-- return with&#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ret</span><span class="p">))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-- stderr:&#39;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">stderr</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">job_ExitStatus</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">stdout</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">job_ExitStatus</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">job_entry</span><span class="p">[</span><span class="s2">&quot;JobStatus&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;COMPLETED&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">job_entry</span><span class="p">[</span><span class="s2">&quot;JobStatus&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;FAILED&quot;</span>
+            <span class="c1">#print(&#39;get_job_stat &#39; + jobID + &#39; completed&#39;)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_status_manager</span><span class="o">.</span><span class="n">_persist</span><span class="p">()</span>
+
+            <span class="k">return</span> <span class="n">job_entry</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+    
+    <span class="k">def</span> <span class="nf">_monitor_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jobID</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Monitor this job status</span>
+<span class="sd">        </span>
+<span class="sd">        check job status with Pending, Running, or Nearly Completed (CG)</span>
+<span class="sd">        This function is for internal used, and not exposed to user.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            jobID: </span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Final job status</span>
+<span class="sd">            </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">secs_wait</span> <span class="o">=</span> <span class="mi">5</span>
+        
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+
+            <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_job_status</span><span class="p">(</span><span class="n">jobID</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;PENDING&#39;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;jobid = </span><span class="si">%d</span><span class="s1">, status: </span><span class="si">%s</span><span class="s1">, wait for </span><span class="si">%d</span><span class="s1"> seconds&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">jobID</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">secs_wait</span><span class="p">))</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">secs_wait</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;RUNNING&#39;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;jobid = </span><span class="si">%d</span><span class="s1">, status: </span><span class="si">%s</span><span class="s1">, wait for </span><span class="si">%d</span><span class="s1"> seconds&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">jobID</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">secs_wait</span><span class="p">))</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;COMPLETING&#39;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;jobid = </span><span class="si">%d</span><span class="s1">, status: </span><span class="si">%s</span><span class="s1">, wait for </span><span class="si">%d</span><span class="s1"> seconds&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">jobID</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">secs_wait</span><span class="p">))</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">check_run_feq</span><span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">check_cg_feq</span><span class="p">)</span> <span class="c1">#</span>
+            <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;CONFIGURING&#39;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;jobid = </span><span class="si">%d</span><span class="s1">, status: </span><span class="si">%s</span><span class="s1">, wait for </span><span class="si">%d</span><span class="s1"> seconds&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">jobID</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">secs_wait</span><span class="p">))</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">check_cg_feq</span><span class="p">)</span> <span class="c1">#</span>
+            <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;COMPLETED&#39;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;jobid = </span><span class="si">%d</span><span class="s1">, Completed&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">jobID</span><span class="p">))</span>
+                <span class="k">break</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;jobid =</span><span class="si">%d</span><span class="s1">  Failed!&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">jobID</span><span class="p">))</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">status</span>
+
+
+<div class="viewcode-block" id="LaunchAgent.upload_folder"><a class="viewcode-back" href="../../../../AgentTools.HPC.launchagent.html#AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.upload_folder">[docs]</a>    <span class="k">def</span> <span class="nf">upload_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputpath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Upload local folder to remote working directory</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            inputpath (Path): path of local folder to be uploaded </span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            agent.upload_folder(&#39;tests/matrix/&#39;)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">archivefile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exp_input_path</span><span class="p">,</span> <span class="s1">&#39;packed&#39;</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">make_archive</span><span class="p">(</span><span class="n">archivefile</span><span class="p">,</span> <span class="s1">&#39;tar&#39;</span><span class="p">,</span> <span class="n">inputpath</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Archive created at(&#39;</span><span class="p">,</span> <span class="n">archivefile</span> <span class="p">,</span><span class="s1">&#39;), using local files in:&#39;</span><span class="p">,</span> <span class="n">inputpath</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LaunchAgent.download_folder"><a class="viewcode-back" href="../../../../AgentTools.HPC.launchagent.html#AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.download_folder">[docs]</a>    <span class="k">def</span> <span class="nf">download_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outputpath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Download all contents from remote remote directory to local folder</span>
+
+<span class="sd">        This will recursively copy files/folders from remote working directory.</span>
+<span class="sd">        If remote_results_foder is provided in the `configure_slurm_job` or `configure_bash_job` function, downloading will starts from that remote subfolder.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            outputpath (path): directory path where remote files will be copied to </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># make a tarball of the working dir</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="n">_print_header</span><span class="p">,</span> <span class="s2">&quot;creating tarball for remote results...&quot;</span><span class="p">)</span>
+        <span class="n">result_tarball_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_name</span> <span class="o">+</span> <span class="s1">&#39;_results.tar&#39;</span>
+        <span class="c1"># tar -cf results.tar -C cyberwater .</span>
+        <span class="n">commands</span> <span class="o">=</span> <span class="s1">&#39;cd ../; tar -cf &#39;</span> <span class="o">+</span> <span class="n">result_tarball_name</span> <span class="o">+</span> <span class="s1">&#39; -C &#39;</span><span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_time_str</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remote_results_folder</span>
+        <span class="n">joboutput</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_block_command</span><span class="p">(</span><span class="n">commands</span><span class="p">)</span> <span class="c1"># blocking call</span>
+
+        <span class="n">t_start_download</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="c1"># callback: accepts the bytes transferred so far and the total bytes to be transferred</span>
+        <span class="c1"># confirm=True: do a stat() on the file afterwards to confirm the file size</span>
+        <span class="n">srcPath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prjDir</span> <span class="o">+</span> <span class="s1">&#39;../&#39;</span> <span class="o">+</span><span class="n">result_tarball_name</span> 
+
+        <span class="n">result_tarball_folder</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">localdirpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_time_str</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">result_tarball_folder</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">result_tarball_folder</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">result_tarball_fullpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result_tarball_folder</span><span class="p">,</span> <span class="n">result_tarball_name</span><span class="p">)</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="n">_print_header</span><span class="p">,</span> <span class="s2">&quot;Completed, downloading tarball of remote working directory to path: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result_tarball_fullpath</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_may_reconnect</span><span class="p">()</span>
+        <span class="n">sftp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssh</span><span class="o">.</span><span class="n">open_sftp</span><span class="p">()</span>
+
+        <span class="c1">#sftp.get(srcPath, dest, callback=self.printTotals)</span>
+        <span class="n">sftp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">srcPath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_tarball_fullpath</span><span class="p">)</span>
+        <span class="n">sftp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="n">t_end_download</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="n">tarball</span> <span class="o">=</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result_tarball_fullpath</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">tarball</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">outputpath</span><span class="p">)</span>
+        <span class="n">tarball</span><span class="o">.</span><span class="n">close</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">_print_header</span><span class="p">,</span> <span class="s2">&quot;extract results from tarball to &quot;</span><span class="p">,</span> <span class="n">outputpath</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, CyberWater.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

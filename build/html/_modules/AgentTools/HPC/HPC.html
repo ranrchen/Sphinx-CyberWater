@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgentTools.HPC.HPC &mdash; GenericModelAgentToolkits  documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../AgentTools.html" class="icon icon-home"> GenericModelAgentToolkits
+          </a>
+              <div class="version">
+                Alpha version
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../AgentTools.GenericModelAgent.html">AgentTools.GenericModelAgent package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../AgentTools.HPC.html">AgentTools.HPC package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../AgentTools.util.html">AgentTools.util package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../AgentTools.html">GenericModelAgentToolkits</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../AgentTools.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>AgentTools.HPC.HPC</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for AgentTools.HPC.HPC</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">vistrails.core.modules.vistrails_module</span> <span class="kn">import</span> <span class="n">Module</span><span class="p">,</span> <span class="n">ModuleError</span>
+<span class="kn">from</span> <span class="nn">vistrails.core.modules.basic_modules</span> <span class="kn">import</span> <span class="n">NotCacheable</span><span class="p">,</span> <span class="n">File</span><span class="p">,</span> <span class="n">Directory</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">Boolean</span>
+<span class="kn">from</span> <span class="nn">vistrails.core.modules.config</span> <span class="kn">import</span> <span class="n">IPort</span><span class="p">,</span> <span class="n">OPort</span><span class="p">,</span> <span class="n">CIPort</span><span class="p">,</span> <span class="n">IPItem</span>
+<span class="kn">from</span> <span class="nn">msm_core.msm_srv.task_cache.TaskCache</span> <span class="kn">import</span> <span class="n">TaskCache</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">ntpath</span> <span class="kn">import</span> <span class="n">join</span>
+<span class="kn">from</span> <span class="nn">launchagent.ssh_agent</span> <span class="kn">import</span> <span class="n">LaunchAgent</span>
+<span class="kn">from</span> <span class="nn">launchagent.gateway_agent</span> <span class="kn">import</span> <span class="n">GatewayAgent</span>
+<span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtGui</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">util.OutputUtil</span> <span class="kn">import</span> <span class="n">OutputUtil</span>
+<span class="kn">from</span> <span class="nn">util.DocumentUtil</span> <span class="kn">import</span> <span class="n">DocumentUtil</span>
+
+
+<div class="viewcode-block" id="HPC"><a class="viewcode-back" href="../../../AgentTools.HPC.html#AgentTools.HPC.HPC.HPC">[docs]</a><span class="k">class</span> <span class="nc">HPC</span><span class="p">(</span><span class="n">NotCacheable</span><span class="p">,</span> <span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    HPC module is responsible for the execution of a Model on a remote high-performance computing platform. </span>
+<span class="sd">    </span>
+<span class="sd">    :Input Ports:</span>
+<span class="sd">        :(1) Platform Selection:</span>
+<span class="sd">            - **SSH Platform:** Platform for SSH connection, including 6 slurm-based platforms: bigred3, bridges2, bridges2-shared, stampede2, google cloud, and jetstream, and 4 bash-based platforms: sievert, rain, thunder, and lightning.</span>
+<span class="sd">            - **Gateway Platform:** Platform for gateway connection, including bigred3, bridges2, bridges2-shared and carbonate.</span>
+<span class="sd">            - **Customized:** Customized based-based platform for user to connect, user can choose to save their customized platform, so that this server option will be displayed in the list of SSH Platform next time.</span>
+<span class="sd">        :(2) Credential:</span>
+<span class="sd">            - **Username:** Username for high performance computing platform.</span>
+<span class="sd">            - **Password:** Password for high performance computing platform.</span>
+<span class="sd">        :(3) Project Configuration:</span>
+<span class="sd">            - **Project Name:** The name of project created in high-performance computing platform.</span>
+<span class="sd">            - **Email:** User will receive a notification email when job done.</span>
+<span class="sd">            - **Estimated Runtime:** The duration of the task in the platform which user want to apply for, and the default value is 5 minus.</span>
+<span class="sd">            - **Argument:** Argument required for the model execution. e.g., -g vic_global_file_val</span>
+<span class="sd">            - **Result File Prefix:** The prefix of all the cells generated by the model.</span>
+<span class="sd">            - **Point Output:**  (True/False). Check if the output is a single time-series in contrast of a distributed result in multiple files, once per cell. Default = False.</span>
+<span class="sd">            - **Result File Separator:**  Separation character in the output files. Default = &#39; &#39;</span>
+<span class="sd">            - **Header Lines:**  Number of lines at the top of the resulting files that need to be ignored. Default = 0</span>
+<span class="sd">        :(4) Model Source:</span>
+<span class="sd">            - **Executable Program:** The file path of the executable program of computation model, e.g., vicNl.exe.</span>
+<span class="sd">            - **Source Code:** The directory path of the source code of computation model,\</span>
+<span class="sd">             if there is no available executable program running in the high-performance computing platform.\</span>
+<span class="sd">            The output executable name set in MakeFile should be same as the folder name of source code, e.g., vicNl</span>
+<span class="sd">        :(5) Output Datasets:</span>
+<span class="sd">             - **Output Name:** Name of the output dataset x. (x=01,02,03,....,20)</span>
+<span class="sd">             - **File Pos:** Column index in the result files for the dataset x. (x=01,02,03,....,20)</span>
+<span class="sd">        :Ready_List: Connect the output of ForcingDataFileGenerator, AreaWiseParamGenerator and InitialStateFileGenerator if it exists.</span>
+<span class="sd">        :WD_Path: WD_Path output port of the MainGenerator. This is the directory where the simulation files are saved.</span>
+<span class="sd">        :DataSet_Class: DataSet_Class output port of the MainGenerator.</span>
+<span class="sd">    </span>
+<span class="sd">    :Output Ports:</span>
+<span class="sd">        - **Outputx:**  Output dataset x. (x=01,02,03,....,20)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">taskCache</span> <span class="o">=</span> <span class="n">TaskCache</span><span class="p">()</span>
+    <span class="n">WRITE_EMPTY_VALUE</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">siteFile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;/launchagent/resources/site_dict.json&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">siteFile</span><span class="p">,</span><span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">siteList</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">sshList</span> <span class="o">=</span> <span class="n">siteList</span><span class="p">[</span><span class="s2">&quot;ssh_agent&quot;</span><span class="p">][</span><span class="s2">&quot;sites&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="n">gatewayList</span> <span class="o">=</span> <span class="n">siteList</span><span class="p">[</span><span class="s2">&quot;gateway_agent&quot;</span><span class="p">][</span><span class="s2">&quot;sites&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="n">slurmList</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;bigred3&quot;</span><span class="p">,</span> <span class="s2">&quot;gcp&quot;</span><span class="p">,</span> <span class="s2">&quot;jetstream&quot;</span><span class="p">,</span> <span class="s2">&quot;bridges2&quot;</span><span class="p">,</span> <span class="s2">&quot;bridges2-shared&quot;</span><span class="p">,</span> <span class="s2">&quot;stampede2&quot;</span><span class="p">]</span>
+        <span class="n">sshList</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;Customized&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sshList</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">sshList</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;gcp&#39;</span><span class="p">:</span>
+                <span class="n">sshList</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Google Cloud&quot;</span>
+            <span class="k">elif</span> <span class="n">sshList</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">slurmList</span><span class="p">:</span>
+                <span class="n">sshList</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sshList</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gatewayList</span><span class="p">)):</span>
+            <span class="n">gatewayList</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">gatewayList</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+
+    <span class="n">_input_ports</span> <span class="o">=</span> <span class="p">[</span><span class="n">CIPort</span><span class="p">(</span><span class="s2">&quot;(1) Platform Selection&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">String</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">String</span><span class="p">],</span> <span class="n">entry_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;enum&quot;</span><span class="p">,</span> <span class="s2">&quot;enum&quot;</span><span class="p">,</span> <span class="s2">&quot;query&quot;</span><span class="p">],</span>
+                           <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="n">sshList</span><span class="p">,</span><span class="n">gatewayList</span><span class="p">,</span><span class="kc">None</span><span class="p">],</span>
+                           <span class="n">optional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                           <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;&lt;b&gt;SSH Platform&lt;/b&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;b&gt;Gateway Platform&lt;/b&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;b&gt;Customized&lt;/b&gt;&quot;</span><span class="p">]),</span>
+                    <span class="n">CIPort</span><span class="p">(</span><span class="s2">&quot;(2) Credential&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">String</span><span class="p">],</span> <span class="n">optional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;&lt;b&gt;Username&lt;/b&gt;&quot;</span><span class="p">]),</span>
+                    <span class="n">CIPort</span><span class="p">(</span><span class="s2">&quot;(4) Model Source&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">File</span><span class="p">,</span> <span class="n">Directory</span><span class="p">],</span> <span class="n">optional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                           <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;&lt;b&gt;Executable Program&lt;/b&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;b&gt;Source Code&lt;/b&gt;&quot;</span><span class="p">]),</span>
+                    <span class="n">CIPort</span><span class="p">(</span><span class="s2">&quot;(3) Project Configuration&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">String</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span><span class="n">String</span><span class="p">,</span><span class="n">Boolean</span><span class="p">,</span><span class="n">String</span><span class="p">,</span><span class="n">Integer</span><span class="p">],</span> <span class="n">optional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                           <span class="n">defaults</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CyberWater&quot;</span><span class="p">,</span> <span class="s2">&quot;[User&#39;s Email Address]&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span><span class="s2">&quot;results&quot;</span><span class="p">,</span><span class="kc">False</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+                           <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;&lt;b&gt;Project Name&lt;/b&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;b&gt;Email&lt;/b&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;b&gt;Estimated Runtime&lt;/b&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;b&gt;Argument&lt;/b&gt;&quot;</span><span class="p">,</span>
+                                   <span class="s2">&quot;&lt;b&gt;Result_File_Prefix/Name&lt;/b&gt;&quot;</span><span class="p">,</span><span class="s2">&quot;&lt;b&gt;Result Folder&quot;</span><span class="p">,</span><span class="s2">&quot;&lt;b&gt;Point Output&lt;/b&gt;&quot;</span><span class="p">,</span><span class="s2">&quot;&lt;b&gt;Result File Separator&lt;/b&gt;&quot;</span><span class="p">,</span><span class="s2">&quot;&lt;b&gt;Header Lines&lt;/b&gt;&quot;</span><span class="p">]),</span>
+                    <span class="n">IPort</span><span class="p">(</span><span class="s2">&quot;Ready_List&quot;</span><span class="p">,</span> <span class="n">Boolean</span><span class="p">),</span>
+                    <span class="n">IPort</span><span class="p">(</span><span class="s2">&quot;WD_Path&quot;</span><span class="p">,</span> <span class="n">String</span><span class="p">),</span>
+                    <span class="n">IPort</span><span class="p">(</span><span class="s2">&quot;DataSet_Class&quot;</span><span class="p">,</span> <span class="n">String</span><span class="p">),</span>
+                    <span class="n">CIPort</span><span class="p">(</span><span class="s2">&quot;(5) Output Datasets&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">String</span><span class="p">,</span><span class="n">String</span><span class="p">],</span> <span class="n">optional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;&lt;b&gt;File Position&lt;/b&gt;&quot;</span><span class="p">,</span><span class="s2">&quot;&lt;b&gt;Output Name&lt;/b&gt;&quot;</span><span class="p">])]</span>
+    <span class="n">_output_ports</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;Output01&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">),</span>
+                     <span class="p">(</span><span class="s1">&#39;Output02&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;optional&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+                     <span class="p">(</span><span class="s1">&#39;Output03&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;optional&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+                     <span class="p">(</span><span class="s1">&#39;Output04&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;optional&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+                     <span class="p">(</span><span class="s1">&#39;Output05&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;optional&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+                     <span class="p">(</span><span class="s1">&#39;Output06&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;optional&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+                     <span class="p">(</span><span class="s1">&#39;Output07&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;optional&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+                     <span class="p">(</span><span class="s1">&#39;Output08&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;optional&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+                     <span class="p">(</span><span class="s1">&#39;Output09&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;optional&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+                     <span class="p">(</span><span class="s1">&#39;Output10&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;optional&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+                     <span class="p">(</span><span class="s1">&#39;Output11&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;optional&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+                     <span class="p">(</span><span class="s1">&#39;Output12&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;optional&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+                     <span class="p">(</span><span class="s1">&#39;Output13&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;optional&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+                     <span class="p">(</span><span class="s1">&#39;Output14&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;optional&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+                     <span class="p">(</span><span class="s1">&#39;Output15&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;optional&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+                     <span class="p">(</span><span class="s1">&#39;Output16&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;optional&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+                     <span class="p">(</span><span class="s1">&#39;Output17&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;optional&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+                     <span class="p">(</span><span class="s1">&#39;Output18&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;optional&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+                     <span class="p">(</span><span class="s1">&#39;Output19&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;optional&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+                     <span class="p">(</span><span class="s1">&#39;Output20&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;optional&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})]</span>
+
+<div class="viewcode-block" id="HPC.compute"><a class="viewcode-back" href="../../../AgentTools.HPC.html#AgentTools.HPC.HPC.HPC.compute">[docs]</a>    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The main function of HPC module is to execute  a model on a remote high-performance computing platform</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Getting Input</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">OutputUtil</span><span class="p">()</span>
+        <span class="n">dd</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Getting Credential</span>
+        <span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_get_input</span><span class="p">(</span><span class="s2">&quot;(2) Credential&quot;</span><span class="p">)</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Credential Dialog&quot;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Password for &quot;</span> <span class="o">+</span> <span class="n">username</span>
+
+        <span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">ok</span><span class="p">)</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QInputDialog</span><span class="o">.</span><span class="n">getText</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QLineEdit</span><span class="o">.</span><span class="n">Password</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ModuleError</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Canceled&quot;</span><span class="p">)</span>
+        <span class="n">password</span> <span class="o">=</span> <span class="n">result</span>
+
+
+        <span class="c1"># Getting Platform</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_get_input</span><span class="p">(</span><span class="s2">&quot;(1) Platform Selection&quot;</span><span class="p">)</span>
+        <span class="n">sshSite</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">Gateway</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">Customized</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="c1"># Connecting with previous modules</span>
+        <span class="n">Dataset_in</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_get_input</span><span class="p">(</span><span class="s2">&quot;DataSet_Class&quot;</span><span class="p">)</span>
+        <span class="n">Ready_List</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_get_input_list</span><span class="p">(</span><span class="s2">&quot;Ready_List&quot;</span><span class="p">)</span>
+        <span class="n">Path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_get_input</span><span class="p">(</span><span class="s2">&quot;WD_Path&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Getting Model Engine</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_get_input</span><span class="p">(</span><span class="s2">&quot;(4) Model Source&quot;</span><span class="p">)</span>
+        <span class="n">exe</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="c1"># Getting Project Configuration</span>
+        <span class="n">projectconf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_get_input</span><span class="p">(</span><span class="s2">&quot;(3) Project Configuration&quot;</span><span class="p">)</span>
+        <span class="n">projectname</span> <span class="o">=</span> <span class="n">projectconf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">email</span> <span class="o">=</span> <span class="n">projectconf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">runtime</span> <span class="o">=</span> <span class="n">projectconf</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">arg</span> <span class="o">=</span> <span class="n">projectconf</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">file_name</span> <span class="o">=</span> <span class="n">projectconf</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">result_folder</span> <span class="o">=</span> <span class="n">projectconf</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+        <span class="n">point_output</span> <span class="o">=</span> <span class="n">projectconf</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+        <span class="n">separator</span> <span class="o">=</span> <span class="n">projectconf</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
+        <span class="n">number_of_header_lines</span> <span class="o">=</span> <span class="n">projectconf</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span>
+
+        <span class="c1"># Checking Inputs and provide defaults</span>
+        <span class="k">if</span> <span class="n">Ready_List</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">Ready_List</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Ready_List is empty or undefined.&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">single_ready</span> <span class="ow">in</span> <span class="n">Ready_List</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">single_ready</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Some of the components are not ready.&quot;</span><span class="p">)</span>
+        <span class="c1"># Start Computing ----------------------------------------------------------------------------------------------</span>
+        <span class="n">exe_str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">exe</span><span class="p">)</span>
+        <span class="n">obj_str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="c1"># The folder name should be the output name in MakeFile</span>
+        <span class="n">files_dir</span> <span class="o">=</span> <span class="n">Path</span>
+        <span class="k">if</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">files_dir</span><span class="p">,</span> <span class="n">obj_str</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">exe</span><span class="p">:</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">exe</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">files_dir</span><span class="p">,</span> <span class="n">exe_str</span><span class="p">))</span>
+
+        <span class="n">isSlurm</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">sshSite</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Bigred3&quot;</span><span class="p">,</span> <span class="s2">&quot;Google Cloud&quot;</span><span class="p">,</span> <span class="s2">&quot;Jetstream&quot;</span><span class="p">,</span> <span class="s2">&quot;Bridges2&quot;</span><span class="p">,</span> <span class="s2">&quot;Bridges2-shared&quot;</span><span class="p">,</span> <span class="s2">&quot;Stampede2&quot;</span><span class="p">]:</span>
+            <span class="n">isSlurm</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">Customized</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">Gateway</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">sshSite</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">agent</span> <span class="o">=</span> <span class="n">LaunchAgent</span><span class="p">(</span><span class="n">site_name</span><span class="o">=</span><span class="s2">&quot;Customized&quot;</span><span class="p">,</span><span class="n">login_url</span><span class="o">=</span><span class="n">Customized</span><span class="p">,</span> <span class="n">project_name</span><span class="o">=</span><span class="n">projectname</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">passwd</span><span class="o">=</span><span class="n">password</span><span class="p">,</span><span class="n">sched_env</span><span class="o">=</span><span class="s1">&#39;bash&#39;</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Authentication fails, username or password isn&#39;t correct&quot;</span><span class="p">)</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Authentication Fails&quot;</span><span class="p">,</span><span class="s2">&quot;Username or password isn&#39;t correct&quot;</span><span class="p">,</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">ok</span><span class="p">)</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QInputDialog</span><span class="o">.</span><span class="n">getText</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Offer to save server&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;b&gt;Do you want CyberWater VisTrails to save this server?&lt;/b&gt; </span><span class="se">\</span>
+<span class="s2">            (If yes, please enter an alias for this server)&quot;</span><span class="p">,</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QLineEdit</span><span class="o">.</span><span class="n">Normal</span><span class="p">,</span><span class="n">Customized</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sshList</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">siteList</span><span class="p">[</span><span class="s2">&quot;ssh_agent&quot;</span><span class="p">][</span><span class="s2">&quot;sites&quot;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="p">)]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;sched_env&quot;</span><span class="p">:</span> <span class="s2">&quot;bash&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;login_url&quot;</span><span class="p">:</span> <span class="n">Customized</span><span class="p">}</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">siteFile</span><span class="p">,</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">siteList</span><span class="p">,</span><span class="n">f</span><span class="p">)</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Fail to update the dictionary of sites&quot;</span><span class="p">)</span>
+                        <span class="n">result</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Update Fails&quot;</span><span class="p">,</span><span class="s2">&quot;Fail to update the dictionary of sites&quot;</span><span class="p">,</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="s2">&quot;Warning&quot;</span><span class="p">,</span> <span class="s2">&quot;This server already exists in the list&quot;</span><span class="p">,</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">sshSite</span> <span class="ow">and</span> <span class="n">isSlurm</span><span class="p">:</span>
+            <span class="c1"># sshSite convertion</span>
+            <span class="n">sshSite</span> <span class="o">=</span> <span class="n">sshSite</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">sshSite</span> <span class="o">==</span> <span class="s2">&quot;google cloud&quot;</span><span class="p">:</span>
+                <span class="n">sshSite</span> <span class="o">=</span> <span class="s2">&quot;gcp&quot;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># launch agent for ssh</span>
+                <span class="n">agent</span> <span class="o">=</span> <span class="n">LaunchAgent</span><span class="p">(</span><span class="n">site_name</span><span class="o">=</span><span class="n">sshSite</span><span class="p">,</span> <span class="n">project_name</span><span class="o">=</span><span class="n">projectname</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">passwd</span><span class="o">=</span><span class="n">password</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Authentication fails, username or password isn&#39;t correct&quot;</span><span class="p">)</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Authentication Fails&quot;</span><span class="p">,</span> <span class="s2">&quot;Username or password isn&#39;t correct&quot;</span><span class="p">,</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span>
+                <span class="k">return</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">isSlurm</span> <span class="ow">and</span> <span class="n">sshSite</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">agent</span> <span class="o">=</span> <span class="n">LaunchAgent</span><span class="p">(</span><span class="n">site_name</span><span class="o">=</span><span class="n">sshSite</span><span class="p">,</span> <span class="n">project_name</span><span class="o">=</span><span class="n">projectname</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">passwd</span><span class="o">=</span><span class="n">password</span><span class="p">,</span><span class="n">sched_env</span><span class="o">=</span><span class="s1">&#39;bash&#39;</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Authentication fails, username or password isn&#39;t correct&quot;</span><span class="p">)</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Authentication Fails&quot;</span><span class="p">,</span> <span class="s2">&quot;Username or password isn&#39;t correct&quot;</span><span class="p">,</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span>
+                <span class="k">return</span>
+        <span class="k">if</span> <span class="n">Gateway</span><span class="p">:</span>
+            <span class="c1"># print(&quot;Gateway&quot;)</span>
+            <span class="n">Gateway</span> <span class="o">=</span> <span class="n">Gateway</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="c1"># launch agent for gateway</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">agent</span> <span class="o">=</span> <span class="n">GatewayAgent</span><span class="p">(</span><span class="n">gateway_username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">gateway_passwd</span><span class="o">=</span><span class="n">password</span><span class="p">,</span><span class="n">exp_name</span><span class="o">=</span><span class="n">projectname</span><span class="p">,</span> <span class="n">site_name</span><span class="o">=</span><span class="n">Gateway</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Authentication fails, username or password isn&#39;t correct&quot;</span><span class="p">)</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Authentication Fails&quot;</span><span class="p">,</span> <span class="s2">&quot;Username or password isn&#39;t correct&quot;</span><span class="p">,</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span>
+                <span class="k">return</span>
+
+        <span class="n">inputs</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">inputs</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Dataset_in</span><span class="p">)</span>
+        <span class="n">inputs</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Ready_List</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Path</span><span class="p">:</span>
+            <span class="n">inputs</span> <span class="o">+=</span> <span class="n">Path</span>
+        <span class="k">if</span> <span class="n">arg</span><span class="p">:</span>
+            <span class="n">inputs</span> <span class="o">+=</span> <span class="n">arg</span>
+        <span class="k">if</span> <span class="n">exe</span><span class="p">:</span>
+            <span class="n">inputs</span> <span class="o">+=</span> <span class="n">exe</span>
+        <span class="k">if</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="n">inputs</span> <span class="o">+=</span> <span class="n">obj</span>
+        <span class="k">if</span> <span class="n">file_name</span><span class="p">:</span>
+            <span class="n">inputs</span> <span class="o">+=</span> <span class="n">file_name</span>
+        <span class="n">inputs</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">point_output</span><span class="p">)</span>
+        <span class="n">inputs</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">number_of_header_lines</span><span class="p">)</span>
+        <span class="n">inputs</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">separator</span><span class="p">)</span>
+
+        <span class="n">input_identification</span> <span class="o">=</span> <span class="n">inputs</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>  <span class="c1"># TODO delete the datetime.now addition</span>
+        <span class="n">input_identification</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid5</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">NAMESPACE_DNS</span><span class="p">,</span> <span class="n">input_identification</span><span class="p">)</span>
+        <span class="n">input_identification</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">input_identification</span><span class="p">)</span>
+
+        <span class="c1"># Getting information of output datasets:</span>
+        <span class="n">outputDatasetInfo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_get_input_list</span><span class="p">(</span><span class="s2">&quot;(5) Output Datasets&quot;</span><span class="p">)</span>
+        <span class="c1"># Getting output name list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Output_name</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Getting file position list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Position_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">pl</span><span class="p">,</span> <span class="n">on</span> <span class="ow">in</span> <span class="n">outputDatasetInfo</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Output_name</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">on</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Position_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pl</span><span class="p">)</span>
+
+        <span class="n">dd</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">check_dimensions</span><span class="p">(</span><span class="n">Dataset_in</span><span class="p">,</span> <span class="n">dd</span><span class="p">)</span>
+
+        <span class="n">task_id</span> <span class="o">=</span> <span class="n">input_identification</span>
+        <span class="n">cached_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">taskCache</span><span class="o">.</span><span class="n">get_task_cached_result_dataset_names_by_port</span><span class="p">(</span><span class="n">task_id</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">cached_result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># return cached_result[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cached_result</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="s1">&#39;Output0&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_output</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">cached_result</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">Output_name</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]])</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">files_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">result_folder</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">files_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">result_folder</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mi">0777</span><span class="p">)</span>
+
+            <span class="c1"># Prepare execution script, run.sh</span>
+            <span class="n">checkWords</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;$1&quot;</span><span class="p">,</span><span class="s2">&quot;$2&quot;</span><span class="p">,</span><span class="s2">&quot;$3&quot;</span><span class="p">)</span>
+            <span class="n">repWords</span> <span class="o">=</span> <span class="p">(</span><span class="n">arg</span><span class="p">,</span><span class="n">exe_str</span><span class="p">,</span><span class="n">obj_str</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">repWords</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span><span class="o">+</span><span class="s2">&quot;/launchagent/resources/run.sh&quot;</span><span class="p">,</span><span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_old</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">files_dir</span><span class="p">,</span> <span class="s1">&#39;run.sh&#39;</span><span class="p">),</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_new</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f_old</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">check</span><span class="p">,</span> <span class="n">rep</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">checkWords</span><span class="p">,</span><span class="n">repWords</span><span class="p">):</span>
+                            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">check</span><span class="p">,</span><span class="n">rep</span><span class="p">)</span>
+                        <span class="n">f_new</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="c1"># upload folders:</span>
+            <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Files being uploaded&quot;</span><span class="p">,</span> <span class="n">files_dir</span><span class="p">)</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">upload_folder</span><span class="p">(</span><span class="n">files_dir</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">sshSite</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">isSlurm</span><span class="p">:</span>
+                    <span class="n">job_id</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">configure_slurm_job</span><span class="p">(</span><span class="n">nodes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ntasks_per_node</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                    <span class="n">email</span><span class="o">=</span><span class="n">email</span><span class="p">,</span> <span class="n">walltime_in_mins</span><span class="o">=</span><span class="n">runtime</span><span class="p">,</span> <span class="n">execute_script</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">files_dir</span><span class="p">,</span> <span class="s1">&#39;run.sh&#39;</span><span class="p">))</span>
+                    <span class="n">agent</span><span class="o">.</span><span class="n">run_monitor_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">job_id</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">configure_bash_job</span><span class="p">(</span><span class="n">execute_script</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">files_dir</span><span class="p">,</span> <span class="s1">&#39;run.sh&#39;</span><span class="p">))</span>
+                    <span class="n">agent</span><span class="o">.</span><span class="n">launch_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">Gateway</span><span class="p">:</span>
+                <span class="n">agent</span><span class="o">.</span><span class="n">configure_exp</span><span class="p">(</span><span class="n">nodes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ntasks_per_node</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                    <span class="n">email</span><span class="o">=</span><span class="n">email</span><span class="p">,</span> <span class="n">walltime_in_mins</span><span class="o">=</span><span class="n">runtime</span><span class="p">)</span>
+                <span class="n">QtGui</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">about</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Airavata Portal&quot;</span><span class="p">,</span> <span class="s2">&quot;Web-based Interface of Gateway:&lt;a href=&#39;https://cyberwater.scigap.org/&#39;&gt;https://cyberwater.scigap.org/&lt;/a&gt;&quot;</span><span class="p">)</span>
+                <span class="n">agent</span><span class="o">.</span><span class="n">run_monitor_job</span><span class="p">()</span>
+
+            <span class="k">elif</span> <span class="n">Customized</span><span class="p">:</span>
+                <span class="n">job_id</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">configure_bash_job</span><span class="p">(</span><span class="n">execute_script</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">files_dir</span><span class="p">,</span> <span class="s1">&#39;run.sh&#39;</span><span class="p">))</span>
+                <span class="n">agent</span><span class="o">.</span><span class="n">launch_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Preparing outputs:&quot;</span><span class="p">)</span>
+            <span class="n">output_folder</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">files_dir</span><span class="p">,</span><span class="n">result_folder</span><span class="p">)</span>
+            <span class="c1"># Download the outputfile</span>
+            <span class="n">agent</span><span class="o">.</span><span class="n">download_folder</span><span class="p">(</span><span class="n">files_dir</span><span class="p">)</span>
+            <span class="n">module_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="n">outputs</span><span class="p">,</span><span class="n">ret</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">save_outputs</span><span class="p">(</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Output_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Position_list</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">input_identification</span><span class="p">,</span> <span class="n">point_output</span><span class="p">,</span> <span class="n">separator</span><span class="p">,</span> <span class="n">number_of_header_lines</span><span class="p">,</span><span class="n">module_name</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">dd</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="s1">&#39;Output</span><span class="si">%02d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_output</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">ret</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="HPC.get_documentation"><a class="viewcode-back" href="../../../AgentTools.HPC.html#AgentTools.HPC.HPC.HPC.get_documentation">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_documentation</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">docstring</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function is to get the documentation of HPC module</span>
+
+<span class="sd">        @param docstring: A string used to document a HPC module</span>
+<span class="sd">        @param module: HPC module</span>
+<span class="sd">        @return: A invoked function from package DocumentUtil to get documentation of HPC module</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">module_name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;__module__&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">DocumentUtil</span><span class="o">.</span><span class="n">get_documentation</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, CyberWater.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

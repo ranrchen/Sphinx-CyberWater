@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgentTools.HPC.launchagent.status_manager &mdash; GenericModelAgentToolkits  documentation</title><link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../AgentTools.html" class="icon icon-home"> GenericModelAgentToolkits
+          </a>
+              <div class="version">
+                Alpha version
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../AgentTools.GenericModelAgent.html">AgentTools.GenericModelAgent package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../AgentTools.HPC.html">AgentTools.HPC package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../AgentTools.util.html">AgentTools.util package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../AgentTools.html">GenericModelAgentToolkits</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../AgentTools.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>AgentTools.HPC.launchagent.status_manager</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for AgentTools.HPC.launchagent.status_manager</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="c1">#import pandas as pd</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="n">_supported_agent_types</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;slurm&#39;</span><span class="p">,</span> <span class="s1">&#39;gateway&#39;</span><span class="p">,</span> <span class="s1">&#39;shell&#39;</span><span class="p">}</span>
+
+<div class="viewcode-block" id="StatusManager"><a class="viewcode-back" href="../../../../AgentTools.HPC.launchagent.html#AgentTools.HPC.launchagent.status_manager.StatusManager">[docs]</a><span class="k">class</span> <span class="nc">StatusManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Manage all job submitted from slurm, gateway, shell based launchAgent</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db_file_path</span><span class="p">,</span> <span class="n">ignore_previous</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialization of the status database file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            db_file_path (str): a path to store the global status file</span>
+<span class="sd">            ignore_previous (bool): an option to start fresh</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_db_file_path</span> <span class="o">=</span> <span class="n">db_file_path</span>
+        <span class="k">if</span> <span class="n">ignore_previous</span> <span class="o">==</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">db_file_path</span><span class="p">):</span>
+            <span class="c1"># if there is old state file</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">db_file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_job_stat</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: StateFile </span><span class="si">%s</span><span class="s2"> corrupted or empty, delete it!&quot;</span> <span class="o">%</span> <span class="n">db_file_path</span><span class="p">)</span>
+                    <span class="k">raise</span>
+                    
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_job_stat</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_job_stat</span><span class="p">[</span><span class="s2">&quot;job_list&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_job_stat</span><span class="p">[</span><span class="s2">&quot;nr_allocated_jobs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    
+<div class="viewcode-block" id="StatusManager.add_entry"><a class="viewcode-back" href="../../../../AgentTools.HPC.launchagent.html#AgentTools.HPC.launchagent.status_manager.StatusManager.add_entry">[docs]</a>    <span class="k">def</span> <span class="nf">add_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent_type</span><span class="p">,</span> <span class="n">site_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Allocate a slot in the db and update status.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            agent_type (str): either &#39;slurm&#39; or &#39;bash&#39; </span>
+<span class="sd">            site_name (str): site names defined in site_dict.json file</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: job_id for this entry</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">job_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_job_stat</span><span class="p">[</span><span class="s2">&quot;nr_allocated_jobs&quot;</span><span class="p">]</span>
+        <span class="n">created_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">-%H%M&quot;</span><span class="p">)</span>
+        <span class="n">job_entry</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;JobID&#39;</span><span class="p">:</span> <span class="n">job_id</span><span class="p">,</span> <span class="s1">&#39;AgentType&#39;</span><span class="p">:</span> <span class="n">agent_type</span><span class="p">,</span> <span class="s1">&#39;SiteName&#39;</span><span class="p">:</span> <span class="n">site_name</span><span class="p">,</span> <span class="s1">&#39;JobStatus&#39;</span><span class="p">:</span> <span class="s1">&#39;CREATED&#39;</span><span class="p">,</span> <span class="s1">&#39;CreatedTime&#39;</span><span class="p">:</span> <span class="n">created_time</span><span class="p">,</span> <span class="s1">&#39;RemoteJobID&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_job_stat</span><span class="p">[</span><span class="s2">&quot;job_list&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">job_entry</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_job_stat</span><span class="p">[</span><span class="s2">&quot;nr_allocated_jobs&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_persist</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">job_id</span> </div>
+    
+<div class="viewcode-block" id="StatusManager.get_entry"><a class="viewcode-back" href="../../../../AgentTools.HPC.launchagent.html#AgentTools.HPC.launchagent.status_manager.StatusManager.get_entry">[docs]</a>    <span class="k">def</span> <span class="nf">get_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the status of a job</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            job_id (int): the jobid returned by add_entry</span>
+<span class="sd">        </span>
+<span class="sd">        Return:</span>
+<span class="sd">            dict: a dictory that contains the job information:</span>
+<span class="sd">            </span>
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; print(manager.get_entry(id))</span>
+<span class="sd">            {&#39;JobID&#39;: 13, &#39;AgentType&#39;: &#39;slurm&#39;, &#39;JobStatus&#39;: &#39;RUNNING&#39;, &#39;CreatedTime&#39;: &#39;20210510-2231&#39;, &#39;RemoteJobID&#39;: 12387}</span>
+
+<span class="sd">            The JobStatus can be: &#39;CREATED&#39;, &#39;PENDING&#39;, &#39;RUNNING&#39;, &#39;COMPLETED&#39;,&#39;FAILED&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">job_entry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_job_stat</span><span class="p">[</span><span class="s2">&quot;job_list&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">job_entry</span><span class="p">[</span><span class="s2">&quot;JobID&quot;</span><span class="p">]</span> <span class="o">==</span>  <span class="n">job_id</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">job_entry</span>
+
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;jobid </span><span class="si">%d</span><span class="s2"> doesn&#39;s exist, check state file at </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db_file_path</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="StatusManager.update_entry"><a class="viewcode-back" href="../../../../AgentTools.HPC.launchagent.html#AgentTools.HPC.launchagent.status_manager.StatusManager.update_entry">[docs]</a>    <span class="k">def</span> <span class="nf">update_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update specific field of an entry in the catalog</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            job_id ([type]): [description]</span>
+<span class="sd">            field_name ([type]): [description]</span>
+<span class="sd">            value ([type]): [description]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">job_entry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_job_stat</span><span class="p">[</span><span class="s2">&quot;job_list&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">job_entry</span><span class="p">[</span><span class="s2">&quot;JobID&quot;</span><span class="p">]</span> <span class="o">==</span>  <span class="n">job_id</span><span class="p">:</span>
+                <span class="n">job_entry</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_persist</span><span class="p">()</span>
+                <span class="k">return</span>
+
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;jobid </span><span class="si">%d</span><span class="s2"> doesn&#39;s exist, check state file at </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db_file_path</span><span class="p">))</span></div>
+    
+<div class="viewcode-block" id="StatusManager.print_all_status"><a class="viewcode-back" href="../../../../AgentTools.HPC.launchagent.html#AgentTools.HPC.launchagent.status_manager.StatusManager.print_all_status">[docs]</a>    <span class="k">def</span> <span class="nf">print_all_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print status to console</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">all_entries</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_job_stat</span><span class="p">,</span> <span class="n">indent</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">all_entries</span><span class="p">)</span></div>
+    
+    <span class="k">def</span> <span class="nf">_persist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Persist current state to disk</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_db_file_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_job_stat</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span></div>
+
+
+    
+        
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, CyberWater.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

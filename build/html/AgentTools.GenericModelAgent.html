@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgentTools.GenericModelAgent package &mdash; GenericModelAgentToolkits  documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="AgentTools.HPC package" href="AgentTools.HPC.html" />
+    <link rel="prev" title="AgentTools package" href="AgentTools.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="AgentTools.html" class="icon icon-home"> GenericModelAgentToolkits
+          </a>
+              <div class="version">
+                Alpha version
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">AgentTools.GenericModelAgent package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-AgentTools.GenericModelAgent.AreaWiseParamGenerator">AgentTools.GenericModelAgent.AreaWiseParamGenerator module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-AgentTools.GenericModelAgent.ForcingDataFileGenerator">AgentTools.GenericModelAgent.ForcingDataFileGenerator module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-AgentTools.GenericModelAgent.InitialStateFileGenerator">AgentTools.GenericModelAgent.InitialStateFileGenerator module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-AgentTools.GenericModelAgent.MainGenerator">AgentTools.GenericModelAgent.MainGenerator module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-AgentTools.GenericModelAgent.RunModuleAgent">AgentTools.GenericModelAgent.RunModuleAgent module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-AgentTools.GenericModelAgent">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="AgentTools.HPC.html">AgentTools.HPC package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="AgentTools.util.html">AgentTools.util package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="AgentTools.html">GenericModelAgentToolkits</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="AgentTools.html" class="icon icon-home"></a> &raquo;</li>
+      <li>AgentTools.GenericModelAgent package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/AgentTools.GenericModelAgent.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="agenttools-genericmodelagent-package">
+<h1>AgentTools.GenericModelAgent package<a class="headerlink" href="#agenttools-genericmodelagent-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-AgentTools.GenericModelAgent.AreaWiseParamGenerator">
+<span id="agenttools-genericmodelagent-areawiseparamgenerator-module"></span><h2>AgentTools.GenericModelAgent.AreaWiseParamGenerator module<a class="headerlink" href="#module-AgentTools.GenericModelAgent.AreaWiseParamGenerator" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="AgentTools.GenericModelAgent.AreaWiseParamGenerator.AreaWiseParamGenerator">
+<em class="property">class </em><code class="descclassname">AgentTools.GenericModelAgent.AreaWiseParamGenerator.</code><code class="descname">AreaWiseParamGenerator</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/AreaWiseParamGenerator.html#AreaWiseParamGenerator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.AreaWiseParamGenerator.AreaWiseParamGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>AreaWiseParamGenerator Organizes the parameter files required for the execution of the model. 
+The user is responsible for the contents and format of the files provided.
+This module only receives the files as parameters and places them in a file with a name set by the user.
+By default, this module places the parameter files in a folder named ‘Parameters’.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Input Ports:</th><td class="field-body"><ul class="first simple">
+<li><strong>WD_Path:</strong> This is the working folder provided by the MainGenerator module.</li>
+<li><strong>Parameter_Folder_Name:</strong> Name of the parameter folder that will be created. The default value is Parameter.</li>
+<li><strong>File_In_x :</strong> Path of the x-th parameter file, (x=00,01,02,…15).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Output Ports:</th><td class="field-body"><ul class="first last simple">
+<li><strong>Ready:</strong> Starting flag for RunModuleAgent. The value is either <em>True</em> or <em>False</em>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="AgentTools.GenericModelAgent.AreaWiseParamGenerator.AreaWiseParamGenerator.compute">
+<code class="descname">compute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/AreaWiseParamGenerator.html#AreaWiseParamGenerator.compute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.AreaWiseParamGenerator.AreaWiseParamGenerator.compute" title="Permalink to this definition">¶</a></dt>
+<dd><p>The main function of AreaWiseParamGenerator module is to organize the parameter files required for the execution of the model.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="AgentTools.GenericModelAgent.AreaWiseParamGenerator.AreaWiseParamGenerator.get_documentation">
+<em class="property">classmethod </em><code class="descname">get_documentation</code><span class="sig-paren">(</span><em>docstring</em>, <em>module=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/AreaWiseParamGenerator.html#AreaWiseParamGenerator.get_documentation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.AreaWiseParamGenerator.AreaWiseParamGenerator.get_documentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is to get the documentation of AreaWiseParamGenerator module</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>docstring</strong> – A string used to document a AreaWiseParamGenerator module</li>
+<li><strong>module</strong> – AreaWiseParamGenerator module</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A invoked function from package DocumentUtil to get documentation of AreaWiseParamGenerator module</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="AgentTools.GenericModelAgent.AreaWiseParamGenerator.initialize">
+<code class="descclassname">AgentTools.GenericModelAgent.AreaWiseParamGenerator.</code><code class="descname">initialize</code><span class="sig-paren">(</span><em>*args</em>, <em>**keywords</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/AreaWiseParamGenerator.html#initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.AreaWiseParamGenerator.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is to initialize the AreaWiseParamGenerator module</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-AgentTools.GenericModelAgent.ForcingDataFileGenerator">
+<span id="agenttools-genericmodelagent-forcingdatafilegenerator-module"></span><h2>AgentTools.GenericModelAgent.ForcingDataFileGenerator module<a class="headerlink" href="#module-AgentTools.GenericModelAgent.ForcingDataFileGenerator" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator">
+<em class="property">class </em><code class="descclassname">AgentTools.GenericModelAgent.ForcingDataFileGenerator.</code><code class="descname">ForcingDataFileGenerator</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/ForcingDataFileGenerator.html#ForcingDataFileGenerator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>ForcingDataFileGenerator Organizes the forcing data brought by the MainGenerator. 
+The user should be aware of the expected format of the forcing data for their model.
+By default, this module creates forcing data in a folder names ‘Forcing’. Such forcing data is 
+always created as timeseries where different columns hold different variables, ie:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">(Precipitation_t0</span> <span class="pre">|</span> <span class="pre">Temerature_t0</span> <span class="pre">|</span> <span class="pre">Wind_t0,</span> <span class="pre">etc)</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">(Precipitation_t1</span> <span class="pre">|</span> <span class="pre">Temerature_t1</span> <span class="pre">|</span> <span class="pre">Wind_t1,</span> <span class="pre">etc)</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">(Precipitation_t2</span> <span class="pre">|</span> <span class="pre">Temerature_t2</span> <span class="pre">|</span> <span class="pre">Wind_t2,</span> <span class="pre">etc)</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">(Precipitation_t3</span> <span class="pre">|</span> <span class="pre">Temerature_t3</span> <span class="pre">|</span> <span class="pre">Wind_t3,</span> <span class="pre">etc)</span></code></p>
+</div></blockquote>
+<p>and the data is divided in different files, were each one represents a single cell of the forcing inputs. 
+So, a 2 by 2 (2x2) model will generate 4 files, each one with the full timeseries of the forcing data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Input Ports:</th><td class="field-body"><ul class="first simple">
+<li><strong>WD_Path:</strong> This is the working folder provided by the MainGenerator module.</li>
+<li><strong>DataSet_Class:</strong> This is the dataset information provided by the MainGenerator module.</li>
+<li><strong>Forcing_Folder_Name:</strong> <strong>[Optional]</strong> Name of the subfolder where the forcing info will be stored. The default value is <em>Forcing</em>.</li>
+<li><strong>Forcing_File_Prefix:</strong> <strong>[Optional]</strong> Prefix for the name of the forcing files. The default value is <em>data</em>.</li>
+<li><strong>Date_Label_Format:</strong> <strong>[Optional]</strong> Format taken for the dates of the first column.(i.e 05/16/1997-05:30:00 can be expressed as %m/%d/%YYYY-%H:%M:%S ),         The default value is <cite>None</cite>, which means the files will not have dates. For more information about python date formats go to <a class="reference external" href="https://strftime.org/">https://strftime.org/</a></li>
+<li><strong>Subrange:</strong> <strong>[Optional]</strong> Subset of the dataset by giving the boundary limitation including x_min, x_max, y_min, y_max.</li>
+<li><strong>Mask_File:</strong> <strong>[Optional]</strong> Mask file for generating specific forcing data files, there are two types of mask files, which are inclusive and exclusive.        In the mask file, it records the latitude and longitude of the cell each line, and for inclusive mask file, the ForcingDataFileGenerator module will only        yield the forcing data files of the certain cell given in mask file. and in reverse, the exclusive mask file provided to create the forcing data files of the cells which is excluded in the mask file.        The format of the mask file, should be <code class="docutils literal notranslate"><span class="pre">latitude,longitude</span></code> each line, and user can make comment freely in any other line.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Output Ports:</th><td class="field-body"><ul class="first last simple">
+<li><strong>Ready:</strong> Starting flag for RunModuleAgent. The value is either <em>True</em> or <em>False</em>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.change_forcing_name">
+<code class="descname">change_forcing_name</code><span class="sig-paren">(</span><em>folder</em>, <em>file_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/ForcingDataFileGenerator.html#ForcingDataFileGenerator.change_forcing_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.change_forcing_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is to change the name of files in the given folder</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>folder</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The path of the folder</li>
+<li><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The prefix of the file needed adding or the new file name needed changing</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.check_dimensions">
+<code class="descname">check_dimensions</code><span class="sig-paren">(</span><em>dataset_class</em>, <em>check_space=True</em>, <em>check_time=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/ForcingDataFileGenerator.html#ForcingDataFileGenerator.check_dimensions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.check_dimensions" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Function is to check the detected dimension of the dataset</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dataset_class</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The name of the integrated dataset</li>
+<li><strong>check_space</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – The parameter on whether the space variable exists, default value is True</li>
+<li><strong>check_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – The parameter on whether the time variable exists, default value is True</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.check_dimensions_var">
+<code class="descname">check_dimensions_var</code><span class="sig-paren">(</span><em>dataset_name</em>, <em>input_name</em>, <em>check_space=True</em>, <em>check_time=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/ForcingDataFileGenerator.html#ForcingDataFileGenerator.check_dimensions_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.check_dimensions_var" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Function is to initialize and update detected dimensions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dataset_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The name of the integrated dataset</li>
+<li><strong>input_name</strong> – The id of the integrated dataset</li>
+<li><strong>check_space</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – The parameter on whether the space variable exists, default value is True</li>
+<li><strong>check_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – The parameter on whether the time variable exists, default value is True</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.check_mask">
+<code class="descname">check_mask</code><span class="sig-paren">(</span><em>lat</em>, <em>lon</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/ForcingDataFileGenerator.html#ForcingDataFileGenerator.check_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.check_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Function is to check whether the targeted cell is included in the mask</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The latitude of the targeted cell</li>
+<li><strong>lon</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The longitude of the targeted cell</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">return the result of a boolean value on whether the targeted cell is included in the mask</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.check_subrange">
+<code class="descname">check_subrange</code><span class="sig-paren">(</span><em>lat</em>, <em>lon</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/ForcingDataFileGenerator.html#ForcingDataFileGenerator.check_subrange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.check_subrange" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Function is to check whether the targeted cell is included in the sub-range</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The latitude of the targeted cell</li>
+<li><strong>lon</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The longitude of the targeted cell</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">return the result of a boolean value on whether the targeted cell is included in the sub-range</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.compute">
+<code class="descname">compute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/ForcingDataFileGenerator.html#ForcingDataFileGenerator.compute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.compute" title="Permalink to this definition">¶</a></dt>
+<dd><p>The main function of ForcingDataFileGenerator module is to organize the forcing data brought by the MainGenerator module</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.exact_rounding">
+<code class="descname">exact_rounding</code><span class="sig-paren">(</span><em>number</em>, <em>decimals</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/ForcingDataFileGenerator.html#ForcingDataFileGenerator.exact_rounding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.exact_rounding" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Function is to return a floating point number that is a rounded version of the specified number, with the specified number of decimals</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>number</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The number to be rounded</li>
+<li><strong>decimals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The number of decimals to use when rounding the number.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The rounded number</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.get_documentation">
+<em class="property">classmethod </em><code class="descname">get_documentation</code><span class="sig-paren">(</span><em>docstring</em>, <em>module=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/ForcingDataFileGenerator.html#ForcingDataFileGenerator.get_documentation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.get_documentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is to get the documentation of ForcingDataFileGenerator module</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>docstring</strong> – A string used to document a ForcingDataFileGenerator module</li>
+<li><strong>module</strong> – ForcingDataFileGenerator module</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A invoked function from package DocumentUtil to get documentation of ForcingDataFileGenerator module</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.get_time_series">
+<code class="descname">get_time_series</code><span class="sig-paren">(</span><em>dataset_name</em>, <em>time_ini</em>, <em>time_end</em>, <em>row</em>, <em>col</em>, <em>empty_value=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/ForcingDataFileGenerator.html#ForcingDataFileGenerator.get_time_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.get_time_series" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Function is to obtain the time-series of the targeted dataset</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dataset_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The name of the integrated dataset</li>
+<li><strong>time_ini</strong> (<em>datetime</em>) – The initial time of the dataset</li>
+<li><strong>time_end</strong> (<em>datetime</em>) – The ending time of the dataset</li>
+<li><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The row number of the dataset</li>
+<li><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The column number of the dataset</li>
+<li><strong>empty_value</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The value to replace when the element in dataset is NAN, the default value is None</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The list of the time-series of the dataset</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.initialize_dimensions">
+<code class="descname">initialize_dimensions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/ForcingDataFileGenerator.html#ForcingDataFileGenerator.initialize_dimensions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.initialize_dimensions" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Function is to initialize the detected dimensions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.prepare_forcing">
+<code class="descname">prepare_forcing</code><span class="sig-paren">(</span><em>forcing_dir_prefix</em>, <em>inputs</em>, <em>date_format</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/ForcingDataFileGenerator.html#ForcingDataFileGenerator.prepare_forcing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.prepare_forcing" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Function is to prepare forcing dataset</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>forcing_dir_prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The prefix of the forcing data directory</li>
+<li><strong>inputs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The names of the integrated forcing dataset</li>
+<li><strong>date_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The format taken for the dates of the first column</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.save_forcing">
+<code class="descname">save_forcing</code><span class="sig-paren">(</span><em>filename</em>, <em>user_inputs</em>, <em>row</em>, <em>col</em>, <em>date_format</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/ForcingDataFileGenerator.html#ForcingDataFileGenerator.save_forcing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.ForcingDataFileGenerator.ForcingDataFileGenerator.save_forcing" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is to build a unique file with all the forcing information of a cell</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The name of the file</li>
+<li><strong>user_inputs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The names of the integrated forcing dataset</li>
+<li><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The row index of the 2D-forcing dataset</li>
+<li><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The column index of the 2D-forcing dataset</li>
+<li><strong>date_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The format taken for the dates of the first column</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="AgentTools.GenericModelAgent.ForcingDataFileGenerator.initialize">
+<code class="descclassname">AgentTools.GenericModelAgent.ForcingDataFileGenerator.</code><code class="descname">initialize</code><span class="sig-paren">(</span><em>*args</em>, <em>**keywords</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/ForcingDataFileGenerator.html#initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.ForcingDataFileGenerator.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is to initialize the ForcingDataFileGenerator module</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-AgentTools.GenericModelAgent.InitialStateFileGenerator">
+<span id="agenttools-genericmodelagent-initialstatefilegenerator-module"></span><h2>AgentTools.GenericModelAgent.InitialStateFileGenerator module<a class="headerlink" href="#module-AgentTools.GenericModelAgent.InitialStateFileGenerator" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="AgentTools.GenericModelAgent.InitialStateFileGenerator.InitialStateFileGenerator">
+<em class="property">class </em><code class="descclassname">AgentTools.GenericModelAgent.InitialStateFileGenerator.</code><code class="descname">InitialStateFileGenerator</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/InitialStateFileGenerator.html#InitialStateFileGenerator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.InitialStateFileGenerator.InitialStateFileGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>InitialStateFileGenerator is an optional module to organizes the initial state data of a generic simulation.
+The initial state files are not always required for the execution of some models.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Input Ports:</th><td class="field-body"><ul class="first simple">
+<li><strong>WD_Path:</strong> This is the working folder provided by the MainGenerator module.</li>
+<li><strong>Init_State_Folder_Name:</strong> Name of the initial state folder that will be created. If left empty, the state files will be saved in the working directory.</li>
+<li><strong>File_In_x:</strong> Path of the x-th initial state file, (x=0,1,2,…,9).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Output Ports:</th><td class="field-body"><ul class="first last simple">
+<li><strong>Ready:</strong> Starting flag for RunModuleAgent. The value is either <em>True</em> or <em>False</em>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="AgentTools.GenericModelAgent.InitialStateFileGenerator.InitialStateFileGenerator.compute">
+<code class="descname">compute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/InitialStateFileGenerator.html#InitialStateFileGenerator.compute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.InitialStateFileGenerator.InitialStateFileGenerator.compute" title="Permalink to this definition">¶</a></dt>
+<dd><p>The main function of InitialStateFileGenerator module is to organize the initial state data of a generic simulation.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="AgentTools.GenericModelAgent.InitialStateFileGenerator.InitialStateFileGenerator.get_documentation">
+<em class="property">classmethod </em><code class="descname">get_documentation</code><span class="sig-paren">(</span><em>docstring</em>, <em>module=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/InitialStateFileGenerator.html#InitialStateFileGenerator.get_documentation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.InitialStateFileGenerator.InitialStateFileGenerator.get_documentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is to get the documentation of InitialStateFileGenerator module</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>docstring</strong> – A string used to document a InitialStateFileGenerator module</li>
+<li><strong>module</strong> – InitialStateFileGenerator module</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A invoked function from package DocumentUtil to get documentation of InitialStateFileGenerator module</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="AgentTools.GenericModelAgent.InitialStateFileGenerator.initialize">
+<code class="descclassname">AgentTools.GenericModelAgent.InitialStateFileGenerator.</code><code class="descname">initialize</code><span class="sig-paren">(</span><em>*args</em>, <em>**keywords</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/InitialStateFileGenerator.html#initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.InitialStateFileGenerator.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is to initialize the InitialStateFileGenerator module</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-AgentTools.GenericModelAgent.MainGenerator">
+<span id="agenttools-genericmodelagent-maingenerator-module"></span><h2>AgentTools.GenericModelAgent.MainGenerator module<a class="headerlink" href="#module-AgentTools.GenericModelAgent.MainGenerator" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="AgentTools.GenericModelAgent.MainGenerator.MainGenerator">
+<em class="property">class </em><code class="descclassname">AgentTools.GenericModelAgent.MainGenerator.</code><code class="descname">MainGenerator</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/MainGenerator.html#MainGenerator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.MainGenerator.MainGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>The MainGenerator module is the first component of the Generic Model Agent tools.
+This component is responsible for setting up the folder where the simulation will be performed.
+It receives all the forcing datasets as inputs. The order at which they are added matters,
+since the final forcing files will display the data in the same order:
+first Dataset_01, then Dataset_02, and so on.
+The purpose of the Generic Model Agent tools is to enable the integration of new Models into the
+CyberWater environment. Therefore, users are expected to be highly knowledgeable about the
+details of their own models if they want to perform an integration with the Generic tools.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Input Ports:</th><td class="field-body"><ul class="first simple">
+<li><strong>01_Path:</strong> Path of the folder where the files of the simulation will be created.</li>
+<li><strong>02_GPF:</strong> Path of the main configuration (global parameter) file for the simulation.</li>
+<li><strong>03_Override?:</strong> Flag on whether to override the original working directory, The value is either <em>True</em> or <em>False</em>.</li>
+<li><strong>04_Ready:</strong> Ready signal from precedent-connected modules, The value is either <em>True</em> or <em>False</em>,</li>
+<li><strong>Dataset_x:</strong> Dataset of the x-th forcing variable, (x=01,02,03,…,15).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Output Ports:</th><td class="field-body"><ul class="first last simple">
+<li><strong>WD_Path:</strong> Folder where the execution will be performed.</li>
+<li><strong>DataSet_Class:</strong> The information of the forcing datasets.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="AgentTools.GenericModelAgent.MainGenerator.MainGenerator.compute">
+<code class="descname">compute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/MainGenerator.html#MainGenerator.compute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.MainGenerator.MainGenerator.compute" title="Permalink to this definition">¶</a></dt>
+<dd><p>The main function of MainGenerator module is to retrieve the inputs from GUI,         and  setup the folder where the simulation will be performed.        It receives all the forcing datasets and integrates them in an overall dataset as output.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="AgentTools.GenericModelAgent.MainGenerator.MainGenerator.get_documentation">
+<em class="property">classmethod </em><code class="descname">get_documentation</code><span class="sig-paren">(</span><em>docstring</em>, <em>module=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/MainGenerator.html#MainGenerator.get_documentation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.MainGenerator.MainGenerator.get_documentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is to get the documentation of MainGenerator module
+param docstring: A string used to document a MainGenerator module</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>module</strong> – MainGenerator module</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A invoked function from package DocumentUtil to get documentation of MainGenerator module</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.GenericModelAgent.MainGenerator.MainGenerator.remove_existing_folder">
+<code class="descname">remove_existing_folder</code><span class="sig-paren">(</span><em>files_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/MainGenerator.html#MainGenerator.remove_existing_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.MainGenerator.MainGenerator.remove_existing_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is to remove an existing folder</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>files_dir</strong> (<em>string</em>) – The path of the folder</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="AgentTools.GenericModelAgent.MainGenerator.initialize">
+<code class="descclassname">AgentTools.GenericModelAgent.MainGenerator.</code><code class="descname">initialize</code><span class="sig-paren">(</span><em>*args</em>, <em>**keywords</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/MainGenerator.html#initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.MainGenerator.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is to initialize the MainGenerator module</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-AgentTools.GenericModelAgent.RunModuleAgent">
+<span id="agenttools-genericmodelagent-runmoduleagent-module"></span><h2>AgentTools.GenericModelAgent.RunModuleAgent module<a class="headerlink" href="#module-AgentTools.GenericModelAgent.RunModuleAgent" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="AgentTools.GenericModelAgent.RunModuleAgent.RunModuleAgent">
+<em class="property">class </em><code class="descclassname">AgentTools.GenericModelAgent.RunModuleAgent.</code><code class="descname">RunModuleAgent</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/RunModuleAgent.html#RunModuleAgent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.RunModuleAgent.RunModuleAgent" title="Permalink to this definition">¶</a></dt>
+<dd><p>RunModuleAgent responsible for the execution of a Model offered as executable. 
+The model execution requires that the user manually prepares the files required.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Input Ports:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">01_Output_Name:</th><td class="field-body"><p class="first">The list of the name of the output dataset</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">02_File_Position:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><p class="first">The list of the position (column index) in the result files (e.g. model results files) for the corresponding output dataset.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">03_Model_executable:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><ul class="first simple">
+<li><strong>exe:</strong> executable file with the execution parameters excluding the arguments.</li>
+<li><strong>arg:</strong> arguments required for the execution.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">04_Results_format:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body"><ul class="first simple">
+<li><strong>Result_File_Prefix/Name:</strong> Either the prefix of all the cells generated by the model. Or the name of the time-series generated.</li>
+<li><strong>Result_File_Separator:</strong> Separation character in the output files.</li>
+<li><strong>Result_Folder:</strong> The name of the folder saving the result data. The default value is <em>results</em></li>
+<li><strong>Point_output?:</strong> Check if the output is a single time-series in contrast of a distributed result in multiple files, once per cell.  The defalut value is <em>False</em>.</li>
+<li><strong>Header_lines:</strong> Number of lines at the top of the resulting files that need to be ignored.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">05_Final_state_options [Optional]:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><ul class="first simple">
+<li><strong>final_state_name:</strong> The name of the final state file.</li>
+<li><strong>save_path:</strong> The saving path of the final state file.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Ready_List:</th><td class="field-body"><p class="first">Connect the output of ForcingDataFileGenerator, AreaWiseParamGenerator and InitialStateFileGenerator if it exists.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">WD_Path:</th><td class="field-body"><p class="first">WD_Path output port of the MainGenerator. This is the directory where the simulation files are saved.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">DataSet_Class:</th><td class="field-body"><p class="first last">DataSet_Class output port of the MainGenerator.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Output Ports:</th><td class="field-body"><ul class="first last simple">
+<li><strong>Outputx:</strong>  Output dataset x. (x=01,02,03,….,20)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="AgentTools.GenericModelAgent.RunModuleAgent.RunModuleAgent.compute">
+<code class="descname">compute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/RunModuleAgent.html#RunModuleAgent.compute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.RunModuleAgent.RunModuleAgent.compute" title="Permalink to this definition">¶</a></dt>
+<dd><p>The main function of RunModuleAgent module is to execute a model offered as executable and prepare the files required for execution</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.GenericModelAgent.RunModuleAgent.RunModuleAgent.extract_exe_and_arg">
+<code class="descname">extract_exe_and_arg</code><span class="sig-paren">(</span><em>exe_config</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/RunModuleAgent.html#RunModuleAgent.extract_exe_and_arg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.RunModuleAgent.RunModuleAgent.extract_exe_and_arg" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Function is to extract the parameters on the executable program path and arguments from GUI input panel</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>final_state_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a>) – The list of entries on the executable program path and arguments configured by user on GUI</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The list of the value extracted from each entry on the executable program path and arguments</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)">list</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.GenericModelAgent.RunModuleAgent.RunModuleAgent.extract_final_state_options">
+<code class="descname">extract_final_state_options</code><span class="sig-paren">(</span><em>final_state_options</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/RunModuleAgent.html#RunModuleAgent.extract_final_state_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.RunModuleAgent.RunModuleAgent.extract_final_state_options" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Function is to extract the parameters on the final state options from GUI input panel</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>final_state_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a>) – The list of entries on the final state options configured by user on GUI</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The list of the value extracted from each entry on final state options</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)">list</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.GenericModelAgent.RunModuleAgent.RunModuleAgent.extract_results_format">
+<code class="descname">extract_results_format</code><span class="sig-paren">(</span><em>results_format</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/RunModuleAgent.html#RunModuleAgent.extract_results_format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.RunModuleAgent.RunModuleAgent.extract_results_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Function is to extract the parameters on the format of results from GUI input panel</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>results_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a>) – The list of entries on the format of results configured by user on GUI</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The list of the value extracted from each entry on the format of results</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)">list</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="AgentTools.GenericModelAgent.RunModuleAgent.RunModuleAgent.get_documentation">
+<em class="property">classmethod </em><code class="descname">get_documentation</code><span class="sig-paren">(</span><em>docstring</em>, <em>module=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/RunModuleAgent.html#RunModuleAgent.get_documentation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.RunModuleAgent.RunModuleAgent.get_documentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is to get the documentation of RunModuleAgent module</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>docstring</strong> – A string used to document a RunModuleAgent module</li>
+<li><strong>module</strong> – RunModuleAgent module</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A invoked function from package DocumentUtil to get documentation of RunModuleAgent module</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="AgentTools.GenericModelAgent.RunModuleAgent.initialize">
+<code class="descclassname">AgentTools.GenericModelAgent.RunModuleAgent.</code><code class="descname">initialize</code><span class="sig-paren">(</span><em>*args</em>, <em>**keywords</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/GenericModelAgent/RunModuleAgent.html#initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.GenericModelAgent.RunModuleAgent.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is to initialize the RunModuleAgent module</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-AgentTools.GenericModelAgent">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-AgentTools.GenericModelAgent" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="AgentTools.html" class="btn btn-neutral float-left" title="AgentTools package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="AgentTools.HPC.html" class="btn btn-neutral float-right" title="AgentTools.HPC package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, CyberWater.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

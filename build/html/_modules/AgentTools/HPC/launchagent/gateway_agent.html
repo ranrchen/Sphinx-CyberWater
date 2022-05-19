@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgentTools.HPC.launchagent.gateway_agent &mdash; GenericModelAgentToolkits  documentation</title><link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../AgentTools.html" class="icon icon-home"> GenericModelAgentToolkits
+          </a>
+              <div class="version">
+                Alpha version
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../AgentTools.GenericModelAgent.html">AgentTools.GenericModelAgent package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../AgentTools.HPC.html">AgentTools.HPC package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../AgentTools.util.html">AgentTools.util package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../AgentTools.html">GenericModelAgentToolkits</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../AgentTools.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>AgentTools.HPC.launchagent.gateway_agent</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for AgentTools.HPC.launchagent.gateway_agent</h1><div class="highlight"><pre>
+<span></span><span class="c1">#  Licensed to the Apache Software Foundation (ASF) under one or more</span>
+<span class="c1">#  contributor license agreements.  See the NOTICE file distributed with</span>
+<span class="c1">#  this work for additional information regarding copyright ownership.</span>
+<span class="c1">#  The ASF licenses this file to You under the Apache License, Version 2.0</span>
+<span class="c1">#  (the &quot;License&quot;); you may not use this file except in compliance with</span>
+<span class="c1">#  the License.  You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#      http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1">#  Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1">#  distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1">#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1">#  See the License for the specific language governing permissions and</span>
+<span class="c1">#  limitations under the License.</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">from</span> <span class="nn">airavata_sdk.clients.keycloak_token_fetcher</span> <span class="kn">import</span> <span class="n">Authenticator</span>
+<span class="kn">from</span> <span class="nn">airavata_sdk.clients.api_server_client</span> <span class="kn">import</span> <span class="n">APIServerClient</span>
+<span class="kn">from</span> <span class="nn">airavata_sdk.clients.utils.api_server_client_util</span> <span class="kn">import</span> <span class="n">APIServerClientUtil</span>
+<span class="kn">from</span> <span class="nn">airavata_sdk.clients.credential_store_client</span> <span class="kn">import</span> <span class="n">CredentialStoreClient</span>
+<span class="kn">from</span> <span class="nn">airavata_sdk.clients.utils.data_model_creation_util</span> <span class="kn">import</span> <span class="n">DataModelCreationUtil</span>
+<span class="kn">from</span> <span class="nn">airavata_sdk.clients.sftp_file_handling_client</span> <span class="kn">import</span> <span class="n">SFTPConnector</span>
+
+<span class="kn">from</span> <span class="nn">airavata.model.workspace.ttypes</span> <span class="kn">import</span> <span class="n">Gateway</span><span class="p">,</span> <span class="n">Notification</span><span class="p">,</span> <span class="n">Project</span>
+<span class="kn">from</span> <span class="nn">airavata.model.experiment.ttypes</span> <span class="kn">import</span> <span class="n">ExperimentModel</span><span class="p">,</span> <span class="n">ExperimentType</span><span class="p">,</span> <span class="n">UserConfigurationDataModel</span>
+<span class="kn">from</span> <span class="nn">airavata.model.scheduling.ttypes</span> <span class="kn">import</span> <span class="n">ComputationalResourceSchedulingModel</span>
+<span class="kn">from</span> <span class="nn">airavata.model.data.replica.ttypes</span> <span class="kn">import</span> <span class="n">DataProductModel</span><span class="p">,</span> <span class="n">DataProductType</span><span class="p">,</span> <span class="n">DataReplicaLocationModel</span><span class="p">,</span> \
+    <span class="n">ReplicaLocationCategory</span><span class="p">,</span> <span class="n">ReplicaPersistentType</span>
+
+<span class="kn">from</span> <span class="nn">airavata.model.application.io.ttypes</span> <span class="kn">import</span> <span class="n">InputDataObjectType</span>
+<span class="kn">from</span> <span class="nn">airavata.model.appcatalog.groupresourceprofile.ttypes</span> <span class="kn">import</span> <span class="n">GroupResourceProfile</span>
+<span class="kn">from</span> <span class="nn">airavata.api.error.ttypes</span> <span class="kn">import</span> <span class="n">TException</span><span class="p">,</span> <span class="n">InvalidRequestException</span><span class="p">,</span> <span class="n">AiravataSystemException</span><span class="p">,</span> \
+    <span class="n">AiravataClientException</span><span class="p">,</span> <span class="n">AuthorizationException</span>
+
+<span class="kn">from</span> <span class="nn">airavata_sdk.transport.settings</span> <span class="kn">import</span> <span class="n">GatewaySettings</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">os.path</span> <span class="k">as</span> <span class="nn">path</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">distutils.dir_util</span> <span class="kn">import</span> <span class="n">copy_tree</span><span class="p">,</span> <span class="n">remove_tree</span>
+<span class="kn">import</span> <span class="nn">tarfile</span><span class="o">,</span> <span class="nn">zipfile</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">version</span>
+
+<span class="n">_print_header</span><span class="o">=</span><span class="s2">&quot;--GatewayAgent:&quot;</span>
+
+<div class="viewcode-block" id="get_supported_sites"><a class="viewcode-back" href="../../../../AgentTools.HPC.launchagent.html#AgentTools.HPC.launchagent.gateway_agent.get_supported_sites">[docs]</a><span class="k">def</span> <span class="nf">get_supported_sites</span><span class="p">():</span>
+    <span class="n">siteFile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;/resources/site_dict.json&quot;</span>
+
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">siteFile</span><span class="p">)</span>
+    <span class="n">site_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)[</span><span class="s2">&quot;gateway_agent&quot;</span><span class="p">][</span><span class="s2">&quot;sites&quot;</span><span class="p">]</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">[</span> <span class="n">x</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;UTF8&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">site_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">]</span></div>
+
+<span class="k">def</span> <span class="nf">_dos2unix</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="n">outfile</span><span class="p">):</span>
+    <span class="c1"># replacement strings</span>
+    <span class="n">WINDOWS_LINE_ENDING</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span>
+    <span class="n">UNIX_LINE_ENDING</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">open_file</span><span class="p">:</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">open_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        
+    <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">WINDOWS_LINE_ENDING</span><span class="p">,</span> <span class="n">UNIX_LINE_ENDING</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">open_file</span><span class="p">:</span>
+        <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GatewayAgent"><a class="viewcode-back" href="../../../../AgentTools.HPC.launchagent.html#AgentTools.HPC.launchagent.gateway_agent.GatewayAgent">[docs]</a><span class="k">class</span> <span class="nc">GatewayAgent</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot; Launch agent: use airavata gateway api to offload local computation.</span>
+
+<span class="sd">    local files will be saved in C:/temp/cyberwater-staging-gateway/exp_name,</span>
+<span class="sd">    local files will then be uploaded to HPC, and being processed, </span>
+<span class="sd">    the remote working directory will be first downloaded as a tarball at at: C:/temp/cyberwater-staging-gateway/YYYYMMDD-HHMM,</span>
+<span class="sd">    then extract to the user-defined download-folder.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gateway_username</span><span class="o">=</span><span class="s1">&#39;fengggli2&#39;</span><span class="p">,</span> <span class="n">gateway_passwd</span><span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">exp_name</span> <span class="o">=</span> <span class="s2">&quot;test-exp-name&quot;</span><span class="p">,</span> <span class="n">site_name</span> <span class="o">=</span> <span class="s2">&quot;karst&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Construct a gatewayAgent</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            gateway_username (str, optional): The user name used to login to cyberwater.scigap.org. Defaults to &#39;fengggli2&#39;.</span>
+<span class="sd">            gateway_passwd (str, optional): The corresponding password. Defaults to None</span>
+<span class="sd">            exp_name (str, optional): name for this experiment. Defaults to &quot;test-exp-name&quot;.</span>
+<span class="sd">            site_name (str, optional): hpc resource to use, refer to site_dict.json for supported resources. Defaults to &quot;karst&quot;.</span>
+<span class="sd">        </span>
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; agent = GatewayAgent(&quot;someusername&quot;, &quot;somepassword&quot;, &quot;cyberwater&quot;, &quot;bridges-LM&quot;)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Initializing ssh-agent, version=&quot;</span> <span class="o">+</span>  <span class="n">version</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">exp_config</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">lib_dir</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+        <span class="n">temp_dir</span> <span class="o">=</span>  <span class="s2">&quot;C:</span><span class="se">\\</span><span class="s2">temp&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;libdir&#39;</span> <span class="o">+</span> <span class="n">lib_dir</span> <span class="o">+</span><span class="s1">&#39;,file:&#39;</span><span class="p">,</span> <span class="vm">__file__</span><span class="p">)</span>
+        <span class="n">siteFile</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lib_dir</span><span class="p">,</span><span class="s2">&quot;resources&quot;</span><span class="p">,</span> <span class="s2">&quot;site_dict.json&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">siteFile</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">gateway_conf</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)[</span><span class="s2">&quot;gateway_agent&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">site_dict</span> <span class="o">=</span> <span class="n">gateway_conf</span><span class="p">[</span><span class="s2">&quot;sites&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gateway_id</span> <span class="o">=</span> <span class="n">gateway_conf</span><span class="p">[</span><span class="s2">&quot;gateway_id&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">storage_id</span> <span class="o">=</span> <span class="n">gateway_conf</span><span class="p">[</span><span class="s2">&quot;storage_id&quot;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app_name</span> <span class="o">=</span> <span class="s2">&quot;gateway-agent&quot;</span> <span class="c1"># this is the application name registered by Feng Li in advance at gateway</span>
+
+        <span class="n">configFile</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lib_dir</span><span class="p">,</span> <span class="s2">&quot;resources&quot;</span><span class="p">,</span> <span class="s2">&quot;settings-feng.ini&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_name</span> <span class="o">=</span> <span class="n">gateway_username</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using username (&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_name</span> <span class="o">+</span> <span class="s1">&#39;) for ssh session&#39;</span><span class="p">)</span>
+
+        <span class="n">password</span> <span class="o">=</span> <span class="n">gateway_passwd</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gateway_resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_dict</span><span class="p">[</span><span class="n">site_name</span><span class="p">]</span> 
+
+        <span class="n">authenticator</span> <span class="o">=</span> <span class="n">Authenticator</span><span class="p">(</span><span class="n">configFile</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using configure file at:&quot;</span><span class="p">,</span> <span class="n">configFile</span><span class="p">)</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">authenticator</span><span class="o">.</span><span class="n">get_token_and_user_info_password_flow</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_name</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span>
+                                                                    <span class="n">gateway_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">gateway_id</span><span class="p">)</span>
+
+        <span class="n">api_server_client</span> <span class="o">=</span> <span class="n">APIServerClient</span><span class="p">(</span><span class="n">configFile</span><span class="p">)</span>
+
+        <span class="n">airavata_util</span> <span class="o">=</span> <span class="n">APIServerClientUtil</span><span class="p">(</span><span class="n">configFile</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_name</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span> <span class="n">gateway_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">gateway_id</span><span class="p">)</span>
+        <span class="n">data_model_client</span> <span class="o">=</span> <span class="n">DataModelCreationUtil</span><span class="p">(</span><span class="n">configFile</span><span class="p">,</span>
+                                                <span class="n">username</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_name</span><span class="p">,</span>
+                                                <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span>
+                                                <span class="n">gateway_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">gateway_id</span><span class="p">)</span>
+
+        <span class="n">credential_store_client</span> <span class="o">=</span> <span class="n">CredentialStoreClient</span><span class="p">(</span><span class="n">configFile</span><span class="p">)</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">gateway_settings</span> <span class="o">=</span> <span class="n">GatewaySettings</span><span class="p">(</span><span class="n">configFile</span><span class="p">)</span>
+
+        <span class="c1"># make staging folder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">localdirpath</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="s2">&quot;cyberwater-staging-gateway&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">localdirpath</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">localdirpath</span><span class="p">)</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_server_client</span> <span class="o">=</span> <span class="n">api_server_client</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_model_client</span> <span class="o">=</span> <span class="n">data_model_client</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">airavata_util</span> <span class="o">=</span> <span class="n">airavata_util</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">credential_store_client</span> <span class="o">=</span> <span class="n">credential_store_client</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">token</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exp_name</span> <span class="o">=</span> <span class="n">exp_name</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">exp_input_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">localdirpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exp_name</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exp_input_path</span><span class="p">):</span>
+            <span class="n">remove_tree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exp_input_path</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exp_input_path</span><span class="p">)</span>
+
+        <span class="n">executionId</span> <span class="o">=</span> <span class="n">airavata_util</span><span class="o">.</span><span class="n">get_execution_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_name</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">experiment_time_str</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">-%H%M&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="n">_print_header</span><span class="p">,</span> <span class="s2">&quot; experiment &quot;</span><span class="p">,</span> <span class="n">exp_name</span><span class="p">,</span> <span class="s2">&quot;input folder will be copied to &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exp_input_path</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">_print_header</span><span class="p">,</span> <span class="s2">&quot; execution_id: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">executionId</span><span class="p">)</span> <span class="p">)</span>
+        <span class="c1">#print(_print_header,  &quot;results from hpc  will be copied to &quot;, self.exp_input_path)</span>
+
+    
+<div class="viewcode-block" id="GatewayAgent.configure_exp"><a class="viewcode-back" href="../../../../AgentTools.HPC.launchagent.html#AgentTools.HPC.launchagent.gateway_agent.GatewayAgent.configure_exp">[docs]</a>    <span class="k">def</span> <span class="nf">configure_exp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ntasks_per_node</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
+                          <span class="n">walltime_in_mins</span><span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Configure a gateway experiment</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            nodes (int, optional): [description]. Defaults to 1.</span>
+<span class="sd">            ntasks_per_node (int, optional): [description]. Defaults to 1.</span>
+<span class="sd">            email (str, optional): [description]. Defaults to &#39;&#39;.</span>
+<span class="sd">            walltime_in_mins (int, optional): [description]. Defaults to 5.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exp_config</span><span class="p">[</span><span class="s1">&#39;nodes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nodes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exp_config</span><span class="p">[</span><span class="s1">&#39;ntasks_per_node&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ntasks_per_node</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">exp_config</span><span class="p">[</span><span class="s1">&#39;walltime_in_mins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">walltime_in_mins</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">exp_config</span><span class="p">[</span><span class="s1">&#39;email&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">email</span> 
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Agent configured:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exp_config</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GatewayAgent.run_monitor_job"><a class="viewcode-back" href="../../../../AgentTools.HPC.launchagent.html#AgentTools.HPC.launchagent.gateway_agent.GatewayAgent.run_monitor_job">[docs]</a>    <span class="k">def</span> <span class="nf">run_monitor_job</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Submit the experiment and wait until it finishes</span>
+
+<span class="sd">        This is a blocking call</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">good_status_dict</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;Created&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="s2">&quot;Running&quot;</span><span class="p">,</span> <span class="mi">7</span><span class="p">:</span> <span class="s2">&quot;Completed&quot;</span><span class="p">}</span>
+        <span class="n">bad_status_dict</span> <span class="o">=</span> <span class="p">{</span><span class="mi">8</span><span class="p">:</span> <span class="s2">&quot;Experiment Setup failed (resource profile)&quot;</span><span class="p">}</span>
+
+        <span class="n">api_server_client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_server_client</span>
+        <span class="n">data_model_client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_model_client</span>
+        <span class="n">airavata_util</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">airavata_util</span>
+        <span class="n">credential_store_client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">credential_store_client</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span>
+        <span class="n">localdirpath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">localdirpath</span>
+        <span class="n">exp_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exp_name</span>
+        <span class="n">app_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_name</span>
+        <span class="n">gateway_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gateway_id</span>
+
+        <span class="n">executionId</span> <span class="o">=</span> <span class="n">airavata_util</span><span class="o">.</span><span class="n">get_execution_id</span><span class="p">(</span><span class="n">app_name</span><span class="p">)</span>
+
+        <span class="c1"># create Experiment data Model</span>
+        <span class="n">experiment</span> <span class="o">=</span> <span class="n">data_model_client</span><span class="o">.</span><span class="n">get_experiment_data_model_for_single_application</span><span class="p">(</span>
+            <span class="n">project_name</span><span class="o">=</span><span class="s2">&quot;Default Project&quot;</span><span class="p">,</span>
+            <span class="n">application_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app_name</span><span class="p">,</span>
+            <span class="n">experiment_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">exp_name</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Testing&quot;</span><span class="p">)</span>
+
+        <span class="c1"># remote path of experiments results (relative to Project foler)</span>
+        <span class="n">experiment_remote_path_str</span> <span class="o">=</span> <span class="n">executionId</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment_time_str</span>
+
+        <span class="n">driverFile</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;/driver.sh&quot;</span>
+        <span class="n">outfile_driver</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exp_input_path</span><span class="p">,</span> <span class="s2">&quot;driver.sh&quot;</span><span class="p">)</span>
+
+        <span class="n">_dos2unix</span><span class="p">(</span><span class="n">infile</span> <span class="o">=</span> <span class="n">driverFile</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span> <span class="n">outfile_driver</span><span class="p">)</span>
+
+        <span class="n">sftp_connector</span> <span class="o">=</span> <span class="n">SFTPConnector</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&quot;cyberwater.scigap.org&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9000</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_name</span><span class="p">,</span>
+                                    <span class="n">password</span><span class="o">=</span><span class="n">token</span><span class="o">.</span><span class="n">accessToken</span><span class="p">)</span>
+        <span class="c1"># will be /projectname/experiment_name/ in sftp server</span>
+        <span class="n">path_suffix</span> <span class="o">=</span> <span class="n">sftp_connector</span><span class="o">.</span><span class="n">upload_files</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exp_input_path</span><span class="p">,</span>
+                                                <span class="s2">&quot;Default_Project&quot;</span><span class="p">,</span>
+                                                <span class="n">experiment_remote_path_str</span><span class="p">)</span>
+
+        <span class="c1"># generate path for gateway that is</span>
+        <span class="n">remotepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gateway_settings</span><span class="o">.</span><span class="n">GATEWAY_DATA_STORE_DIR</span> <span class="o">+</span> <span class="n">path_suffix</span>
+
+        <span class="n">group_resource_profile_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gateway_resource</span><span class="p">[</span><span class="s2">&quot;group_resource_profile_name&quot;</span><span class="p">]</span>
+        <span class="n">computation_resource_name</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gateway_resource</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span>
+        <span class="n">queue_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gateway_resource</span><span class="p">[</span><span class="s2">&quot;queue_name&quot;</span><span class="p">]</span> 
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using group_reource profile:&quot;</span> <span class="o">+</span> <span class="n">group_resource_profile_name</span> <span class="o">+</span> <span class="s2">&quot;, with resource name:&quot;</span> <span class="o">+</span> <span class="n">computation_resource_name</span><span class="p">)</span>
+        <span class="n">experiment</span> <span class="o">=</span> <span class="n">data_model_client</span><span class="o">.</span><span class="n">configure_computation_resource_scheduling</span><span class="p">(</span><span class="n">experiment_model</span><span class="o">=</span><span class="n">experiment</span><span class="p">,</span>
+                                                                                <span class="n">computation_resource_name</span><span class="o">=</span><span class="n">computation_resource_name</span><span class="p">,</span>
+                                                                                <span class="n">group_resource_profile_name</span><span class="o">=</span><span class="n">group_resource_profile_name</span><span class="p">,</span>
+                                                                                <span class="n">storageId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">storage_id</span><span class="p">,</span>
+                                                                                <span class="n">node_count</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">exp_config</span><span class="p">[</span><span class="s1">&#39;nodes&#39;</span><span class="p">],</span>
+                                                                                <span class="n">total_cpu_count</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">exp_config</span><span class="p">[</span><span class="s1">&#39;nodes&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">exp_config</span><span class="p">[</span><span class="s1">&#39;ntasks_per_node&#39;</span><span class="p">],</span>
+                                                                                <span class="n">wall_time_limit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">exp_config</span><span class="p">[</span><span class="s1">&#39;walltime_in_mins&#39;</span><span class="p">],</span>
+                                                                                <span class="n">queue_name</span><span class="o">=</span><span class="n">queue_name</span><span class="p">,</span>
+                                                                                <span class="n">experiment_dir_path</span><span class="o">=</span><span class="n">remotepath</span><span class="p">)</span>
+        <span class="c1"># I only need to register the run.sh file</span>
+        <span class="n">input_files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">input_file_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;driver.sh&#39;</span><span class="p">,</span> <span class="s1">&#39;packed.tar&#39;</span><span class="p">]:</span>
+        <span class="c1">#for input_file_name in [&#39;driver.sh&#39;]:</span>
+            <span class="n">data_uri</span> <span class="o">=</span> <span class="n">data_model_client</span><span class="o">.</span><span class="n">register_input_file</span><span class="p">(</span><span class="n">file_identifier</span><span class="o">=</span><span class="n">input_file_name</span><span class="p">,</span>
+                                                            <span class="n">storage_name</span><span class="o">=</span><span class="s1">&#39;pgadev.scigap.org&#39;</span><span class="p">,</span>
+                                                            <span class="n">storageId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">storage_id</span><span class="p">,</span>
+                                                            <span class="n">input_file_name</span><span class="o">=</span><span class="n">input_file_name</span><span class="p">,</span>
+                                                            <span class="n">uploaded_storage_path</span><span class="o">=</span><span class="n">remotepath</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;registering uri:&quot;</span><span class="p">,</span> <span class="n">data_uri</span><span class="p">)</span>
+            <span class="n">input_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_uri</span><span class="p">)</span>
+
+        <span class="n">experiment</span> <span class="o">=</span> <span class="n">data_model_client</span><span class="o">.</span><span class="n">configure_input_and_outputs</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span> <span class="n">input_files</span><span class="o">=</span><span class="n">input_files</span><span class="p">,</span>
+                                                                <span class="n">application_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app_name</span><span class="p">)</span>
+
+        <span class="c1"># create experiment</span>
+        <span class="n">ex_id</span> <span class="o">=</span> <span class="n">api_server_client</span><span class="o">.</span><span class="n">create_experiment</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="s2">&quot;cyberwater&quot;</span><span class="p">,</span> <span class="n">experiment</span><span class="p">)</span>
+
+        <span class="c1"># launch experiment</span>
+        <span class="n">api_server_client</span><span class="o">.</span><span class="n">launch_experiment</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">ex_id</span><span class="p">,</span> <span class="s2">&quot;cyberwater&quot;</span><span class="p">)</span>
+
+        <span class="n">status</span> <span class="o">=</span> <span class="n">api_server_client</span><span class="o">.</span><span class="n">get_experiment_status</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">ex_id</span><span class="p">);</span>
+
+        <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Initial state: &quot;</span> <span class="o">+</span> <span class="n">good_status_dict</span><span class="p">[</span><span class="n">status</span><span class="o">.</span><span class="n">state</span><span class="p">])</span>
+
+        <span class="k">while</span> <span class="n">status</span><span class="o">.</span><span class="n">state</span> <span class="ow">in</span> <span class="n">good_status_dict</span> <span class="ow">and</span> <span class="n">status</span><span class="o">.</span><span class="n">state</span> <span class="o">&lt;=</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">api_server_client</span><span class="o">.</span><span class="n">get_experiment_status</span><span class="p">(</span><span class="n">token</span><span class="p">,</span>
+                                                            <span class="n">ex_id</span><span class="p">);</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Current State: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">good_status_dict</span><span class="p">[</span><span class="n">status</span><span class="o">.</span><span class="n">state</span><span class="p">]))</span>
+        
+        <span class="k">if</span> <span class="n">status</span><span class="o">.</span><span class="n">state</span> <span class="ow">in</span> <span class="n">bad_status_dict</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Experiment get bad status </span><span class="si">%d</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">bad_status_dict</span><span class="p">[</span><span class="n">status</span><span class="o">.</span><span class="n">state</span><span class="p">]))</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Completed!&quot;</span><span class="p">)</span>
+
+        <span class="c1"># pysftp will try to create the Default_project</span>
+        <span class="n">result_dir</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">localdirpath</span><span class="p">,</span><span class="s1">&#39;Default_Project&#39;</span><span class="p">)</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">result_dir</span><span class="p">)):</span>
+            <span class="n">remove_tree</span><span class="p">(</span><span class="n">result_dir</span><span class="p">)</span>
+
+        <span class="c1"># this will save results to localdirpath/YYYYMMDD-HHMM</span>
+        <span class="n">sftp_connector</span><span class="o">.</span><span class="n">download_files</span><span class="p">(</span><span class="n">localdirpath</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;/&#39;</span><span class="p">),</span> <span class="s2">&quot;Default_Project&quot;</span><span class="p">,</span> <span class="n">experiment_remote_path_str</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">_print_header</span><span class="p">,</span> <span class="s2">&quot;Downloading tarball of remote working directory and logs, saved to:&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">localdirpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_time_str</span><span class="p">))</span></div>
+    
+<div class="viewcode-block" id="GatewayAgent.upload_folder"><a class="viewcode-back" href="../../../../AgentTools.HPC.launchagent.html#AgentTools.HPC.launchagent.gateway_agent.GatewayAgent.upload_folder">[docs]</a>    <span class="k">def</span> <span class="nf">upload_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputpath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Upload local folder to remote working directory</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            inputpath (Path): path of local folder to be uploaded </span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; agent.upload_folder(&#39;tests/matrix/&#39;)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">archivefile</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exp_input_path</span><span class="p">,</span> <span class="s1">&#39;packed&#39;</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">make_archive</span><span class="p">(</span><span class="n">archivefile</span><span class="p">,</span> <span class="s1">&#39;tar&#39;</span><span class="p">,</span> <span class="n">inputpath</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GatewayAgent.download_folder"><a class="viewcode-back" href="../../../../AgentTools.HPC.launchagent.html#AgentTools.HPC.launchagent.gateway_agent.GatewayAgent.download_folder">[docs]</a>    <span class="k">def</span> <span class="nf">download_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outputpath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Download all contents from remote remote directory to local folder</span>
+
+<span class="sd">        This will recursively copy files/folders from remote working directory</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            outputpath (path): directory path where remote files will be copied to </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">srcPath</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">localdirpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_time_str</span><span class="p">)</span>
+        <span class="n">archivefile</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">srcPath</span><span class="p">,</span> <span class="s1">&#39;agent_results.zip&#39;</span><span class="p">)</span>
+        <span class="n">tarball</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">archivefile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">tarball</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">outputpath</span><span class="p">)</span>
+        <span class="n">tarball</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">_print_header</span><span class="p">,</span> <span class="s2">&quot;extract results from tarball to &quot;</span><span class="p">,</span> <span class="n">outputpath</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, CyberWater.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgentTools.HPC.launchagent package &mdash; GenericModelAgentToolkits  documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="AgentTools.html" class="icon icon-home"> GenericModelAgentToolkits
+          </a>
+              <div class="version">
+                Alpha version
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="AgentTools.GenericModelAgent.html">AgentTools.GenericModelAgent package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="AgentTools.HPC.html">AgentTools.HPC package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="AgentTools.util.html">AgentTools.util package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="AgentTools.html">GenericModelAgentToolkits</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="AgentTools.html" class="icon icon-home"></a> &raquo;</li>
+      <li>AgentTools.HPC.launchagent package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/AgentTools.HPC.launchagent.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="agenttools-hpc-launchagent-package">
+<h1>AgentTools.HPC.launchagent package<a class="headerlink" href="#agenttools-hpc-launchagent-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="AgentTools.HPC.launchagent.resources.html">AgentTools.HPC.launchagent.resources package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="AgentTools.HPC.launchagent.resources.html#module-AgentTools.HPC.launchagent.resources">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-AgentTools.HPC.launchagent.gateway_agent">
+<span id="agenttools-hpc-launchagent-gateway-agent-module"></span><h2>AgentTools.HPC.launchagent.gateway_agent module<a class="headerlink" href="#module-AgentTools.HPC.launchagent.gateway_agent" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="AgentTools.HPC.launchagent.gateway_agent.GatewayAgent">
+<em class="property">class </em><code class="descclassname">AgentTools.HPC.launchagent.gateway_agent.</code><code class="descname">GatewayAgent</code><span class="sig-paren">(</span><em>gateway_username='fengggli2'</em>, <em>gateway_passwd=None</em>, <em>exp_name='test-exp-name'</em>, <em>site_name='karst'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/gateway_agent.html#GatewayAgent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.gateway_agent.GatewayAgent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launch agent: use airavata gateway api to offload local computation.</p>
+<p>local files will be saved in C:/temp/cyberwater-staging-gateway/exp_name,
+local files will then be uploaded to HPC, and being processed, 
+the remote working directory will be first downloaded as a tarball at at: C:/temp/cyberwater-staging-gateway/YYYYMMDD-HHMM,
+then extract to the user-defined download-folder.</p>
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.gateway_agent.GatewayAgent.configure_exp">
+<code class="descname">configure_exp</code><span class="sig-paren">(</span><em>nodes=1</em>, <em>ntasks_per_node=1</em>, <em>email=''</em>, <em>walltime_in_mins=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/gateway_agent.html#GatewayAgent.configure_exp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.gateway_agent.GatewayAgent.configure_exp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configure a gateway experiment</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>nodes (int, optional): [description]. Defaults to 1.
+ntasks_per_node (int, optional): [description]. Defaults to 1.
+email (str, optional): [description]. Defaults to ‘’.
+walltime_in_mins (int, optional): [description]. Defaults to 5.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.gateway_agent.GatewayAgent.download_folder">
+<code class="descname">download_folder</code><span class="sig-paren">(</span><em>outputpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/gateway_agent.html#GatewayAgent.download_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.gateway_agent.GatewayAgent.download_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download all contents from remote remote directory to local folder</p>
+<p>This will recursively copy files/folders from remote working directory</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>outputpath (path): directory path where remote files will be copied to</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.gateway_agent.GatewayAgent.run_monitor_job">
+<code class="descname">run_monitor_job</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/gateway_agent.html#GatewayAgent.run_monitor_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.gateway_agent.GatewayAgent.run_monitor_job" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit the experiment and wait until it finishes</p>
+<p>This is a blocking call</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.gateway_agent.GatewayAgent.upload_folder">
+<code class="descname">upload_folder</code><span class="sig-paren">(</span><em>inputpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/gateway_agent.html#GatewayAgent.upload_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.gateway_agent.GatewayAgent.upload_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload local folder to remote working directory</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>inputpath (Path): path of local folder to be uploaded</dd>
+<dt>Examples:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">agent</span><span class="o">.</span><span class="n">upload_folder</span><span class="p">(</span><span class="s1">&#39;tests/matrix/&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="AgentTools.HPC.launchagent.gateway_agent.get_supported_sites">
+<code class="descclassname">AgentTools.HPC.launchagent.gateway_agent.</code><code class="descname">get_supported_sites</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/gateway_agent.html#get_supported_sites"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.gateway_agent.get_supported_sites" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-AgentTools.HPC.launchagent.launchagent">
+<span id="agenttools-hpc-launchagent-launchagent-module"></span><h2>AgentTools.HPC.launchagent.launchagent module<a class="headerlink" href="#module-AgentTools.HPC.launchagent.launchagent" title="Permalink to this headline">¶</a></h2>
+<p>Created on Tu Dec 17 15:15:39 2019</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Feng Li</td>
+</tr>
+<tr class="field-even field"><th class="field-name">author:</th><td class="field-body">Yuankun Fu</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="AgentTools.HPC.launchagent.launchagent.LaunchAgent">
+<em class="property">class </em><code class="descclassname">AgentTools.HPC.launchagent.launchagent.</code><code class="descname">LaunchAgent</code><span class="sig-paren">(</span><em>site_name=u'bigred3'</em>, <em>project_name=u'cyberwater'</em>, <em>login_url=None</em>, <em>username=None</em>, <em>password=None</em>, <em>check_pend_feq=30</em>, <em>check_run_feq=10</em>, <em>check_cg_feq=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/launchagent.html#LaunchAgent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.launchagent.LaunchAgent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">future.types.newobject.newobject</span></code></p>
+<p>A class/agent to connect to cluster</p>
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.launchagent.LaunchAgent.check_job_stat">
+<code class="descname">check_job_stat</code><span class="sig-paren">(</span><em>jobID</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/launchagent.html#LaunchAgent.check_job_stat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.launchagent.LaunchAgent.check_job_stat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check job status</p>
+<p>Get the status of a job with &#64;job_ID.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>jobID:</dd>
+<dt>Returns:</dt>
+<dd>status: PD, R, CG, CF
+if not the above states, return 1, means job completely finshed or no jobID found</dd>
+<dt>Raises:</dt>
+<dd>None.</dd>
+<dt>Examples:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">check_job_stat</span><span class="p">(</span><span class="n">jobID</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.launchagent.LaunchAgent.configure_exp">
+<code class="descname">configure_exp</code><span class="sig-paren">(</span><em>nodes=1</em>, <em>ntasks_per_node=1</em>, <em>email=u''</em>, <em>walltime_in_mins=5</em>, <em>env_cmd=u''</em>, <em>execute_cmd=u''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/launchagent.html#LaunchAgent.configure_exp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.launchagent.LaunchAgent.configure_exp" title="Permalink to this definition">¶</a></dt>
+<dd><p>generate a cluster job script</p>
+<p>Automatic generate a job script for user in case they know nothing about writing a HPC job script.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>nodes: number of compute nodes used on cluster for this job.
+ntasks_per_node: number of tasks running on a compute node, specifically for parallel program (e.g. MPI)
+email: user’s email to receive email about submission, running, error and complete
+walltime_in_mins: estimated time for this job to be executed, in mins</dd>
+<dt>Returns:</dt>
+<dd>Job script file directory</dd>
+<dt>Examples:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">generateJobScript</span><span class="p">(</span><span class="s1">&#39;usr@email&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;./exe&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">generateJobScript</span><span class="p">(</span><span class="s1">&#39;usr@email&#39;</span><span class="p">,</span> <span class="n">run_time</span> <span class="o">=</span> <span class="s1">&#39;00:10:00&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;./exe&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">generateJobScript</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;usr@email&#39;</span><span class="p">,</span> <span class="s1">&#39;00:10:00&#39;</span><span class="p">,</span> <span class="s1">&#39;module load python3&#39;</span><span class="p">,</span> <span class="s1">&#39;python3 your_prog&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.launchagent.LaunchAgent.download_folder">
+<code class="descname">download_folder</code><span class="sig-paren">(</span><em>outputpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/launchagent.html#LaunchAgent.download_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.launchagent.LaunchAgent.download_folder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.launchagent.LaunchAgent.monitor_job">
+<code class="descname">monitor_job</code><span class="sig-paren">(</span><em>jobID</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/launchagent.html#LaunchAgent.monitor_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.launchagent.LaunchAgent.monitor_job" title="Permalink to this definition">¶</a></dt>
+<dd><p>Monitor this job status</p>
+<p>check job status with Pending (PD), Running (R) or Nearly Completed (CG)
+This function is for internal used, and not exposed to user.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>jobID:</dd>
+</dl>
+<p>Returns:</p>
+<dl class="docutils">
+<dt>Raises:</dt>
+<dd>None</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.launchagent.LaunchAgent.printTotals">
+<code class="descname">printTotals</code><span class="sig-paren">(</span><em>transferred</em>, <em>toBeTransferred</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/launchagent.html#LaunchAgent.printTotals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.launchagent.LaunchAgent.printTotals" title="Permalink to this definition">¶</a></dt>
+<dd><p>print real-time transfer(upload/download) status</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.launchagent.LaunchAgent.run_monitor_job">
+<code class="descname">run_monitor_job</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/launchagent.html#LaunchAgent.run_monitor_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.launchagent.LaunchAgent.run_monitor_job" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload a job script, submit this job, and monitor this job status</p>
+<p>Specify the job
+Get the job_ID and use the ID to monitor job status.</p>
+<p>Args:</p>
+<p>Returns:</p>
+<dl class="docutils">
+<dt>Raises:</dt>
+<dd>OSError: No suchfile</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.launchagent.LaunchAgent.ssh_block_command">
+<code class="descname">ssh_block_command</code><span class="sig-paren">(</span><em>commands</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/launchagent.html#LaunchAgent.ssh_block_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.launchagent.LaunchAgent.ssh_block_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute commands on cluster Login Node</p>
+<p>A blocking call to execute commands on remote login node.
+This function will autumatically cd to your prjDir. Specifically, 
+if a job script has been uploaded to a remote login node, you can 
+directly call this function with setting input commands “sbatch job_script”</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>commands: string</dd>
+<dt>Returns:</dt>
+<dd>print your commands to screen</dd>
+<dt>Raises:</dt>
+<dd>None</dd>
+<dt>Examples:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">ssh_block_command</span><span class="p">(</span><span class="s1">&#39;cd cyberwater; squeue -u username&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.launchagent.LaunchAgent.upload_folder">
+<code class="descname">upload_folder</code><span class="sig-paren">(</span><em>inputpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/launchagent.html#LaunchAgent.upload_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.launchagent.LaunchAgent.upload_folder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-AgentTools.HPC.launchagent.ssh_agent">
+<span id="agenttools-hpc-launchagent-ssh-agent-module"></span><h2>AgentTools.HPC.launchagent.ssh_agent module<a class="headerlink" href="#module-AgentTools.HPC.launchagent.ssh_agent" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="AgentTools.HPC.launchagent.ssh_agent.LaunchAgent">
+<em class="property">class </em><code class="descclassname">AgentTools.HPC.launchagent.ssh_agent.</code><code class="descname">LaunchAgent</code><span class="sig-paren">(</span><em>site_name=u'bigred3'</em>, <em>project_name=u'cyberwater'</em>, <em>login_url=None</em>, <em>username=None</em>, <em>passwd=None</em>, <em>sched_env=u'slurm'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/ssh_agent.html#LaunchAgent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.ssh_agent.LaunchAgent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">future.types.newobject.newobject</span></code></p>
+<p>A class/agent to connect to cluster</p>
+<p>local input files will be saved in C:/temp/cyberwater-staging-ssh/YYYMMDD-HHMM (Or ~/temp/cyberwater-staging-ssh/YYYMMDD-HHMM),
+local files will then be uploaded to HPC, and being processed, 
+the remote working directory will be first downloaded as a tarball at at: C:/temp/cyberwater-staging-ssh/YYYYMMDD-HHMM,
+then extract to the user-defined download-folder.</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd><p class="first">site_name: name of cluster resource. (gcp, bigred3, jetstream) 
+username: ask input of user name to log on to cluster
+port: ssh default port is 22
+prjDir: create a directory under /home/username/project_name on cluster
+is_started: whether the ssh session is started or not
+check_pend_feq: check the job whether has been submitted to</p>
+<blockquote>
+<div>cluster every &#64;check_pend_feq seconds</div></blockquote>
+<dl class="last docutils">
+<dt>check_run_feq: check the job whether is running on cluster </dt>
+<dd>every &#64;check_run_feq seconds</dd>
+<dt>check_cg_feq: when job completed, check the job whether is in ‘CG’ </dt>
+<dd>state on cluster every &#64;check_run_feq seconds</dd>
+</dl>
+</dd>
+</dl>
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.configure_bash_job">
+<code class="descname">configure_bash_job</code><span class="sig-paren">(</span><em>env_cmd=u''</em>, <em>execute_cmd=u''</em>, <em>execute_script=u''</em>, <em>remote_results_folder=u'.'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/ssh_agent.html#LaunchAgent.configure_bash_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.configure_bash_job" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configure a job that runs in remote bash environment</p>
+<p>Jobs can be described in either way:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">1.</span> <span class="n">env_cmd</span> <span class="o">+</span> <span class="n">execute_cmd</span>
+<span class="mf">2.</span> <span class="n">execute_script</span> <span class="p">(</span><span class="n">contains</span> <span class="n">both</span>  <span class="n">the</span> <span class="n">path</span> <span class="n">to</span> <span class="n">a</span> <span class="n">shell</span> <span class="n">script</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>env_cmd: command to preprare environment(e.g module load)
+execute_cmd: command to execute applications
+execute_script (str): Script to be executed remotely.
+remote_results_folder (str, optional): Results folder path. Defaults to ‘.’.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.configure_slurm_job">
+<code class="descname">configure_slurm_job</code><span class="sig-paren">(</span><em>nodes=1</em>, <em>ntasks_per_node=1</em>, <em>email=u''</em>, <em>walltime_in_mins=5</em>, <em>env_cmd=u''</em>, <em>execute_cmd=u''</em>, <em>execute_script=u''</em>, <em>remote_results_folder=u'.'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/ssh_agent.html#LaunchAgent.configure_slurm_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.configure_slurm_job" title="Permalink to this definition">¶</a></dt>
+<dd><p>generate a cluster job script</p>
+<p>Automatic generate a Slurm job script for user in case they know nothing about writing a HPC job script.
+Jobs can be described in either way (see examples):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">1.</span> <span class="n">env_cmd</span> <span class="o">+</span> <span class="n">execute_cmd</span>
+<span class="mf">2.</span> <span class="n">execute_script</span> <span class="p">(</span><span class="n">contains</span> <span class="n">both</span>  <span class="n">the</span> <span class="n">path</span> <span class="n">to</span> <span class="n">a</span> <span class="n">shell</span> <span class="n">script</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>nodes: number of compute nodes used on cluster for this job.
+ntasks_per_node: number of tasks running on a compute node, specifically for parallel program (e.g. MPI)
+email: user’s email to receive email about submission, running, error and complete
+walltime_in_mins: estimated time for this job to be executed, in mins 
+env_cmd: command to preprare environment(e.g module load)
+execute_cmd: command to execute applications
+execute_script: a path to shell script.
+remote_results_folder: remote folder to download results from.</dd>
+<dt>Returns:</dt>
+<dd>the jobid that can be used in global status_manager</dd>
+<dt>Examples:</dt>
+<dd><div class="first highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">agent</span><span class="o">.</span><span class="n">configure_exp</span><span class="p">(</span><span class="n">node</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ntasks_per_node</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">env_cmd</span><span class="o">=</span><span class="s2">&quot;module load python/3.7&quot;</span><span class="p">,</span> <span class="n">execute_cmd</span><span class="o">=</span><span class="s2">&quot;python somescript.py&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>./run.sh can be shell script contains both env_cmd and execute_cmds</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">agent</span><span class="o">.</span><span class="n">configure_exp</span><span class="p">(</span><span class="n">node</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ntasks_per_node</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">env_cmd</span><span class="o">=</span><span class="s2">&quot;module load python/3.7&quot;</span><span class="p">,</span> <span class="n">execute_cmd</span><span class="o">=</span><span class="s2">&quot;./run.sh&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Can specify a subfoler that contains useful results, so that other contents of the remote working dir will not be downloaded</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">agent</span><span class="o">.</span><span class="n">configure_exp</span><span class="p">(</span><span class="n">node</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ntasks_per_node</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">env_cmd</span><span class="o">=</span><span class="s2">&quot;module load python/3.7&quot;</span><span class="p">,</span> <span class="n">execute_cmd</span><span class="o">=</span><span class="s2">&quot;./run.sh&quot;</span><span class="p">,</span> <span class="n">remote_results_folder</span><span class="o">=</span><span class="s1">&#39;./results&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.download_folder">
+<code class="descname">download_folder</code><span class="sig-paren">(</span><em>outputpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/ssh_agent.html#LaunchAgent.download_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.download_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download all contents from remote remote directory to local folder</p>
+<p>This will recursively copy files/folders from remote working directory.
+If remote_results_foder is provided in the <cite>configure_slurm_job</cite> or <cite>configure_bash_job</cite> function, downloading will starts from that remote subfolder.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>outputpath (path): directory path where remote files will be copied to</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.get_job_info">
+<code class="descname">get_job_info</code><span class="sig-paren">(</span><em>jobID</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/ssh_agent.html#LaunchAgent.get_job_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.get_job_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Obtain registered job information</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>jobID (int): the jobID maintained by launchAgent.</dd>
+<dt>Returns:</dt>
+<dd>A dictionary of fields to describe this job.  
+if not the above states, return 1, means job completely finshed or no jobID found</dd>
+<dt>Raises:</dt>
+<dd>runtimeError if trying to use a non-exsiting jobID.</dd>
+<dt>Examples:</dt>
+<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">job_entry</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">get_job_info</span><span class="p">(</span><span class="n">jobID</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;localjobid: </span><span class="si">%d</span><span class="s2">, job description: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">jobID</span><span class="p">,</span> <span class="n">job_entry</span><span class="p">))</span>
+<span class="go">Will output:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">localjobid</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="n">job</span> <span class="n">description</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;SiteName&#39;</span><span class="p">:</span> <span class="s1">&#39;stampede2&#39;</span><span class="p">,</span> <span class="s1">&#39;AgentType&#39;</span><span class="p">:</span> <span class="s1">&#39;gateway&#39;</span><span class="p">,</span> <span class="s1">&#39;JobStatus&#39;</span><span class="p">:</span> <span class="s1">&#39;CREATED&#39;</span><span class="p">,</span> <span class="s1">&#39;RemoteJobID&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;CreatedTime&#39;</span><span class="p">:</span> <span class="s1">&#39;20210510-2231&#39;</span><span class="p">,</span> <span class="s1">&#39;JobID&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.get_job_status">
+<code class="descname">get_job_status</code><span class="sig-paren">(</span><em>jobID</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/ssh_agent.html#LaunchAgent.get_job_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.get_job_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get job status</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>jobID (int): the jobID maintained by launchAgent.</dd>
+<dt>Returns:</dt>
+<dd>str: the status string, can be one of {CREATED, PENDING, RUNNING, COMPLETED, FAILED}</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.launch_job">
+<code class="descname">launch_job</code><span class="sig-paren">(</span><em>jobID</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/ssh_agent.html#LaunchAgent.launch_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.launch_job" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launch this job based on the configuration</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.run_monitor_job">
+<code class="descname">run_monitor_job</code><span class="sig-paren">(</span><em>jobID</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/ssh_agent.html#LaunchAgent.run_monitor_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.run_monitor_job" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload a job script, submit this job, and monitor this job status</p>
+<p>Specify the job
+Get the job_ID and use the ID to monitor job status.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>jobID (int):</dd>
+<dt>Returns:</dt>
+<dd>None</dd>
+<dt>Raises:</dt>
+<dd>OSError: No suchfile</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.upload_folder">
+<code class="descname">upload_folder</code><span class="sig-paren">(</span><em>inputpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/ssh_agent.html#LaunchAgent.upload_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.ssh_agent.LaunchAgent.upload_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload local folder to remote working directory</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>inputpath (Path): path of local folder to be uploaded</dd>
+<dt>Examples:</dt>
+<dd>agent.upload_folder(‘tests/matrix/’)</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="AgentTools.HPC.launchagent.ssh_agent.get_supported_sites">
+<code class="descclassname">AgentTools.HPC.launchagent.ssh_agent.</code><code class="descname">get_supported_sites</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/ssh_agent.html#get_supported_sites"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.ssh_agent.get_supported_sites" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-AgentTools.HPC.launchagent.status_manager">
+<span id="agenttools-hpc-launchagent-status-manager-module"></span><h2>AgentTools.HPC.launchagent.status_manager module<a class="headerlink" href="#module-AgentTools.HPC.launchagent.status_manager" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="AgentTools.HPC.launchagent.status_manager.StatusManager">
+<em class="property">class </em><code class="descclassname">AgentTools.HPC.launchagent.status_manager.</code><code class="descname">StatusManager</code><span class="sig-paren">(</span><em>db_file_path</em>, <em>ignore_previous=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/status_manager.html#StatusManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.status_manager.StatusManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Manage all job submitted from slurm, gateway, shell based launchAgent</p>
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.status_manager.StatusManager.add_entry">
+<code class="descname">add_entry</code><span class="sig-paren">(</span><em>agent_type</em>, <em>site_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/status_manager.html#StatusManager.add_entry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.status_manager.StatusManager.add_entry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allocate a slot in the db and update status.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>agent_type (str): either ‘slurm’ or ‘bash’ 
+site_name (str): site names defined in site_dict.json file</dd>
+<dt>Returns:</dt>
+<dd>int: job_id for this entry</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.status_manager.StatusManager.get_entry">
+<code class="descname">get_entry</code><span class="sig-paren">(</span><em>job_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/status_manager.html#StatusManager.get_entry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.status_manager.StatusManager.get_entry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the status of a job</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>job_id (int): the jobid returned by add_entry</dd>
+<dt>Return:</dt>
+<dd>dict: a dictory that contains the job information:</dd>
+<dt>Examples:</dt>
+<dd><div class="first highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">manager</span><span class="o">.</span><span class="n">get_entry</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
+<span class="go">{&#39;JobID&#39;: 13, &#39;AgentType&#39;: &#39;slurm&#39;, &#39;JobStatus&#39;: &#39;RUNNING&#39;, &#39;CreatedTime&#39;: &#39;20210510-2231&#39;, &#39;RemoteJobID&#39;: 12387}</span>
+</pre></div>
+</div>
+<p class="last">The JobStatus can be: ‘CREATED’, ‘PENDING’, ‘RUNNING’, ‘COMPLETED’,’FAILED’</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.status_manager.StatusManager.print_all_status">
+<code class="descname">print_all_status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/status_manager.html#StatusManager.print_all_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.status_manager.StatusManager.print_all_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print status to console</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="AgentTools.HPC.launchagent.status_manager.StatusManager.update_entry">
+<code class="descname">update_entry</code><span class="sig-paren">(</span><em>job_id</em>, <em>field_name</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/status_manager.html#StatusManager.update_entry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.status_manager.StatusManager.update_entry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update specific field of an entry in the catalog</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>job_id ([type]): [description]
+field_name ([type]): [description]
+value ([type]): [description]</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-AgentTools.HPC.launchagent.version">
+<span id="agenttools-hpc-launchagent-version-module"></span><h2>AgentTools.HPC.launchagent.version module<a class="headerlink" href="#module-AgentTools.HPC.launchagent.version" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-AgentTools.HPC.launchagent">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-AgentTools.HPC.launchagent" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, CyberWater.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

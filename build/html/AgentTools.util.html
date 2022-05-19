@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgentTools.util package &mdash; GenericModelAgentToolkits  documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="AgentTools.HPC package" href="AgentTools.HPC.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="AgentTools.html" class="icon icon-home"> GenericModelAgentToolkits
+          </a>
+              <div class="version">
+                Alpha version
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="AgentTools.GenericModelAgent.html">AgentTools.GenericModelAgent package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="AgentTools.HPC.html">AgentTools.HPC package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">AgentTools.util package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-AgentTools.util.DocumentUtil">AgentTools.util.DocumentUtil module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-AgentTools.util.OutputUtil">AgentTools.util.OutputUtil module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-AgentTools.util">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="AgentTools.html">GenericModelAgentToolkits</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="AgentTools.html" class="icon icon-home"></a> &raquo;</li>
+      <li>AgentTools.util package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/AgentTools.util.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="agenttools-util-package">
+<h1>AgentTools.util package<a class="headerlink" href="#agenttools-util-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-AgentTools.util.DocumentUtil">
+<span id="agenttools-util-documentutil-module"></span><h2>AgentTools.util.DocumentUtil module<a class="headerlink" href="#module-AgentTools.util.DocumentUtil" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="AgentTools.util.DocumentUtil.DocumentUtil">
+<em class="property">class </em><code class="descclassname">AgentTools.util.DocumentUtil.</code><code class="descname">DocumentUtil</code><a class="reference internal" href="_modules/AgentTools/util/DocumentUtil.html#DocumentUtil"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.util.DocumentUtil.DocumentUtil" title="Permalink to this definition">¶</a></dt>
+<dd><p>DocumentUtil class is a utility class for the modules in Generic Model Agent Toolkits to get the corresponding documentation.</p>
+<dl class="staticmethod">
+<dt id="AgentTools.util.DocumentUtil.DocumentUtil.get_documentation">
+<em class="property">static </em><code class="descname">get_documentation</code><span class="sig-paren">(</span><em>module_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/util/DocumentUtil.html#DocumentUtil.get_documentation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.util.DocumentUtil.DocumentUtil.get_documentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is to get the documentation of the current module</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>module_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The name of the current module</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The documentation of the current module</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-AgentTools.util.OutputUtil">
+<span id="agenttools-util-outpututil-module"></span><h2>AgentTools.util.OutputUtil module<a class="headerlink" href="#module-AgentTools.util.OutputUtil" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="AgentTools.util.OutputUtil.OutputUtil">
+<em class="property">class </em><code class="descclassname">AgentTools.util.OutputUtil.</code><code class="descname">OutputUtil</code><a class="reference internal" href="_modules/AgentTools/util/OutputUtil.html#OutputUtil"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.util.OutputUtil.OutputUtil" title="Permalink to this definition">¶</a></dt>
+<dd><p>OutputUtil class is a utility class to provide relative methods on calculation and saving the forcing dataset for RunModuleAgent and HPC module.</p>
+<dl class="staticmethod">
+<dt id="AgentTools.util.OutputUtil.OutputUtil.check_dimensions">
+<em class="property">static </em><code class="descname">check_dimensions</code><span class="sig-paren">(</span><em>user_inputs</em>, <em>dd</em>, <em>check_space=True</em>, <em>check_time=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/util/OutputUtil.html#OutputUtil.check_dimensions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.util.OutputUtil.OutputUtil.check_dimensions" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Function is to check the detected dimension of the dataset</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user_inputs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The name of the integrated dataset</li>
+<li><strong>dd</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The detected dimensions</li>
+<li><strong>check_space</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – The parameter on whether the space variable exists, default value is <em>True</em>.</li>
+<li><strong>check_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – The parameter on whether the time variable exists, default value is <em>True</em>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The detected dimensions</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="AgentTools.util.OutputUtil.OutputUtil.check_dimensions_var">
+<em class="property">static </em><code class="descname">check_dimensions_var</code><span class="sig-paren">(</span><em>dataset_name</em>, <em>input_name</em>, <em>dd</em>, <em>check_space=True</em>, <em>check_time=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/util/OutputUtil.html#OutputUtil.check_dimensions_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.util.OutputUtil.OutputUtil.check_dimensions_var" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Function is to initialize and update detected dimensions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dataset_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The name of the input integrated dataset</li>
+<li><strong>input_name</strong> – The id of the integrated dataset</li>
+<li><strong>check_space</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – The parameter on whether the space variable exists, default value is True</li>
+<li><strong>check_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – The parameter on whether the time variable exists, default value is True</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The detected dimensions</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="AgentTools.util.OutputUtil.OutputUtil.create_dataset">
+<em class="property">static </em><code class="descname">create_dataset</code><span class="sig-paren">(</span><em>dataset_name</em>, <em>variable_name</em>, <em>left</em>, <em>right</em>, <em>top</em>, <em>bottom</em>, <em>side</em>, <em>base</em>, <em>timeini</em>, <em>timeend</em>, <em>initialize_ts</em>, <em>step</em>, <em>value</em>, <em>save=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/util/OutputUtil.html#OutputUtil.create_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.util.OutputUtil.OutputUtil.create_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is to create the responding dataset in the form of <em>msmDataset</em> with the parameters given</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dataset_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The name of dataset to be created</li>
+<li><strong>variable_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The name of the variable of the dataset</li>
+<li><strong>left</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The left boundary value in the space range of the dataset</li>
+<li><strong>right</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The right boundary value in the space range of the dataset</li>
+<li><strong>top</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The top boundary value in the space range of the dataset</li>
+<li><strong>bottom</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The bottom boundary value in the space range of the dataset</li>
+<li><strong>side</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The vertical resolution of the dataset</li>
+<li><strong>base</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The horizontal resolution of the dataset</li>
+<li><strong>timeini</strong> (<em>datetime</em>) – The initial time in the time range of the dataset</li>
+<li><strong>timeend</strong> (<em>datetime</em>) – The ending time in the time range of the dataset</li>
+<li><strong>step</strong> (<em>datetime</em>) – The time step of the dataset</li>
+<li><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a>) – The result value in the dataset</li>
+<li><strong>save</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – Flag on whether to save the dataset The default value is <em>False</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="AgentTools.util.OutputUtil.OutputUtil.exact_rounding">
+<em class="property">static </em><code class="descname">exact_rounding</code><span class="sig-paren">(</span><em>number</em>, <em>decimals</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/util/OutputUtil.html#OutputUtil.exact_rounding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.util.OutputUtil.OutputUtil.exact_rounding" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Function is to return a floating point number that is a rounded version of the specified number, with the specified number of decimals</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>number</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The number to be rounded</li>
+<li><strong>decimals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The number of decimals to use when rounding the number.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The rounded number</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="AgentTools.util.OutputUtil.OutputUtil.get_time_series">
+<em class="property">static </em><code class="descname">get_time_series</code><span class="sig-paren">(</span><em>dataset_name</em>, <em>time_ini</em>, <em>time_end</em>, <em>row</em>, <em>col</em>, <em>empty_value=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/util/OutputUtil.html#OutputUtil.get_time_series"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.util.OutputUtil.OutputUtil.get_time_series" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Function is to obtain the time-series of the targeted dataset</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dataset_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The name of the integrated dataset</li>
+<li><strong>time_ini</strong> (<em>datetime</em>) – The initial time of the dataset</li>
+<li><strong>time_end</strong> (<em>datetime</em>) – The ending time of the dataset</li>
+<li><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The row number of the dataset</li>
+<li><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The column number of the dataset</li>
+<li><strong>empty_value</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The value to replace when the element in dataset is empty, the default value is None</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The list of the time-series of the dataset</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="AgentTools.util.OutputUtil.OutputUtil.point_distance">
+<em class="property">static </em><code class="descname">point_distance</code><span class="sig-paren">(</span><em>x1</em>, <em>x2</em>, <em>y1</em>, <em>y2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/util/OutputUtil.html#OutputUtil.point_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.util.OutputUtil.OutputUtil.point_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Function is to calculate the distance between two points (x1,y1) and (x2,y2)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The x coordinate of the point (x1,y1)</li>
+<li><strong>x2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The x coordinate of the point (x2,y2)</li>
+<li><strong>y1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The y coordinate of the point (x1,y1)</li>
+<li><strong>y2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The y coordinate of the point (x2,y2)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The distance between two points (x1,y1) and (x2,y2)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="AgentTools.util.OutputUtil.OutputUtil.process_output_file">
+<em class="property">static </em><code class="descname">process_output_file</code><span class="sig-paren">(</span><em>dataset_name</em>, <em>row</em>, <em>col</em>, <em>filename</em>, <em>empty_value</em>, <em>file_key</em>, <em>pos</em>, <em>timeini</em>, <em>timeend</em>, <em>timestep</em>, <em>number_of_header_lines</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/util/OutputUtil.html#OutputUtil.process_output_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.util.OutputUtil.OutputUtil.process_output_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Function is to process input dataset  and create corresponding output result file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dataset_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The name of the dataset</li>
+<li><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The row number of the input integrated dataset</li>
+<li><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The column number of the dataset</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The name of the result file</li>
+<li><strong>empty_value</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The value to replace when the element in dataset is empty</li>
+<li><strong>file_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The name of the output dataset</li>
+<li><strong>pos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The position (column index) of the output dataset in the result file</li>
+<li><strong>timeini</strong> (<em>datetime</em>) – The initial time of the dataset</li>
+<li><strong>timeend</strong> (<em>datetime</em>) – The ending time of the dataset</li>
+<li><strong>timestep</strong> (<em>timedelta</em>) – The time step of the dataset</li>
+<li><strong>number_of_header_lines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The number of header lines in the result file</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="AgentTools.util.OutputUtil.OutputUtil.process_results_line">
+<em class="property">static </em><code class="descname">process_results_line</code><span class="sig-paren">(</span><em>line</em>, <em>empty_value</em>, <em>file_key</em>, <em>pos</em>, <em>timestep_datetime</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/util/OutputUtil.html#OutputUtil.process_results_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.util.OutputUtil.OutputUtil.process_results_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Function is to process and extract the result data in each header field in each line of the result file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>line</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The line being processed in the result file</li>
+<li><strong>empty_value</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The value to replace when the element in dataset is empty</li>
+<li><strong>file_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The name of the output dataset</li>
+<li><strong>pos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The position (column index) of the output dataset in the result file</li>
+<li><strong>timestep_datetime</strong> (<em>datetime</em>) – The current timestamp for the current line in the result file</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The current timestamp for the current line in the result file and the corresponding        value in the given position of the current line in the result file</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(datetime, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a>)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="AgentTools.util.OutputUtil.OutputUtil.save_dataset">
+<em class="property">static </em><code class="descname">save_dataset</code><span class="sig-paren">(</span><em>dataset_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/util/OutputUtil.html#OutputUtil.save_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.util.OutputUtil.OutputUtil.save_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Function is to save dataset in database and refreshe in cache</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dataset_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The name of the input integrated dataset</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="AgentTools.util.OutputUtil.OutputUtil.save_output">
+<em class="property">static </em><code class="descname">save_output</code><span class="sig-paren">(</span><em>output_folder</em>, <em>file_key</em>, <em>var_name</em>, <em>dataset_name</em>, <em>pos</em>, <em>file_prefix</em>, <em>point_output</em>, <em>separator</em>, <em>number_of_header_lines</em>, <em>dd</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/util/OutputUtil.html#OutputUtil.save_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.util.OutputUtil.OutputUtil.save_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Function is to create a dataset and save the result in the dataset as the output.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>output_folder</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The path of the folder for output</li>
+<li><strong>file_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The name of the output dataset</li>
+<li><strong>var_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The name of the variable of the dataset</li>
+<li><strong>dataset_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The name of the input integrated dataset</li>
+<li><strong>pos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The position (column index) in the result files for the output dataset</li>
+<li><strong>file_prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The prefix of the result file</li>
+<li><strong>point_output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – The boolean value represented whether the output dataset is a single-time-series in a signle file,        in contrast of a distributed result in multiple files, once per cell. The default value is False.</li>
+<li><strong>separator</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The delimiter in the result file to separate each data filed in result file</li>
+<li><strong>number_of_header_lines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The number of the header in the result file to skip</li>
+<li><strong>dd</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The detected dimensions</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The created output dataset</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="AgentTools.util.OutputUtil.OutputUtil.save_outputs">
+<em class="property">static </em><code class="descname">save_outputs</code><span class="sig-paren">(</span><em>output_folder</em>, <em>desired_outputs</em>, <em>position_list</em>, <em>file_prefix</em>, <em>input_identification</em>, <em>point_output</em>, <em>separator</em>, <em>number_of_header_lines</em>, <em>module_name</em>, <em>ret</em>, <em>dd</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/util/OutputUtil.html#OutputUtil.save_outputs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.util.OutputUtil.OutputUtil.save_outputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>This Function is to save the output datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>output_folder</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The path of the folder for output</li>
+<li><strong>desired_outputs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a>) – The list of the names of output datasets</li>
+<li><strong>position_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a>) – The list of the positions (column indices) in the result files for the output datasets</li>
+<li><strong>file_prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The prefix of the file</li>
+<li><strong>input_identification</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The id of the input dataset</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>:param point_output:The boolean value represented whether the output dataset is a single-time-series in a signle file,        in contrast of a distributed result in multiple files, once per cell. The default value is False.
+:type point_output: bool
+:param separator:The delimiter in the result file to separate each data filed in result file
+:type separator: str
+:param number_of_header_lines: The number of the header in the result file to skip
+:type number_of_header_lines: int
+:param module_name: The name of the current module
+:type module_name: str
+:param ret: The list of the name of output result datasets
+:type ret: list
+:param dd: The detected dimensions
+:type dd: dict
+:return: The integrated result dataset and the list of the name of output result datasets
+:rtype: (dict,list)</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="AgentTools.util.OutputUtil.OutputUtil.search_file_with_closest_lat_lon">
+<em class="property">static </em><code class="descname">search_file_with_closest_lat_lon</code><span class="sig-paren">(</span><em>estimated_lat</em>, <em>estimated_lon</em>, <em>directory</em>, <em>filename_pattern</em>, <em>min_resolution</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/util/OutputUtil.html#OutputUtil.search_file_with_closest_lat_lon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.util.OutputUtil.OutputUtil.search_file_with_closest_lat_lon" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function takes an estimation of a latitude and longitude coordinates of a specific cell (in a distributed
+output scenario), together with a directory where a list of cells are saved, and returns the name of the file
+with the closest coordinates to the given ones. If the resulting coordinate gives a difference superior to the
+current resolution, it throws an error.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>estimated_lat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The estimation of a latitude</li>
+<li><strong>estimated_lon</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The estimation of a longitude</li>
+<li><strong>directory</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The path of directory having a list of cells</li>
+<li><strong>filename_pattern</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The prefix of the file</li>
+<li><strong>min_resolution</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The miminum of reslution</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The name of the file with the closest coordinates to the given ones</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="AgentTools.util.OutputUtil.OutputUtil.set_time_series_to_dataset">
+<em class="property">static </em><code class="descname">set_time_series_to_dataset</code><span class="sig-paren">(</span><em>dataset_name</em>, <em>timeseries_dict</em>, <em>row</em>, <em>col</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/util/OutputUtil.html#OutputUtil.set_time_series_to_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.util.OutputUtil.OutputUtil.set_time_series_to_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is to set the time series for the current dataset</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dataset_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The name of the targeted dataset</li>
+<li><strong>timeseries_dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The time-series dictionary to be set for the targeted dataset</li>
+<li><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The row number of the dataset</li>
+<li><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The column number of the dataset</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-AgentTools.util">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-AgentTools.util" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="AgentTools.HPC.html" class="btn btn-neutral float-left" title="AgentTools.HPC package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, CyberWater.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
