@@ -1,54 +1,20 @@
-AgentTools.GenericModelAgent package
-====================================
+.. GenericModelAgentToolkits documentation master file, created by
+   sphinx-quickstart on Thu May 19 16:44:16 2022.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
 
-Submodules
-----------
+Welcome to GenericModelAgentToolkits's documentation!
+=====================================================
 
-AgentTools.GenericModelAgent.AreaWiseParamGenerator module
-----------------------------------------------------------
-
-.. automodule:: AgentTools.GenericModelAgent.AreaWiseParamGenerator
-    :members:
-    
-    
-
-AgentTools.GenericModelAgent.ForcingDataFileGenerator module
-------------------------------------------------------------
-
-.. automodule:: AgentTools.GenericModelAgent.ForcingDataFileGenerator
-    :members:
-    
-    
-
-AgentTools.GenericModelAgent.InitialStateFileGenerator module
--------------------------------------------------------------
-
-.. automodule:: AgentTools.GenericModelAgent.InitialStateFileGenerator
-    :members:
-    
-    
-
-AgentTools.GenericModelAgent.MainGenerator module
--------------------------------------------------
-
-.. automodule:: AgentTools.GenericModelAgent.MainGenerator
-    :members:
-    
-
-
-AgentTools.GenericModelAgent.RunModuleAgent module
---------------------------------------------------
-
-.. automodule:: AgentTools.GenericModelAgent.RunModuleAgent
-    :members:
-    
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
 
 
 
-Module contents
----------------
+Indices and tables
+==================
 
-.. automodule:: AgentTools.GenericModelAgent
-    :members:
-    
-
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

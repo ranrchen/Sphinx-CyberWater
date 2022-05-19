@@ -286,10 +286,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This Function is to extract the parameters on the format of results from GUI input panel</span>
 
-<span class="sd">        @param results_format: The list of entries on the format of results configured by user on GUI</span>
-<span class="sd">        @type results_format: list</span>
-<span class="sd">        @return: The list of the value extracted from each entry on the format of results</span>
-<span class="sd">        @rtype: list</span>
+<span class="sd">        :param results_format: The list of entries on the format of results configured by user on GUI</span>
+<span class="sd">        :type results_format: list</span>
+<span class="sd">        :return: The list of the value extracted from each entry on the format of results</span>
+<span class="sd">        :rtype: list</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1">#print results_format</span>
         <span class="k">if</span> <span class="n">results_format</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -310,10 +310,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This Function is to extract the parameters on the final state options from GUI input panel</span>
 
-<span class="sd">        @param final_state_options: The list of entries on the final state options configured by user on GUI</span>
-<span class="sd">        @type final_state_options: list</span>
-<span class="sd">        @return: The list of the value extracted from each entry on final state options</span>
-<span class="sd">        @rtype: list</span>
+<span class="sd">        :param final_state_options: The list of entries on the final state options configured by user on GUI</span>
+<span class="sd">        :type final_state_options: list</span>
+<span class="sd">        :return: The list of the value extracted from each entry on final state options</span>
+<span class="sd">        :rtype: list</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">final_state_options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">final_state_options</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
@@ -330,10 +330,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This Function is to extract the parameters on the executable program path and arguments from GUI input panel</span>
 
-<span class="sd">        @param final_state_options: The list of entries on the executable program path and arguments configured by user on GUI</span>
-<span class="sd">        @type final_state_options: list</span>
-<span class="sd">        @return: The list of the value extracted from each entry on the executable program path and arguments</span>
-<span class="sd">        @rtype: list</span>
+<span class="sd">        :param final_state_options: The list of entries on the executable program path and arguments configured by user on GUI</span>
+<span class="sd">        :type final_state_options: list</span>
+<span class="sd">        :return: The list of the value extracted from each entry on the executable program path and arguments</span>
+<span class="sd">        :rtype: list</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">exe_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">exe_config</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
@@ -354,9 +354,9 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This function is to get the documentation of RunModuleAgent module</span>
 
-<span class="sd">        @param docstring: A string used to document a RunModuleAgent module</span>
-<span class="sd">        @param module: RunModuleAgent module</span>
-<span class="sd">        @return: A invoked function from package DocumentUtil to get documentation of RunModuleAgent module</span>
+<span class="sd">        :param docstring: A string used to document a RunModuleAgent module</span>
+<span class="sd">        :param module: RunModuleAgent module</span>
+<span class="sd">        :return: A invoked function from package DocumentUtil to get documentation of RunModuleAgent module</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">module_name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;__module__&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">DocumentUtil</span><span class="o">.</span><span class="n">get_documentation</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span></div></div>

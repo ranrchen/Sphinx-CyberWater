@@ -163,9 +163,9 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This function is to get the documentation of AreaWiseParamGenerator module</span>
 
-<span class="sd">        @param docstring: A string used to document a AreaWiseParamGenerator module</span>
-<span class="sd">        @param module: AreaWiseParamGenerator module</span>
-<span class="sd">        @return: A invoked function from package DocumentUtil to get documentation of AreaWiseParamGenerator module</span>
+<span class="sd">        :param docstring: A string used to document a AreaWiseParamGenerator module</span>
+<span class="sd">        :param module: AreaWiseParamGenerator module</span>
+<span class="sd">        :return: A invoked function from package DocumentUtil to get documentation of AreaWiseParamGenerator module</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">module_name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;__module__&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">DocumentUtil</span><span class="o">.</span><span class="n">get_documentation</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span></div></div>

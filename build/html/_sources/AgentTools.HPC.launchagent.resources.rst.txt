@@ -6,5 +6,5 @@ Module contents
 
 .. automodule:: AgentTools.HPC.launchagent.resources
     :members:
-    :undoc-members:
-    :show-inheritance:
+
+

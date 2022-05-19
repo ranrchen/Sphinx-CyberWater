@@ -140,30 +140,16 @@ walltime_in_mins (int, optional): [description]. Defaults to 5.</dd>
 
 </dd></dl>
 
-<dl class="function">
-<dt id="AgentTools.HPC.launchagent.gateway_agent.get_supported_sites">
-<code class="descclassname">AgentTools.HPC.launchagent.gateway_agent.</code><code class="descname">get_supported_sites</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/gateway_agent.html#get_supported_sites"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.gateway_agent.get_supported_sites" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </div>
 <div class="section" id="module-AgentTools.HPC.launchagent.launchagent">
 <span id="agenttools-hpc-launchagent-launchagent-module"></span><h2>AgentTools.HPC.launchagent.launchagent module<a class="headerlink" href="#module-AgentTools.HPC.launchagent.launchagent" title="Permalink to this headline">¶</a></h2>
-<p>Created on Tu Dec 17 15:15:39 2019</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Feng Li</td>
-</tr>
-<tr class="field-even field"><th class="field-name">author:</th><td class="field-body">Yuankun Fu</td>
-</tr>
-</tbody>
-</table>
+<p>Created on Tu Dec 17 15:15:39 2019
+&#64;author: Feng Li
+&#64;author: Yuankun Fu</p>
 <dl class="class">
 <dt id="AgentTools.HPC.launchagent.launchagent.LaunchAgent">
 <em class="property">class </em><code class="descclassname">AgentTools.HPC.launchagent.launchagent.</code><code class="descname">LaunchAgent</code><span class="sig-paren">(</span><em>site_name=u'bigred3'</em>, <em>project_name=u'cyberwater'</em>, <em>login_url=None</em>, <em>username=None</em>, <em>password=None</em>, <em>check_pend_feq=30</em>, <em>check_run_feq=10</em>, <em>check_cg_feq=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/launchagent.html#LaunchAgent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.launchagent.LaunchAgent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">future.types.newobject.newobject</span></code></p>
-<p>A class/agent to connect to cluster</p>
+<dd><p>A class/agent to connect to cluster</p>
 <dl class="method">
 <dt id="AgentTools.HPC.launchagent.launchagent.LaunchAgent.check_job_stat">
 <code class="descname">check_job_stat</code><span class="sig-paren">(</span><em>jobID</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/launchagent.html#LaunchAgent.check_job_stat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.launchagent.LaunchAgent.check_job_stat" title="Permalink to this definition">¶</a></dt>
@@ -207,11 +193,6 @@ walltime_in_mins: estimated time for this job to be executed, in mins</dd>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="method">
-<dt id="AgentTools.HPC.launchagent.launchagent.LaunchAgent.download_folder">
-<code class="descname">download_folder</code><span class="sig-paren">(</span><em>outputpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/launchagent.html#LaunchAgent.download_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.launchagent.LaunchAgent.download_folder" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="method">
 <dt id="AgentTools.HPC.launchagent.launchagent.LaunchAgent.monitor_job">
@@ -273,11 +254,6 @@ directly call this function with setting input commands “sbatch job_script”<
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="AgentTools.HPC.launchagent.launchagent.LaunchAgent.upload_folder">
-<code class="descname">upload_folder</code><span class="sig-paren">(</span><em>inputpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/launchagent.html#LaunchAgent.upload_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.launchagent.LaunchAgent.upload_folder" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 </div>
@@ -286,8 +262,7 @@ directly call this function with setting input commands “sbatch job_script”<
 <dl class="class">
 <dt id="AgentTools.HPC.launchagent.ssh_agent.LaunchAgent">
 <em class="property">class </em><code class="descclassname">AgentTools.HPC.launchagent.ssh_agent.</code><code class="descname">LaunchAgent</code><span class="sig-paren">(</span><em>site_name=u'bigred3'</em>, <em>project_name=u'cyberwater'</em>, <em>login_url=None</em>, <em>username=None</em>, <em>passwd=None</em>, <em>sched_env=u'slurm'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/ssh_agent.html#LaunchAgent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.ssh_agent.LaunchAgent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">future.types.newobject.newobject</span></code></p>
-<p>A class/agent to connect to cluster</p>
+<dd><p>A class/agent to connect to cluster</p>
 <p>local input files will be saved in C:/temp/cyberwater-staging-ssh/YYYMMDD-HHMM (Or ~/temp/cyberwater-staging-ssh/YYYMMDD-HHMM),
 local files will then be uploaded to HPC, and being processed, 
 the remote working directory will be first downloaded as a tarball at at: C:/temp/cyberwater-staging-ssh/YYYYMMDD-HHMM,
@@ -449,19 +424,13 @@ Get the job_ID and use the ID to monitor job status.</p>
 
 </dd></dl>
 
-<dl class="function">
-<dt id="AgentTools.HPC.launchagent.ssh_agent.get_supported_sites">
-<code class="descclassname">AgentTools.HPC.launchagent.ssh_agent.</code><code class="descname">get_supported_sites</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/ssh_agent.html#get_supported_sites"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.ssh_agent.get_supported_sites" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </div>
 <div class="section" id="module-AgentTools.HPC.launchagent.status_manager">
 <span id="agenttools-hpc-launchagent-status-manager-module"></span><h2>AgentTools.HPC.launchagent.status_manager module<a class="headerlink" href="#module-AgentTools.HPC.launchagent.status_manager" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="AgentTools.HPC.launchagent.status_manager.StatusManager">
 <em class="property">class </em><code class="descclassname">AgentTools.HPC.launchagent.status_manager.</code><code class="descname">StatusManager</code><span class="sig-paren">(</span><em>db_file_path</em>, <em>ignore_previous=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/status_manager.html#StatusManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.status_manager.StatusManager" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Manage all job submitted from slurm, gateway, shell based launchAgent</p>
+<dd><p>Manage all job submitted from slurm, gateway, shell based launchAgent</p>
 <dl class="method">
 <dt id="AgentTools.HPC.launchagent.status_manager.StatusManager.add_entry">
 <code class="descname">add_entry</code><span class="sig-paren">(</span><em>agent_type</em>, <em>site_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AgentTools/HPC/launchagent/status_manager.html#StatusManager.add_entry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#AgentTools.HPC.launchagent.status_manager.StatusManager.add_entry" title="Permalink to this definition">¶</a></dt>

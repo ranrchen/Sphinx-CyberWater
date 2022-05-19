@@ -88,12 +88,12 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This Function is to return a floating point number that is a rounded version of the specified number, with the specified number of decimals</span>
 
-<span class="sd">        @param number: The number to be rounded</span>
-<span class="sd">        @type number: float</span>
-<span class="sd">        @param decimals: The number of decimals to use when rounding the number.</span>
-<span class="sd">        @type decimals: int</span>
-<span class="sd">        @return: The rounded number</span>
-<span class="sd">        @rtype: float</span>
+<span class="sd">        :param number: The number to be rounded</span>
+<span class="sd">        :type number: float</span>
+<span class="sd">        :param decimals: The number of decimals to use when rounding the number.</span>
+<span class="sd">        :type decimals: int</span>
+<span class="sd">        :return: The rounded number</span>
+<span class="sd">        :rtype: float</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">power</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">decimals</span><span class="p">)</span>
         <span class="n">exactRounding</span> <span class="o">=</span> <span class="kc">None</span>
@@ -106,16 +106,16 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This Function is to calculate the distance between two points (x1,y1) and (x2,y2)</span>
 
-<span class="sd">        @param x1: The x coordinate of the point (x1,y1)</span>
-<span class="sd">        @type x1: float</span>
-<span class="sd">        @param x2: The x coordinate of the point (x2,y2)</span>
-<span class="sd">        @type x2: float</span>
-<span class="sd">        @param y1: The y coordinate of the point (x1,y1)</span>
-<span class="sd">        @type y1: float</span>
-<span class="sd">        @param y2: The y coordinate of the point (x2,y2)</span>
-<span class="sd">        @type y2: float</span>
-<span class="sd">        @return: The distance between two points (x1,y1) and (x2,y2)</span>
-<span class="sd">        @rtype: float</span>
+<span class="sd">        :param x1: The x coordinate of the point (x1,y1)</span>
+<span class="sd">        :type x1: float</span>
+<span class="sd">        :param x2: The x coordinate of the point (x2,y2)</span>
+<span class="sd">        :type x2: float</span>
+<span class="sd">        :param y1: The y coordinate of the point (x1,y1)</span>
+<span class="sd">        :type y1: float</span>
+<span class="sd">        :param y2: The y coordinate of the point (x2,y2)</span>
+<span class="sd">        :type y2: float</span>
+<span class="sd">        :return: The distance between two points (x1,y1) and (x2,y2)</span>
+<span class="sd">        :rtype: float</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">pow</span><span class="p">(</span><span class="n">y1</span> <span class="o">-</span> <span class="n">y2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span></div>
 
@@ -129,18 +129,18 @@
 <span class="sd">        with the closest coordinates to the given ones. If the resulting coordinate gives a difference superior to the</span>
 <span class="sd">        current resolution, it throws an error.</span>
 
-<span class="sd">        @param estimated_lat: The estimation of a latitude</span>
-<span class="sd">        @type estimated_lat: float</span>
-<span class="sd">        @param estimated_lon: The estimation of a longitude</span>
-<span class="sd">        @type estimated_lon: float</span>
-<span class="sd">        @param directory: The path of directory having a list of cells</span>
-<span class="sd">        @type directory: str</span>
-<span class="sd">        @param filename_pattern: The prefix of the file</span>
-<span class="sd">        @type filename_pattern: str</span>
-<span class="sd">        @param min_resolution: The miminum of reslution</span>
-<span class="sd">        @type min_resolution: int</span>
-<span class="sd">        @return: The name of the file with the closest coordinates to the given ones</span>
-<span class="sd">        @rtype: str</span>
+<span class="sd">        :param estimated_lat: The estimation of a latitude</span>
+<span class="sd">        :type estimated_lat: float</span>
+<span class="sd">        :param estimated_lon: The estimation of a longitude</span>
+<span class="sd">        :type estimated_lon: float</span>
+<span class="sd">        :param directory: The path of directory having a list of cells</span>
+<span class="sd">        :type directory: str</span>
+<span class="sd">        :param filename_pattern: The prefix of the file</span>
+<span class="sd">        :type filename_pattern: str</span>
+<span class="sd">        :param min_resolution: The miminum of reslution</span>
+<span class="sd">        :type min_resolution: int</span>
+<span class="sd">        :return: The name of the file with the closest coordinates to the given ones</span>
+<span class="sd">        :rtype: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">min_dist</span> <span class="o">=</span> <span class="n">min_resolution</span>
         <span class="n">lat</span> <span class="o">=</span> <span class="n">estimated_lat</span>
@@ -169,29 +169,29 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This Function is to create a dataset and save the result in the dataset as the output.</span>
 
-<span class="sd">        @param output_folder: The path of the folder for output</span>
-<span class="sd">        @type output_folder: str</span>
-<span class="sd">        @param file_key: The name of the output dataset</span>
-<span class="sd">        @type file_key: str</span>
-<span class="sd">        @param var_name: The name of the variable of the dataset</span>
-<span class="sd">        @type var_name: str</span>
-<span class="sd">        @param dataset_name: The name of the input integrated dataset</span>
-<span class="sd">        @type dataset_name: str</span>
-<span class="sd">        @param pos: The position (column index) in the result files for the output dataset</span>
-<span class="sd">        @type pos: int</span>
-<span class="sd">        @param file_prefix: The prefix of the result file</span>
-<span class="sd">        @type file_prefix: str</span>
-<span class="sd">        @param point_output: The boolean value represented whether the output dataset is a single-time-series in a signle file,\</span>
+<span class="sd">        :param output_folder: The path of the folder for output</span>
+<span class="sd">        :type output_folder: str</span>
+<span class="sd">        :param file_key: The name of the output dataset</span>
+<span class="sd">        :type file_key: str</span>
+<span class="sd">        :param var_name: The name of the variable of the dataset</span>
+<span class="sd">        :type var_name: str</span>
+<span class="sd">        :param dataset_name: The name of the input integrated dataset</span>
+<span class="sd">        :type dataset_name: str</span>
+<span class="sd">        :param pos: The position (column index) in the result files for the output dataset</span>
+<span class="sd">        :type pos: int</span>
+<span class="sd">        :param file_prefix: The prefix of the result file</span>
+<span class="sd">        :type file_prefix: str</span>
+<span class="sd">        :param point_output: The boolean value represented whether the output dataset is a single-time-series in a signle file,\</span>
 <span class="sd">        in contrast of a distributed result in multiple files, once per cell. The default value is False.</span>
-<span class="sd">        @type point_output: bool</span>
-<span class="sd">        @param separator: The delimiter in the result file to separate each data filed in result file</span>
-<span class="sd">        @type separator: str</span>
-<span class="sd">        @param number_of_header_lines: The number of the header in the result file to skip</span>
-<span class="sd">        @type number_of_header_lines: int</span>
-<span class="sd">        @param dd: The detected dimensions</span>
-<span class="sd">        @type dd: dict</span>
-<span class="sd">        @return: The created output dataset</span>
-<span class="sd">        @rtype: dict</span>
+<span class="sd">        :type point_output: bool</span>
+<span class="sd">        :param separator: The delimiter in the result file to separate each data filed in result file</span>
+<span class="sd">        :type separator: str</span>
+<span class="sd">        :param number_of_header_lines: The number of the header in the result file to skip</span>
+<span class="sd">        :type number_of_header_lines: int</span>
+<span class="sd">        :param dd: The detected dimensions</span>
+<span class="sd">        :type dd: dict</span>
+<span class="sd">        :return: The created output dataset</span>
+<span class="sd">        :rtype: dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">NUM_DIGITS_FILENAME</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># NUM_DIGITS_FILENAME</span>
         <span class="n">EMPTY_VALUE</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
@@ -275,31 +275,31 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This Function is to save the output datasets</span>
 
-<span class="sd">        @param output_folder: The path of the folder for output</span>
-<span class="sd">        @type output_folder: str</span>
-<span class="sd">        @param desired_outputs: The list of the names of output datasets</span>
-<span class="sd">        @type desired_outputs: list</span>
-<span class="sd">        @param position_list: The list of the positions (column indices) in the result files for the output datasets</span>
-<span class="sd">        @type position_list: list</span>
-<span class="sd">        @param file_prefix: The prefix of the file</span>
-<span class="sd">        @type file_prefix: str</span>
-<span class="sd">        @param input_identification: The id of the input dataset</span>
-<span class="sd">        @type input_identification: str</span>
-<span class="sd">        @param point_output:The boolean value represented whether the output dataset is a single-time-series in a signle file,\</span>
+<span class="sd">        :param output_folder: The path of the folder for output</span>
+<span class="sd">        :type output_folder: str</span>
+<span class="sd">        :param desired_outputs: The list of the names of output datasets</span>
+<span class="sd">        :type desired_outputs: list</span>
+<span class="sd">        :param position_list: The list of the positions (column indices) in the result files for the output datasets</span>
+<span class="sd">        :type position_list: list</span>
+<span class="sd">        :param file_prefix: The prefix of the file</span>
+<span class="sd">        :type file_prefix: str</span>
+<span class="sd">        :param input_identification: The id of the input dataset</span>
+<span class="sd">        :type input_identification: str</span>
+<span class="sd">        :param point_output:The boolean value represented whether the output dataset is a single-time-series in a signle file,\</span>
 <span class="sd">        in contrast of a distributed result in multiple files, once per cell. The default value is False.</span>
-<span class="sd">        @type point_output: bool</span>
-<span class="sd">        @param separator:The delimiter in the result file to separate each data filed in result file</span>
-<span class="sd">        @type separator: str</span>
-<span class="sd">        @param number_of_header_lines: The number of the header in the result file to skip</span>
-<span class="sd">        @type number_of_header_lines: int</span>
-<span class="sd">        @param module_name: The name of the current module</span>
-<span class="sd">        @type module_name: str</span>
-<span class="sd">        @param ret: The list of the name of output result datasets</span>
-<span class="sd">        @type ret: list</span>
-<span class="sd">        @param dd: The detected dimensions</span>
-<span class="sd">        @type dd: dict</span>
-<span class="sd">        @return: The integrated result dataset and the list of the name of output result datasets</span>
-<span class="sd">        @rtype: (dict,list)</span>
+<span class="sd">        :type point_output: bool</span>
+<span class="sd">        :param separator:The delimiter in the result file to separate each data filed in result file</span>
+<span class="sd">        :type separator: str</span>
+<span class="sd">        :param number_of_header_lines: The number of the header in the result file to skip</span>
+<span class="sd">        :type number_of_header_lines: int</span>
+<span class="sd">        :param module_name: The name of the current module</span>
+<span class="sd">        :type module_name: str</span>
+<span class="sd">        :param ret: The list of the name of output result datasets</span>
+<span class="sd">        :type ret: list</span>
+<span class="sd">        :param dd: The detected dimensions</span>
+<span class="sd">        :type dd: dict</span>
+<span class="sd">        :return: The integrated result dataset and the list of the name of output result datasets</span>
+<span class="sd">        :rtype: (dict,list)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">outputs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">taskCache</span> <span class="o">=</span> <span class="n">TaskCache</span><span class="p">()</span>
@@ -322,28 +322,28 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This Function is to process input dataset  and create corresponding output result file</span>
 
-<span class="sd">        @param dataset_name: The name of the dataset</span>
-<span class="sd">        @type dataset_name: str</span>
-<span class="sd">        @param row: The row number of the input integrated dataset</span>
-<span class="sd">        @type row: int</span>
-<span class="sd">        @param col: The column number of the dataset</span>
-<span class="sd">        @type col: int</span>
-<span class="sd">        @param filename: The name of the result file</span>
-<span class="sd">        @type filename: str</span>
-<span class="sd">        @param empty_value: The value to replace when the element in dataset is empty</span>
-<span class="sd">        @type empty_value: str</span>
-<span class="sd">        @param file_key: The name of the output dataset</span>
-<span class="sd">        @type file_key: str</span>
-<span class="sd">        @param pos: The position (column index) of the output dataset in the result file</span>
-<span class="sd">        @type pos: int</span>
-<span class="sd">        @param timeini: The initial time of the dataset</span>
-<span class="sd">        @type timeini: datetime</span>
-<span class="sd">        @param timeend: The ending time of the dataset</span>
-<span class="sd">        @type timeend: datetime</span>
-<span class="sd">        @param timestep: The time step of the dataset</span>
-<span class="sd">        @type timestep: timedelta</span>
-<span class="sd">        @param number_of_header_lines: The number of header lines in the result file</span>
-<span class="sd">        @type number_of_header_lines: int</span>
+<span class="sd">        :param dataset_name: The name of the dataset</span>
+<span class="sd">        :type dataset_name: str</span>
+<span class="sd">        :param row: The row number of the input integrated dataset</span>
+<span class="sd">        :type row: int</span>
+<span class="sd">        :param col: The column number of the dataset</span>
+<span class="sd">        :type col: int</span>
+<span class="sd">        :param filename: The name of the result file</span>
+<span class="sd">        :type filename: str</span>
+<span class="sd">        :param empty_value: The value to replace when the element in dataset is empty</span>
+<span class="sd">        :type empty_value: str</span>
+<span class="sd">        :param file_key: The name of the output dataset</span>
+<span class="sd">        :type file_key: str</span>
+<span class="sd">        :param pos: The position (column index) of the output dataset in the result file</span>
+<span class="sd">        :type pos: int</span>
+<span class="sd">        :param timeini: The initial time of the dataset</span>
+<span class="sd">        :type timeini: datetime</span>
+<span class="sd">        :param timeend: The ending time of the dataset</span>
+<span class="sd">        :type timeend: datetime</span>
+<span class="sd">        :param timestep: The time step of the dataset</span>
+<span class="sd">        :type timestep: timedelta</span>
+<span class="sd">        :param number_of_header_lines: The number of header lines in the result file</span>
+<span class="sd">        :type number_of_header_lines: int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">handler</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
         <span class="n">timeseries_dict</span> <span class="o">=</span> <span class="p">{}</span>
@@ -366,19 +366,19 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This Function is to process and extract the result data in each header field in each line of the result file</span>
 
-<span class="sd">        @param line: The line being processed in the result file</span>
-<span class="sd">        @type line: str</span>
-<span class="sd">        @param empty_value: The value to replace when the element in dataset is empty</span>
-<span class="sd">        @type empty_value: str</span>
-<span class="sd">        @param file_key: The name of the output dataset</span>
-<span class="sd">        @type file_key: str</span>
-<span class="sd">        @param pos: The position (column index) of the output dataset in the result file</span>
-<span class="sd">        @type pos: int</span>
-<span class="sd">        @param timestep_datetime: The current timestamp for the current line in the result file</span>
-<span class="sd">        @type timestep_datetime: datetime</span>
-<span class="sd">        @return: The current timestamp for the current line in the result file and the corresponding\</span>
+<span class="sd">        :param line: The line being processed in the result file</span>
+<span class="sd">        :type line: str</span>
+<span class="sd">        :param empty_value: The value to replace when the element in dataset is empty</span>
+<span class="sd">        :type empty_value: str</span>
+<span class="sd">        :param file_key: The name of the output dataset</span>
+<span class="sd">        :type file_key: str</span>
+<span class="sd">        :param pos: The position (column index) of the output dataset in the result file</span>
+<span class="sd">        :type pos: int</span>
+<span class="sd">        :param timestep_datetime: The current timestamp for the current line in the result file</span>
+<span class="sd">        :type timestep_datetime: datetime</span>
+<span class="sd">        :return: The current timestamp for the current line in the result file and the corresponding\</span>
 <span class="sd">        value in the given position of the current line in the result file</span>
-<span class="sd">        @rtype: (datetime, float)</span>
+<span class="sd">        :rtype: (datetime, float)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">values_line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
         <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
@@ -395,14 +395,14 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This function is to set the time series for the current dataset</span>
 <span class="sd">        </span>
-<span class="sd">        @param dataset_name: The name of the targeted dataset</span>
-<span class="sd">        @type dataset_name: str</span>
-<span class="sd">        @param timeseries_dict: The time-series dictionary to be set for the targeted dataset</span>
-<span class="sd">        @type timeseries_dict: dict</span>
-<span class="sd">        @param row: The row number of the dataset</span>
-<span class="sd">        @type row: int</span>
-<span class="sd">        @param col: The column number of the dataset</span>
-<span class="sd">        @type col: int</span>
+<span class="sd">        :param dataset_name: The name of the targeted dataset</span>
+<span class="sd">        :type dataset_name: str</span>
+<span class="sd">        :param timeseries_dict: The time-series dictionary to be set for the targeted dataset</span>
+<span class="sd">        :type timeseries_dict: dict</span>
+<span class="sd">        :param row: The row number of the dataset</span>
+<span class="sd">        :type row: int</span>
+<span class="sd">        :param col: The column number of the dataset</span>
+<span class="sd">        :type col: int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dataset</span> <span class="o">=</span> <span class="n">DaoDataSet</span><span class="p">()</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">)</span>
         <span class="n">dataset</span><span class="o">.</span><span class="n">set_time_series</span><span class="p">(</span><span class="n">timeseries_dict</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">)</span></div>
@@ -413,32 +413,32 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This function is to create the responding dataset in the form of *msmDataset* with the parameters given</span>
 <span class="sd">        </span>
-<span class="sd">        @param dataset_name: The name of dataset to be created</span>
-<span class="sd">        @type dataset_name: str</span>
-<span class="sd">        @param variable_name: The name of the variable of the dataset</span>
-<span class="sd">        @type variable_name: str</span>
-<span class="sd">        @param left: The left boundary value in the space range of the dataset</span>
-<span class="sd">        @type left: float</span>
-<span class="sd">        @param right: The right boundary value in the space range of the dataset</span>
-<span class="sd">        @type right: float</span>
-<span class="sd">        @param top: The top boundary value in the space range of the dataset</span>
-<span class="sd">        @type top: float</span>
-<span class="sd">        @param bottom: The bottom boundary value in the space range of the dataset</span>
-<span class="sd">        @type bottom: float</span>
-<span class="sd">        @param side: The vertical resolution of the dataset</span>
-<span class="sd">        @type side: int</span>
-<span class="sd">        @param base: The horizontal resolution of the dataset</span>
-<span class="sd">        @type base: int</span>
-<span class="sd">        @param timeini: The initial time in the time range of the dataset</span>
-<span class="sd">        @type timeini: datetime</span>
-<span class="sd">        @param timeend: The ending time in the time range of the dataset</span>
-<span class="sd">        @type timeend: datetime</span>
-<span class="sd">        @param step: The time step of the dataset</span>
-<span class="sd">        @type step: datetime</span>
-<span class="sd">        @param value: The result value in the dataset</span>
-<span class="sd">        @type value: list</span>
-<span class="sd">        @param save: Flag on whether to save the dataset The default value is *False*</span>
-<span class="sd">        @type save: bool</span>
+<span class="sd">        :param dataset_name: The name of dataset to be created</span>
+<span class="sd">        :type dataset_name: str</span>
+<span class="sd">        :param variable_name: The name of the variable of the dataset</span>
+<span class="sd">        :type variable_name: str</span>
+<span class="sd">        :param left: The left boundary value in the space range of the dataset</span>
+<span class="sd">        :type left: float</span>
+<span class="sd">        :param right: The right boundary value in the space range of the dataset</span>
+<span class="sd">        :type right: float</span>
+<span class="sd">        :param top: The top boundary value in the space range of the dataset</span>
+<span class="sd">        :type top: float</span>
+<span class="sd">        :param bottom: The bottom boundary value in the space range of the dataset</span>
+<span class="sd">        :type bottom: float</span>
+<span class="sd">        :param side: The vertical resolution of the dataset</span>
+<span class="sd">        :type side: int</span>
+<span class="sd">        :param base: The horizontal resolution of the dataset</span>
+<span class="sd">        :type base: int</span>
+<span class="sd">        :param timeini: The initial time in the time range of the dataset</span>
+<span class="sd">        :type timeini: datetime</span>
+<span class="sd">        :param timeend: The ending time in the time range of the dataset</span>
+<span class="sd">        :type timeend: datetime</span>
+<span class="sd">        :param step: The time step of the dataset</span>
+<span class="sd">        :type step: datetime</span>
+<span class="sd">        :param value: The result value in the dataset</span>
+<span class="sd">        :type value: list</span>
+<span class="sd">        :param save: Flag on whether to save the dataset The default value is *False*</span>
+<span class="sd">        :type save: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dataset</span> <span class="o">=</span> <span class="n">DataSet</span><span class="p">()</span>
 
@@ -455,16 +455,16 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This Function is to check the detected dimension of the dataset</span>
 
-<span class="sd">        @param user_inputs: The name of the integrated dataset</span>
-<span class="sd">        @type user_inputs: str</span>
-<span class="sd">        @param dd: The detected dimensions</span>
-<span class="sd">        @type dd: dict</span>
-<span class="sd">        @param check_space: The parameter on whether the space variable exists, default value is *True*.</span>
-<span class="sd">        @type check_space: bool</span>
-<span class="sd">        @param check_time: The parameter on whether the time variable exists, default value is *True*.</span>
-<span class="sd">        @type check_time: bool</span>
-<span class="sd">        @return: The detected dimensions</span>
-<span class="sd">        @rtype: dict</span>
+<span class="sd">        :param user_inputs: The name of the integrated dataset</span>
+<span class="sd">        :type user_inputs: str</span>
+<span class="sd">        :param dd: The detected dimensions</span>
+<span class="sd">        :type dd: dict</span>
+<span class="sd">        :param check_space: The parameter on whether the space variable exists, default value is *True*.</span>
+<span class="sd">        :type check_space: bool</span>
+<span class="sd">        :param check_time: The parameter on whether the time variable exists, default value is *True*.</span>
+<span class="sd">        :type check_time: bool</span>
+<span class="sd">        :return: The detected dimensions</span>
+<span class="sd">        :rtype: dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">input_sent</span> <span class="ow">in</span> <span class="n">user_inputs</span><span class="p">:</span>
             <span class="n">dataset_name</span> <span class="o">=</span> <span class="n">user_inputs</span><span class="p">[</span><span class="n">input_sent</span><span class="p">]</span>
@@ -477,20 +477,20 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This Function is to obtain the time-series of the targeted dataset</span>
 
-<span class="sd">        @param dataset_name: The name of the integrated dataset</span>
-<span class="sd">        @type dataset_name: str</span>
-<span class="sd">        @param time_ini: The initial time of the dataset</span>
-<span class="sd">        @type time_ini: datetime</span>
-<span class="sd">        @param time_end: The ending time of the dataset</span>
-<span class="sd">        @type time_end: datetime</span>
-<span class="sd">        @param row: The row number of the dataset</span>
-<span class="sd">        @type row: int</span>
-<span class="sd">        @param col: The column number of the dataset</span>
-<span class="sd">        @type col: int</span>
-<span class="sd">        @param empty_value: The value to replace when the element in dataset is empty, the default value is None</span>
-<span class="sd">        @type empty_value: str</span>
-<span class="sd">        @return: The list of the time-series of the dataset</span>
-<span class="sd">        @rtype: dict</span>
+<span class="sd">        :param dataset_name: The name of the integrated dataset</span>
+<span class="sd">        :type dataset_name: str</span>
+<span class="sd">        :param time_ini: The initial time of the dataset</span>
+<span class="sd">        :type time_ini: datetime</span>
+<span class="sd">        :param time_end: The ending time of the dataset</span>
+<span class="sd">        :type time_end: datetime</span>
+<span class="sd">        :param row: The row number of the dataset</span>
+<span class="sd">        :type row: int</span>
+<span class="sd">        :param col: The column number of the dataset</span>
+<span class="sd">        :type col: int</span>
+<span class="sd">        :param empty_value: The value to replace when the element in dataset is empty, the default value is None</span>
+<span class="sd">        :type empty_value: str</span>
+<span class="sd">        :return: The list of the time-series of the dataset</span>
+<span class="sd">        :rtype: dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dds</span> <span class="o">=</span> <span class="n">DaoDataSet</span><span class="p">()</span>
         <span class="n">dataset</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">)</span>
@@ -501,15 +501,15 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This Function is to initialize and update detected dimensions</span>
 
-<span class="sd">        @param dataset_name: The name of the input integrated dataset</span>
-<span class="sd">        @type dataset_name: str</span>
-<span class="sd">        @param input_name: The id of the integrated dataset</span>
-<span class="sd">        @param check_space: The parameter on whether the space variable exists, default value is True</span>
-<span class="sd">        @type check_space: bool</span>
-<span class="sd">        @param check_time: The parameter on whether the time variable exists, default value is True</span>
-<span class="sd">        @type check_time: bool</span>
-<span class="sd">        @return: The detected dimensions</span>
-<span class="sd">        @rtype: dict</span>
+<span class="sd">        :param dataset_name: The name of the input integrated dataset</span>
+<span class="sd">        :type dataset_name: str</span>
+<span class="sd">        :param input_name: The id of the integrated dataset</span>
+<span class="sd">        :param check_space: The parameter on whether the space variable exists, default value is True</span>
+<span class="sd">        :type check_space: bool</span>
+<span class="sd">        :param check_time: The parameter on whether the time variable exists, default value is True</span>
+<span class="sd">        :type check_time: bool</span>
+<span class="sd">        :return: The detected dimensions</span>
+<span class="sd">        :rtype: dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">dataset_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="n">dataset_name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;dataset_name must be not empty string&quot;</span><span class="p">)</span>
@@ -531,8 +531,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This Function is to save dataset in database and refreshe in cache</span>
 
-<span class="sd">        @param dataset_name: The name of the input integrated dataset</span>
-<span class="sd">        @type dataset_name: str</span>
+<span class="sd">        :param dataset_name: The name of the input integrated dataset</span>
+<span class="sd">        :type dataset_name: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dsc</span> <span class="o">=</span> <span class="n">DataSetCache</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">dsc</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">):</span>

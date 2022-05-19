@@ -183,8 +183,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This function is to remove an existing folder</span>
 
-<span class="sd">        @param files_dir: The path of the folder</span>
-<span class="sd">        @type files_dir: string</span>
+<span class="sd">        :param files_dir: The path of the folder</span>
+<span class="sd">        :type files_dir: string</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">files_dir</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -198,8 +198,8 @@
 <span class="sd">        This function is to get the documentation of MainGenerator module</span>
 <span class="sd">        param docstring: A string used to document a MainGenerator module</span>
 <span class="sd">        </span>
-<span class="sd">        @param module: MainGenerator module</span>
-<span class="sd">        @return: A invoked function from package DocumentUtil to get documentation of MainGenerator module</span>
+<span class="sd">        :param module: MainGenerator module</span>
+<span class="sd">        :return: A invoked function from package DocumentUtil to get documentation of MainGenerator module</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">module_name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;__module__&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">DocumentUtil</span><span class="o">.</span><span class="n">get_documentation</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span></div></div>

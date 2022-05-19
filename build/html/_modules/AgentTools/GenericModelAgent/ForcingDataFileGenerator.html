@@ -177,12 +177,12 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This Function is to return a floating point number that is a rounded version of the specified number, with the specified number of decimals</span>
 
-<span class="sd">        @param number: The number to be rounded</span>
-<span class="sd">        @type number: float</span>
-<span class="sd">        @param decimals: The number of decimals to use when rounding the number.</span>
-<span class="sd">        @type decimals: int</span>
-<span class="sd">        @return: The rounded number</span>
-<span class="sd">        @rtype: float</span>
+<span class="sd">        :param number: The number to be rounded</span>
+<span class="sd">        :type number: float</span>
+<span class="sd">        :param decimals: The number of decimals to use when rounding the number.</span>
+<span class="sd">        :type decimals: int</span>
+<span class="sd">        :return: The rounded number</span>
+<span class="sd">        :rtype: float</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">power</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">decimals</span><span class="p">)</span>
         <span class="n">exactRounding</span> <span class="o">=</span> <span class="kc">None</span>
@@ -193,10 +193,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This function is to change the name of files in the given folder</span>
 
-<span class="sd">        @param folder: The path of the folder</span>
-<span class="sd">        @type folder: str</span>
-<span class="sd">        @param file_name: The prefix of the file needed adding or the new file name needed changing</span>
-<span class="sd">        @type file_name: str</span>
+<span class="sd">        :param folder: The path of the folder</span>
+<span class="sd">        :type folder: str</span>
+<span class="sd">        :param file_name: The prefix of the file needed adding or the new file name needed changing</span>
+<span class="sd">        :type file_name: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">filelist</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">filelist</span><span class="p">:</span>
@@ -211,16 +211,16 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This function is to build a unique file with all the forcing information of a cell</span>
 
-<span class="sd">        @param filename: The name of the file</span>
-<span class="sd">        @type filename: str</span>
-<span class="sd">        @param user_inputs: The names of the integrated forcing dataset</span>
-<span class="sd">        @type user_inputs: str</span>
-<span class="sd">        @param row: The row index of the 2D-forcing dataset</span>
-<span class="sd">        @type row: int</span>
-<span class="sd">        @param col: The column index of the 2D-forcing dataset</span>
-<span class="sd">        @type col: int</span>
-<span class="sd">        @param date_format: The format taken for the dates of the first column</span>
-<span class="sd">        @type date_format: str</span>
+<span class="sd">        :param filename: The name of the file</span>
+<span class="sd">        :type filename: str</span>
+<span class="sd">        :param user_inputs: The names of the integrated forcing dataset</span>
+<span class="sd">        :type user_inputs: str</span>
+<span class="sd">        :param row: The row index of the 2D-forcing dataset</span>
+<span class="sd">        :type row: int</span>
+<span class="sd">        :param col: The column index of the 2D-forcing dataset</span>
+<span class="sd">        :type col: int</span>
+<span class="sd">        :param date_format: The format taken for the dates of the first column</span>
+<span class="sd">        :type date_format: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dd</span><span class="o">.</span><span class="n">timeini_datetime</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">dd</span><span class="o">.</span><span class="n">timeend_datetime</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No time range detected&quot;</span><span class="p">)</span>
@@ -264,12 +264,12 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This Function is to prepare forcing dataset</span>
 
-<span class="sd">        @param forcing_dir_prefix: The prefix of the forcing data directory</span>
-<span class="sd">        @type forcing_dir_prefix: str</span>
-<span class="sd">        @param inputs: The names of the integrated forcing dataset</span>
-<span class="sd">        @type inputs: str</span>
-<span class="sd">        @param date_format: The format taken for the dates of the first column</span>
-<span class="sd">        @type date_format: str</span>
+<span class="sd">        :param forcing_dir_prefix: The prefix of the forcing data directory</span>
+<span class="sd">        :type forcing_dir_prefix: str</span>
+<span class="sd">        :param inputs: The names of the integrated forcing dataset</span>
+<span class="sd">        :type inputs: str</span>
+<span class="sd">        :param date_format: The format taken for the dates of the first column</span>
+<span class="sd">        :type date_format: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">side</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dd</span><span class="o">.</span><span class="n">side</span>
         <span class="n">base</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dd</span><span class="o">.</span><span class="n">base</span>
@@ -297,12 +297,12 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This Function is to check whether the targeted cell is included in the sub-range</span>
 
-<span class="sd">        @param lat: The latitude of the targeted cell</span>
-<span class="sd">        @type lat: float</span>
-<span class="sd">        @param lon: The longitude of the targeted cell</span>
-<span class="sd">        @type lon: float</span>
-<span class="sd">        @return: return the result of a boolean value on whether the targeted cell is included in the sub-range</span>
-<span class="sd">        @rtype: bool</span>
+<span class="sd">        :param lat: The latitude of the targeted cell</span>
+<span class="sd">        :type lat: float</span>
+<span class="sd">        :param lon: The longitude of the targeted cell</span>
+<span class="sd">        :type lon: float</span>
+<span class="sd">        :return: return the result of a boolean value on whether the targeted cell is included in the sub-range</span>
+<span class="sd">        :rtype: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">subrange</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subrange</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">lat</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subrange</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">subrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">lon</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subrange</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_mask</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">)</span>
@@ -312,12 +312,12 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This Function is to check whether the targeted cell is included in the mask</span>
 
-<span class="sd">        @param lat: The latitude of the targeted cell</span>
-<span class="sd">        @type lat: float</span>
-<span class="sd">        @param lon: The longitude of the targeted cell</span>
-<span class="sd">        @type lon: float</span>
-<span class="sd">        @return: return the result of a boolean value on whether the targeted cell is included in the mask</span>
-<span class="sd">        @rtype: bool</span>
+<span class="sd">        :param lat: The latitude of the targeted cell</span>
+<span class="sd">        :type lat: float</span>
+<span class="sd">        :param lon: The longitude of the targeted cell</span>
+<span class="sd">        :type lon: float</span>
+<span class="sd">        :return: return the result of a boolean value on whether the targeted cell is included in the mask</span>
+<span class="sd">        :rtype: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_type</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
@@ -342,13 +342,13 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This Function is to initialize and update detected dimensions</span>
 
-<span class="sd">        @param dataset_name: The name of the integrated dataset</span>
-<span class="sd">        @type dataset_name: str</span>
-<span class="sd">        @param input_name: The id of the integrated dataset</span>
-<span class="sd">        @param check_space: The parameter on whether the space variable exists, default value is True</span>
-<span class="sd">        @type check_space: bool</span>
-<span class="sd">        @param check_time: The parameter on whether the time variable exists, default value is True</span>
-<span class="sd">        @type check_time: bool</span>
+<span class="sd">        :param dataset_name: The name of the integrated dataset</span>
+<span class="sd">        :type dataset_name: str</span>
+<span class="sd">        :param input_name: The id of the integrated dataset</span>
+<span class="sd">        :param check_space: The parameter on whether the space variable exists, default value is True</span>
+<span class="sd">        :type check_space: bool</span>
+<span class="sd">        :param check_time: The parameter on whether the time variable exists, default value is True</span>
+<span class="sd">        :type check_time: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">dataset_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="n">dataset_name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;dataset_name must be not empty string&quot;</span><span class="p">)</span>
@@ -369,12 +369,12 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This Function is to check the detected dimension of the dataset</span>
 
-<span class="sd">        @param dataset_class: The name of the integrated dataset</span>
-<span class="sd">        @type dataset_class: str</span>
-<span class="sd">        @param check_space: The parameter on whether the space variable exists, default value is True</span>
-<span class="sd">        @type check_space: bool</span>
-<span class="sd">        @param check_time: The parameter on whether the time variable exists, default value is True</span>
-<span class="sd">        @type check_time: bool</span>
+<span class="sd">        :param dataset_class: The name of the integrated dataset</span>
+<span class="sd">        :type dataset_class: str</span>
+<span class="sd">        :param check_space: The parameter on whether the space variable exists, default value is True</span>
+<span class="sd">        :type check_space: bool</span>
+<span class="sd">        :param check_time: The parameter on whether the time variable exists, default value is True</span>
+<span class="sd">        :type check_time: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initialize_dimensions</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">dataset_id</span> <span class="ow">in</span> <span class="n">dataset_class</span><span class="p">:</span>
@@ -396,20 +396,20 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This Function is to obtain the time-series of the targeted dataset</span>
 
-<span class="sd">        @param dataset_name: The name of the integrated dataset</span>
-<span class="sd">        @type dataset_name: str</span>
-<span class="sd">        @param time_ini: The initial time of the dataset</span>
-<span class="sd">        @type time_ini: datetime</span>
-<span class="sd">        @param time_end: The ending time of the dataset</span>
-<span class="sd">        @type time_end: datetime</span>
-<span class="sd">        @param row: The row number of the dataset</span>
-<span class="sd">        @type row: int</span>
-<span class="sd">        @param col: The column number of the dataset</span>
-<span class="sd">        @type col: int</span>
-<span class="sd">        @param empty_value: The value to replace when the element in dataset is NAN, the default value is None</span>
-<span class="sd">        @type empty_value: str</span>
-<span class="sd">        @return: The list of the time-series of the dataset</span>
-<span class="sd">        @rtype: dict</span>
+<span class="sd">        :param dataset_name: The name of the integrated dataset</span>
+<span class="sd">        :type dataset_name: str</span>
+<span class="sd">        :param time_ini: The initial time of the dataset</span>
+<span class="sd">        :type time_ini: datetime</span>
+<span class="sd">        :param time_end: The ending time of the dataset</span>
+<span class="sd">        :type time_end: datetime</span>
+<span class="sd">        :param row: The row number of the dataset</span>
+<span class="sd">        :type row: int</span>
+<span class="sd">        :param col: The column number of the dataset</span>
+<span class="sd">        :type col: int</span>
+<span class="sd">        :param empty_value: The value to replace when the element in dataset is NAN, the default value is None</span>
+<span class="sd">        :type empty_value: str</span>
+<span class="sd">        :return: The list of the time-series of the dataset</span>
+<span class="sd">        :rtype: dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dds</span><span class="o">=</span><span class="n">DaoDataSet</span><span class="p">()</span>
         <span class="n">dataset</span><span class="o">=</span><span class="n">dds</span><span class="o">.</span><span class="n">get_dataset</span><span class="p">(</span><span class="n">dataset_name</span><span class="p">)</span>
@@ -420,9 +420,9 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This function is to get the documentation of ForcingDataFileGenerator module</span>
 
-<span class="sd">        @param docstring: A string used to document a ForcingDataFileGenerator module</span>
-<span class="sd">        @param module: ForcingDataFileGenerator module</span>
-<span class="sd">        @return: A invoked function from package DocumentUtil to get documentation of ForcingDataFileGenerator module</span>
+<span class="sd">        :param docstring: A string used to document a ForcingDataFileGenerator module</span>
+<span class="sd">        :param module: ForcingDataFileGenerator module</span>
+<span class="sd">        :return: A invoked function from package DocumentUtil to get documentation of ForcingDataFileGenerator module</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">module_name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;__module__&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">DocumentUtil</span><span class="o">.</span><span class="n">get_documentation</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span></div></div>
