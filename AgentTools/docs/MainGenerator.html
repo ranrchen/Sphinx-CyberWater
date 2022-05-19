@@ -1,0 +1,19 @@
+---------------------------------- CYBERWATER DOCUMENTATION ---------------------------------------------<br>
+ <i><h2>MainGenerator</h2></i> The first component of the Generic Model Agent tools. <br> 
+ This component is responsible for setting up the folder where the simulation will be performed. <br>
+ It receives all the forcing datasets as inputs. The order at which they are added matters, <br> 
+ since the final forcing files will display the data in the same order: <br> 
+ first Dataset_01, then Dataset_02, and so on. <br>
+ The purpose of the Generic Model Agent tools is to enable the integration of new Models into the <br>
+ CyberWater environment. Therefore, users are expected to be highly knowledgeable about the <br>
+ details of their own models if they want to perform an integration with the Generic tools. <br>
+ <br>
+[INPUTS]<br>
+ <b><u>01_Path: </u></b> Path of the folder where the files of the simulation will be created.<br>
+ <b><u>02_GPF: </u></b> Path of the main configuration (global parameter) file for the simulation.<br>
+ <b><u>Dataset_0<i>i</i>: </u></b> Dataset of the <i>i</i>-th forcing variable.<br>\
+ <br>
+ [OUTPUTS]<br>
+ <b>WD_Path:</b> Folder where the execution will be performed.<br>
+ <b>DataSet_Class:</b> The information of the forcing datasets.<br>
+ -----------------------------------------------------------------------------------------------------------------------<br>

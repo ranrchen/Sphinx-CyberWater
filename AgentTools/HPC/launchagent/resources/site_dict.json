@@ -1,0 +1,91 @@
+{
+    "ssh_agent":{
+        "sites": {
+            "bigred3": {
+                "sched_env": "slurm",
+                "login_url": "bigred3.uits.iu.edu",
+                "username": "lifen",
+                "defaultqueue": "general"
+            },
+            "gcp": {
+                "sched_env": "slurm",
+                "login_url": "35.192.15.248",
+                "username": "fli5",
+                "defaultqueue": "debug"
+            },
+            "jetstream": {
+                "sched_env": "slurm",
+                "username": "fli5",
+                "login_url":"149.165.156.187",
+                "defaultqueue": "cloud"
+            },
+            "bridges2": {
+                "sched_env": "slurm",
+                "username": "fli5",
+                "login_url":"bridges2.psc.edu",
+                "defaultqueue": "RM",
+                "workdir":"/ocean/projects/ear200001p/shared/"
+            },
+            "bridges2-shared": {
+                "sched_env": "slurm",
+                "username": "fli5",
+                "login_url":"bridges2.psc.edu",
+                "defaultqueue": "RM-shared",
+                "workdir":"/ocean/projects/ear200001p/shared/"
+            },
+            "stampede2": {
+                "sched_env": "slurm",
+                "login_url": "login2.stampede2.tacc.utexas.edu",
+                "username": "tg837458",
+                "defaultqueue": "skx-dev",
+                "workdir":"/scratch/04446/tg837458",
+                "slurm_directive_str":"#SBATCH -A TG-EAR200001"
+            },
+            "sievert": {
+                "sched_env": "bash",
+                "login_url": "sievert.cs.iupui.edu",
+                "username": "lifen"
+            },
+            "rain": {
+                "sched_env": "bash",
+                "login_url": "rain.cs.iupui.edu"
+            },
+            "thunder": {
+                "sched_env": "bash",
+                "login_url": "thunder.cs.iupui.edu"
+            },
+            "lightning": {
+                "sched_env": "bash",
+                "login_url": "lightning.cs.iupui.edu"
+            },
+            "Customized": {
+                "sched_env": "bash"
+            }
+        }
+    },
+    "gateway_agent": {
+        "sites": {
+            "bridges2":{
+                "group_resource_profile_name": "cyberwater-hpc-resource",
+                "url": "Bridges2",
+                "queue_name": "RM"
+            },
+            "bridges2-shared":{
+                "group_resource_profile_name": "cyberwater-hpc-resource",
+                "url": "Bridges2",
+                "queue_name": "RM-shared"
+            },
+            "bigred3":{
+                "group_resource_profile_name": "cyberwater-hpc-resource",
+                "url": "bigred3.uits.iu.edu",
+                "queue_name": "general"
+            },
+            "carbonate":{
+                "group_resource_profile_name": "cyberwater-hpc-resource",
+                "url": "carbonate.uits.iu.edu",
+                "queue_name": "debug"}
+        },
+        "gateway_id": "cyberwater",
+        "storage_id": "pgadev.scigap.org_7ddf28fd-d503-4ff8-bbc5-3279a7c3b99e"
+    }
+}
