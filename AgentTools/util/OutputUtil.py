@@ -215,8 +215,7 @@ class OutputUtil:
         :type file_prefix: str
         :param input_identification: The id of the input dataset
         :type input_identification: str
-        :param point_output:The boolean value represented whether the output dataset is a single-time-series in a signle file,\
-        in contrast of a distributed result in multiple files, once per cell. The default value is False.
+        :param point_output:The boolean value represented whether the output dataset is a single-time-series in a signle file, in contrast of a distributed result in multiple files, once per cell. The default value is False.
         :type point_output: bool
         :param separator:The delimiter in the result file to separate each data filed in result file
         :type separator: str
